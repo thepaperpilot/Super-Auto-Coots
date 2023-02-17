@@ -1,11 +1,20 @@
 <template>
-    <div class="character" :class="{ selected }">
-        <span class="character-display">{{ character?.type }}</span>
-    </div>
+    <Tooltip
+        :display="character ? characters[character.type].nickname : ''"
+        :direction="Direction.Up"
+    >
+        <div class="character" :class="{ selected, empty: character == null }">
+            <span class="character-display">{{ character?.type }}</span>
+        </div>
+    </Tooltip>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+import Tooltip from "features/tooltips/Tooltip.vue";
+import { Direction } from "util/common";
+import { characters } from "./projEntry";
+
+defineProps<{
     character?: {
         type: string;
         relevancy: number;
@@ -21,8 +30,12 @@ const props = defineProps<{
     position: relative;
     margin: 50px;
     justify-content: center;
-    cursor: pointer;
     user-select: none;
+    display: flex;
+}
+
+.character:not(.empty) {
+    cursor: pointer;
 }
 
 .character-display {
