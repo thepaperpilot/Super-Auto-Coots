@@ -4,7 +4,9 @@
         :direction="Direction.Up"
     >
         <div class="character" :class="{ selected, empty: character == null }">
-            <span class="character-display">{{ character?.type }}</span>
+            <span class="character-display" v-if="character != null">
+                <img :src="characters[character.type].display" />
+            </span>
             <span class="relevancy-display" v-if="character != null">
                 <span class="material-icons"> extension </span>
                 {{ character?.relevancy }}
@@ -44,6 +46,14 @@ defineProps<{
 
 .character-display {
     text-shadow: 3px 3px 5px black;
+    width: 100%;
+    height: 100%;
+}
+
+.character-display img {
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1/1;
 }
 
 .character::after {

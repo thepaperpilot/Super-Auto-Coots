@@ -1,6 +1,7 @@
 interface CharacterInfo {
     nickname: string;
     initialRelevancy: number;
+    display: string;
 }
 
 interface Character {
