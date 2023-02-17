@@ -5,6 +5,10 @@
     >
         <div class="character" :class="{ selected, empty: character == null }">
             <span class="character-display">{{ character?.type }}</span>
+            <span class="relevancy-display" v-if="character != null">
+                <span class="material-icons"> extension </span>
+                {{ character?.relevancy }}
+            </span>
         </div>
     </Tooltip>
 </template>
@@ -62,5 +66,22 @@ defineProps<{
     left: 0;
     right: 0;
     background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='8' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+.relevancy-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--feature-foreground);
+}
+
+.relevancy-display .material-icons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--accent1);
+    font-size: 200%;
+    z-index: -1;
 }
 </style>
