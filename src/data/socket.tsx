@@ -100,6 +100,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
 
     socket.on("newTurn", shop => {
         main.gold.value = 10;
+        main.turn.value++;
         main.shop.value = shop;
     });
     socket.on("reroll", shop => {
