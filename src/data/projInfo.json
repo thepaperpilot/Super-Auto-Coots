@@ -1,17 +1,17 @@
 {
 	"$schema": "./projInfo-schema.json",
 
-	"title": "Profectus",
+	"title": "Super Auto Coots",
 	"description": "A project made in Profectus",
-	"id": "",
-	"author": "",
+	"id": "superautocoots",
+	"author": "thepaperpilot and crea",
 	"discordName": "",
 	"discordLink": "",
 
-	"versionNumber": "0.0",
+	"versionNumber": "0.0.0",
 	"versionTitle": "Initial Commit",
 
-	"allowGoBack": true,
+	"allowGoBack": false,
 	"defaultShowSmall": false,
 	"defaultDecimalsShown": 2,
 	"useHeader": true,

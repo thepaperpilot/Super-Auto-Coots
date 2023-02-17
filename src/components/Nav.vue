@@ -36,11 +36,6 @@
                 <span class="material-icons">info</span>
             </Tooltip>
         </div>
-        <div @click="savesManager?.open()">
-            <Tooltip display="Saves" :direction="Direction.Down" xoffset="-20px">
-                <span class="material-icons">library_books</span>
-            </Tooltip>
-        </div>
         <div @click="options?.open()">
             <Tooltip display="Settings" :direction="Direction.Down" xoffset="-66px">
                 <span class="material-icons">settings</span>
@@ -51,11 +46,6 @@
         <div @click="changelog?.open()" class="version-container">
             <Tooltip display="Changelog" :direction="Direction.Right" xoffset="25%" class="version">
                 <span>v{{ versionNumber }}</span>
-            </Tooltip>
-        </div>
-        <div @click="savesManager?.open()">
-            <Tooltip display="Saves" :direction="Direction.Right">
-                <span class="material-icons">library_books</span>
             </Tooltip>
         </div>
         <div @click="options?.open()">
