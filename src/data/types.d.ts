@@ -15,8 +15,10 @@ interface ServerToClientEvents {
     newTurn: (shop: string[]) => void;
     reroll: (shop: string[]) => void;
     buy: (shopIndex: number, teamIndex: number, char: Character) => void;
+    move: (index: number, otherIndex: number) => void;
 }
 
 interface ClientToServerEvents {
     buy: (shopIndex: number, teamIndex: number) => void;
+    move: (index: number, otherIndex: number) => void;
 }

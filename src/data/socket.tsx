@@ -110,6 +110,11 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.shop.value[shopIndex] = null;
         main.gold.value -= 3;
     });
+    socket.on("move", (index, otherIndex) => {
+        const temp = main.team.value[index];
+        main.team.value[index] = main.team.value[otherIndex];
+        main.team.value[otherIndex] = temp;
+    });
 }
 
 declare module "game/settings" {

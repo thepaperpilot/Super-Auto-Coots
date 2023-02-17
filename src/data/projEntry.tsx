@@ -140,11 +140,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
 });
 
 function clickCharacter(index: number) {
-    return () => {
+    return (e: MouseEvent) => {
         if (main.selectedCharacter.value != null && main.selectedCharacter.value !== index) {
-            const temp = main.team.value[index];
-            main.team.value[index] = main.team.value[main.selectedCharacter.value];
-            main.team.value[main.selectedCharacter.value] = temp;
+            emit("move", main.selectedCharacter.value, index);
             main.selectedCharacter.value = null;
         } else if (main.selectedCharacter.value === index) {
             main.selectedCharacter.value = null;
@@ -156,6 +154,7 @@ function clickCharacter(index: number) {
         } else {
             main.selectedCharacter.value = index;
         }
+        e.stopPropagation();
     };
 }
 
