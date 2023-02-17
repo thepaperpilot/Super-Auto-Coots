@@ -7,3 +7,15 @@
 .modifier-toggle.collapsed {
     transform: translate(-5px, -5px) rotate(-90deg);
 }
+
+.resource-box {
+    margin-right: 20px !important;
+    font-size: large;
+    border: solid 2px var(--bought);
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.resource-box .material-icons {
+    margin-right: 6px;
+}

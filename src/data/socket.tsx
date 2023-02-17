@@ -7,7 +7,7 @@ import satisfies from "semver/functions/satisfies";
 import { io, Socket } from "socket.io-client";
 import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
-import { main } from "./projEntry";
+import { characters, main } from "./projEntry";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -98,8 +98,17 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         nickname.value = nick;
     });
 
-    socket.on("shop", shop => {
+    socket.on("newTurn", shop => {
+        main.gold.value = 10;
         main.shop.value = shop;
+    });
+    socket.on("reroll", shop => {
+        main.shop.value = shop;
+    });
+    socket.on("buy", (shopIndex, teamIndex, char) => {
+        main.team.value[teamIndex] = char;
+        main.shop.value[shopIndex] = null;
+        main.gold.value -= 3;
     });
 }
 
