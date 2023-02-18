@@ -73,6 +73,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     socket.on("connect", () => {
         connectionError.value = "";
         connected.value = true;
+        main.reset.reset();
     });
     socket.on("connect_error", error => {
         connectionError.value = `${error.name}: ${error.message}`;

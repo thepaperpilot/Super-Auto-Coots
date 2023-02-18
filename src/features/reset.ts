@@ -1,3 +1,4 @@
+import { isArray } from "@vue/shared";
 import type { OptionsFunc, Replace } from "features/feature";
 import { getUniqueID } from "features/feature";
 import { globalBus } from "game/events";
@@ -14,7 +15,7 @@ import { isRef, unref } from "vue";
 export const ResetType = Symbol("Reset");
 
 export interface ResetOptions {
-    thingsToReset: Computable<Record<string, unknown>[]>;
+    thingsToReset?: Computable<Record<string, unknown> | Record<string, unknown>[]>;
     onReset?: VoidFunction;
 }
 
@@ -54,7 +55,12 @@ export function createReset<T extends ResetOptions>(
                     }
                 }
             };
-            unref((reset as GenericReset).thingsToReset).forEach(handleObject);
+            const toReset = unref((reset as GenericReset).thingsToReset);
+            if (isArray(toReset)) {
+                toReset.forEach(handleObject);
+            } else {
+                handleObject(toReset);
+            }
             globalBus.emit("reset", reset as GenericReset);
             reset.onReset?.();
         };

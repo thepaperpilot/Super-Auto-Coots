@@ -10,6 +10,7 @@ import "./socket";
 import "./common.css";
 import { emit, nickname } from "./socket";
 import coots from "../../public/coots.png";
+import { createReset } from "features/reset";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
@@ -80,6 +81,19 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const shop = ref<(string | null)[]>([]);
     const selectedCharacter = ref<number | null>(null);
     const selectedShopItem = ref<number | null>(null);
+
+    const reset = createReset(() => ({
+        onReset() {
+            lives.value = 3;
+            wins.value = 0;
+            turn.value = 0;
+            gold.value = 0;
+            team.value = [null, null, null];
+            shop.value = [];
+            selectedCharacter.value = null;
+            selectedShopItem.value = null;
+        }
+    }));
 
     return {
         name: "Game",
@@ -158,19 +172,36 @@ export const main = createLayer("main", function (this: BaseLayer) {
         team,
         shop,
         selectedCharacter,
-        selectedShopItem
+        selectedShopItem,
+        reset
     };
 });
 
 function clickCharacter(index: number) {
     return (e: MouseEvent) => {
         if (main.selectedCharacter.value != null && main.selectedCharacter.value !== index) {
-            emit("move", main.selectedCharacter.value, index);
-            main.selectedCharacter.value = null;
+            if (
+                main.team.value[main.selectedCharacter.value]?.type ===
+                    main.team.value[index]?.type &&
+                (main.team.value[main.selectedCharacter.value]?.exp ?? 0) < 6 &&
+                (main.team.value[index]?.exp ?? 0) < 6
+            ) {
+                emit("merge", main.selectedCharacter.value, index);
+                main.selectedCharacter.value = null;
+            } else {
+                emit("move", main.selectedCharacter.value, index);
+                main.selectedCharacter.value = null;
+            }
         } else if (main.selectedCharacter.value === index) {
             main.selectedCharacter.value = null;
-        } else if (main.selectedShopItem.value !== null && main.team.value[index] == null) {
-            if (main.gold.value >= 3) {
+        } else if (main.selectedShopItem.value !== null) {
+            if (
+                (main.team.value[index] == null ||
+                    (main.team.value[index]!.type ===
+                        main.shop.value[main.selectedShopItem.value]?.type &&
+                        main.team.value[index]!.exp < 6)) &&
+                main.gold.value >= 3
+            ) {
                 emit("buy", main.selectedShopItem.value, index);
             }
             main.selectedShopItem.value = null;
