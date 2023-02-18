@@ -1,12 +1,14 @@
 interface CharacterInfo {
     nickname: string;
     initialRelevancy: number;
+    initialPresence: number;
     display: string;
 }
 
 interface Character {
     type: string;
     relevancy: number;
+    presence: number;
 }
 
 interface ServerToClientEvents {

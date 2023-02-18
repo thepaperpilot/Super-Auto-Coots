@@ -11,6 +11,10 @@
                 <span class="material-icons"> extension </span>
                 {{ character?.relevancy }}
             </span>
+            <span class="presence-display" v-if="character != null">
+                <span class="material-icons"> extension </span>
+                {{ character?.presence }}
+            </span>
         </div>
     </Tooltip>
 </template>
@@ -24,6 +28,7 @@ defineProps<{
     character?: {
         type: string;
         relevancy: number;
+        presence: number;
     } | null;
     selected?: boolean;
 }>();
@@ -86,6 +91,23 @@ defineProps<{
 }
 
 .relevancy-display .material-icons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--accent1);
+    font-size: 200%;
+    z-index: -1;
+}
+
+.presence-display {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: var(--feature-foreground);
+}
+
+.presence-display .material-icons {
     position: absolute;
     top: 50%;
     left: 50%;

@@ -15,46 +15,55 @@ export const characters: Record<string, CharacterInfo> = {
     coots: {
         nickname: "Coots Prime",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     ludwig: {
         nickname: "Ludwig",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     qt: {
         nickname: "QtCinderella",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     ders: {
         nickname: "Ders",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     slime: {
         nickname: "Slime",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     stanz: {
         nickname: "Stanz",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     beast: {
         nickname: "Mr.Beast",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     car: {
         nickname: "Red Car",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     },
     hasan: {
         nickname: "Hasanabi",
         initialRelevancy: 1,
+        initialPresence: 1,
         display: coots
     }
 };
@@ -123,7 +132,11 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             character={
                                 item == null
                                     ? undefined
-                                    : { type: item, relevancy: characters[item].initialRelevancy }
+                                    : {
+                                          type: item,
+                                          relevancy: characters[item].initialRelevancy,
+                                          presence: characters[item].initialPresence
+                                      }
                             }
                             selected={selectedShopItem.value === i}
                             onClick={(e: MouseEvent) => {
