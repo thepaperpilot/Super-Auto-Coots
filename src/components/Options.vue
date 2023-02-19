@@ -1,28 +1,10 @@
 <template>
     <Modal v-model="isOpen">
         <template v-slot:header>
-            <div class="header">
-                <h2>Settings</h2>
-                <div class="option-tabs">
-                    <button :class="{selected: isTab('behaviour')}" @click="setTab('behaviour')">Behaviour</button>
-                    <button :class="{selected: isTab('appearance')}" @click="setTab('appearance')">Appearance</button>
-                </div>
-            </div>
+            <h2>Settings</h2>
         </template>
         <template v-slot:body>
-            <div v-if="isTab('behaviour')">
-                <Toggle :title="unthrottledTitle" v-model="unthrottled" />
-                <Toggle v-if="projInfo.enablePausing" :title="isPausedTitle" v-model="isPaused" />
-                <Toggle :title="offlineProdTitle" v-model="offlineProd" />
-                <Toggle :title="autosaveTitle" v-model="autosave" />
-                <FeedbackButton v-if="!autosave" class="button save-button" @click="save()">Manually save</FeedbackButton>
-                <component :is="settingFieldsComponent" />
-            </div>
-            <div v-if="isTab('appearance')">
-                <Select :title="themeTitle" :options="themes" v-model="theme" />
-                <Toggle :title="showTPSTitle" v-model="showTPS" />
-                <Toggle :title="alignModifierUnitsTitle" v-model="alignUnits" />
-            </div>
+            <component :is="settingFieldsComponent" />
         </template>
     </Modal>
 </template>

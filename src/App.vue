@@ -3,7 +3,6 @@
     <div class="app" :style="theme" :class="{ useHeader }">
         <Nav v-if="useHeader" />
         <Game />
-        <TPS v-if="unref(showTPS)" />
         <GameOverScreen />
         <NaNScreen />
         <component :is="gameComponent" />
