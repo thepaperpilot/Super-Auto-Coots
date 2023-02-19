@@ -7,10 +7,7 @@
             class="character"
             :class="{ selected: isSelected, empty: character == null && selected == null }"
         >
-            <span
-                class="move-indicator"
-                v-if="(character == null && selected != null) || isSelected"
-            >
+            <span class="move-indicator" v-if="character == null && selected != null">
                 <span class="material-icons">straight</span></span
             >
             <span
@@ -68,10 +65,10 @@ defineProps<{
 
 <style scoped>
 .character {
-    width: 8vw;
-    height: 8vw;
+    width: 10vmin;
+    height: 10vmin;
     position: relative;
-    margin: 50px;
+    margin: 4vmin;
     justify-content: center;
     user-select: none;
     display: flex;
@@ -83,8 +80,8 @@ defineProps<{
 
 .character-display img {
     image-rendering: pixelated;
-    width: 8vw;
-    height: 8vw;
+    width: 10vmin;
+    height: 10vmin;
 }
 
 .character::after {
@@ -106,7 +103,7 @@ defineProps<{
     bottom: 0;
     left: 0;
     right: 0;
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='8' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='8' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5%25' stroke-linecap='square'/%3e%3c/svg%3e");
     z-index: 1;
 }
 
@@ -117,7 +114,7 @@ defineProps<{
     bottom: 0;
     left: 0;
     right: 0;
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='4' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='4' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5%25' stroke-linecap='square'/%3e%3c/svg%3e");
     z-index: 1;
 }
 
@@ -132,14 +129,14 @@ defineProps<{
     position: absolute;
     transform: translate(-45%, -45%);
     z-index: -1;
-    width: 8vw;
-    height: 8vw;
+    width: 10vmin;
+    height: 10vmin;
     image-rendering: pixelated;
 }
 
 .relevancy-display span {
     font-family: "Roboto Mono";
-    font-size: large;
+    font-size: 2vmin;
     color: white;
     text-shadow: -1px 1px 0 black, 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
     position: absolute;
@@ -162,7 +159,7 @@ defineProps<{
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--accent1);
-    font-size: 200%;
+    font-size: 2vmin;
     z-index: -1;
 }
 
@@ -174,8 +171,8 @@ defineProps<{
 }
 
 .level-display img {
-    width: 8vw;
-    height: 8vw;
+    width: 10vmin;
+    height: 10vmin;
 }
 
 .move-indicator {
@@ -183,11 +180,10 @@ defineProps<{
     transform: translateX(-50%) rotate(180deg);
     top: -75%;
     left: 50%;
-    font-size: xxx-large;
     animation: bouncingMoveIndicator 1s infinite;
 }
 .move-indicator .material-icons {
-    font-size: xxx-large;
+    font-size: 5vmin;
     transition: all 0.5s ease, color 0s;
 }
 

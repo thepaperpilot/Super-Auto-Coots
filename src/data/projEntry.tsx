@@ -101,13 +101,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
         minimizable: false,
         display: jsx(() => (
             <div
-                style="display: flex; flex-direction: column"
+                style="display: flex; flex-direction: column; height: 100%"
                 onClick={() => {
                     selectedCharacter.value = null;
                     selectedShopItem.value = null;
                 }}
             >
-                <Row style="position: absolute; top: 20px">
+                <Row style="position: absolute; top: 10px; left: -5px">
                     <div class="resource-box">
                         <span class="material-icons">credit_card</span>
                         {gold.value}
@@ -122,8 +122,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     </div>
                 </Row>
                 <h2>{nickname.value}</h2>
-                <Spacer height="10vh" />
-                <Row>
+                <Row style="margin-top: 10vh">
                     {new Array(3).fill(0).map((_, i) => (
                         <CharacterSlot
                             character={team.value[i]}
@@ -142,8 +141,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         />
                     ))}
                 </Row>
-                <Spacer height="10vh" />
-                <Row>
+                <Row style="margin-top: 10vh">
                     {shop.value.map((item, i) => (
                         <CharacterSlot
                             character={item == null ? undefined : item}
@@ -159,7 +157,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         />
                     ))}
                 </Row>
-                <Spacer />
+                <Spacer style="margin-top: 10vh" />
                 <button onClick={() => console.log("play")}>Start Stream!</button>
             </div>
         )),
