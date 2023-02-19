@@ -45,8 +45,8 @@
 }
 
 .waiting {
-    font-size: 2vmin;
-    height: 10vmin;
+    font-size: 4vmin;
+    height: 16vmin;
     display: flex;
     align-items: center;
 }

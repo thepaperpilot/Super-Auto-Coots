@@ -177,12 +177,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         />
                     ))}
                 </Row>
-                <Spacer height="10vh" />
+                <Spacer height="4vh" />
                 {findingMatch.value ? (
                     <div class="waiting">Finding opposing team...</div>
                 ) : (
                     <img
-                        style="height: 10vmin; cursor: pointer"
+                        style="height: 16vmin; cursor: pointer"
                         onClick={() => {
                             emit("stream");
                             findingMatch.value = true;
