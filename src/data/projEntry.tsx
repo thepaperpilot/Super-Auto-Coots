@@ -17,6 +17,7 @@ import coots from "../../public/Normal Coots.png";
 import qt from "../../public/QT Coots.png";
 import stanz from "../../public/Stanz Coots.png";
 import vespa from "../../public/Vespa Coots.png";
+import heart from "../../public/Heart.png";
 import { createReset } from "features/reset";
 
 export const characters: Record<string, CharacterInfo> = {
@@ -113,7 +114,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         {gold.value}
                     </div>
                     <div class="resource-box">
-                        <span class="material-icons">favorite</span>
+                        <img src={heart} />
                         {lives.value}
                     </div>
                     <div class="resource-box">
