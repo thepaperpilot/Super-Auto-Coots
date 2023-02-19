@@ -18,6 +18,7 @@ import qt from "../../public/QT Coots.png";
 import stanz from "../../public/Stanz Coots.png";
 import vespa from "../../public/Vespa Coots.png";
 import heart from "../../public/Heart.png";
+import startStream from "../../public/start stream.png";
 import { createReset } from "features/reset";
 
 export const characters: Record<string, CharacterInfo> = {
@@ -176,18 +177,18 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         />
                     ))}
                 </Row>
-                <Spacer style="margin-top: 10vh" />
+                <Spacer height="10vh" />
                 {findingMatch.value ? (
-                    <div style="font-size: 2vmin">Finding opposing team...</div>
+                    <div class="waiting">Finding opposing team...</div>
                 ) : (
-                    <button
+                    <img
+                        style="height: 10vmin; cursor: pointer"
                         onClick={() => {
                             emit("stream");
                             findingMatch.value = true;
                         }}
-                    >
-                        Start Stream!
-                    </button>
+                        src={startStream}
+                    />
                 )}
             </div>
         )),
