@@ -1,16 +1,53 @@
 <template>
     <Tooltip
-        :display="character && selected == null ? characters[character.type].nickname : ''"
+        :display="
+            character && selected == null && dragging === false
+                ? characters[character.type].nickname
+                : ''
+        "
         :direction="Direction.Up"
     >
         <div
             class="character"
-            :class="{ selected: isSelected, empty: character == null && selected == null }"
+            :class="{
+                selected: isSelected,
+                empty: character == null && selected == null,
+                dragging,
+                isDragging,
+                draggingOver
+            }"
+            draggable="true"
+            :ondragstart="() => (dragging = true)"
+            :ondragend="() => (dragging = false)"
+            :ondragenter="() => (draggingOver = true)"
+            :ondragleave="() => (draggingOver = false)"
+            :ondragover="(e: MouseEvent) => {
+                // Copied from the v-if clauses on both move indicators
+                if (selected != null && !isShop && (character?.type !== selected.type || isSelected)) {
+                    e.preventDefault();
+                }
+                if (character != null &&
+                    selected != null &&
+                    !isSelected &&
+                    character.type === selected.type &&
+                    character.exp < 6) {
+                    e.preventDefault();
+                }
+            }"
+            :ondrop="
+                () => {
+                    draggingOver = false;
+                    emits('drop');
+                }
+            "
         >
             <span
                 class="move-indicator"
                 v-if="
-                    selected != null && !isShop && (character?.type !== selected.type || isSelected)
+                    selected != null &&
+                    !isShop &&
+                    (character?.type !== selected.type || isSelected) &&
+                    dragging === false
                 "
             >
                 <span class="material-icons">straight</span></span
@@ -52,7 +89,7 @@
 <script setup lang="ts">
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
-import { characters } from "./projEntry";
+import { ref, watch } from "vue";
 import heart from "../../public/Heart.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
@@ -60,13 +97,31 @@ import level2_0 from "../../public/Lvl 2_0.png";
 import level2_1 from "../../public/Lvl 2_1.png";
 import level2_2 from "../../public/Lvl 2_2.png";
 import level3 from "../../public/Lvl 3.png";
+import { characters } from "./projEntry";
 
 defineProps<{
     character?: Character | null;
     isSelected?: boolean;
     isShop?: boolean;
+    isDragging?: boolean;
     selected?: Character | null;
 }>();
+
+const dragging = ref(false);
+const draggingOver = ref(false);
+
+const emits = defineEmits<{
+    (e: "dragstart"): void;
+    (e: "dragend"): void;
+    (e: "drop"): void;
+}>();
+watch(dragging, dragging => {
+    if (dragging) {
+        emits("dragstart");
+    } else {
+        emits("dragend");
+    }
+});
 </script>
 
 <style scoped>
@@ -84,10 +139,15 @@ defineProps<{
     cursor: pointer;
 }
 
+.character * {
+    pointer-events: none;
+}
+
 .character-display img {
     image-rendering: pixelated;
     width: 10vmin;
     height: 10vmin;
+    filter: drop-shadow(2px 4px 6px black);
 }
 
 .character::after {
@@ -102,7 +162,7 @@ defineProps<{
     z-index: -1;
 }
 
-.character.selected::before {
+.character.selected:not(.dragging)::before {
     content: "";
     position: absolute;
     top: 0;
@@ -113,7 +173,8 @@ defineProps<{
     z-index: 1;
 }
 
-.character:not(.selected):not(.empty):hover::before {
+.character:not(.selected):not(.empty):not(.dragging):not(.isDragging):hover::before,
+.character:not(.selected):not(.empty):not(.dragging).draggingOver::before {
     content: "";
     position: absolute;
     top: 0;
@@ -193,7 +254,8 @@ defineProps<{
     transition: all 0.5s ease, color 0s;
 }
 
-.character:hover .move-indicator .material-icons {
+.character:not(.isDragging):hover .move-indicator .material-icons,
+.character.draggingOver .move-indicator .material-icons {
     color: var(--feature-foreground);
 }
 

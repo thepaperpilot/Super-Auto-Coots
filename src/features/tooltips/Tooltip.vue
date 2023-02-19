@@ -8,7 +8,7 @@
     >
         <slot />
         <component v-if="elementComp" :is="elementComp" />
-        <transition name="fade">
+        <transition name="fade" :css="!!comp">
             <div
                 v-if="isShown"
                 class="tooltip"

@@ -100,6 +100,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         }
     }));
 
+    const isDragging = ref(false);
+
     return {
         name: "Game",
         minimizable: false,
@@ -143,7 +145,19 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         : shop.value[selectedShopItem.value]
                                     : team.value[selectedCharacter.value]
                             }
+                            isDragging={isDragging.value}
                             onClick={clickCharacter(i)}
+                            onDragstart={() => {
+                                isDragging.value = true;
+                                selectedCharacter.value = i;
+                                selectedShopItem.value = null;
+                            }}
+                            onDragend={() => {
+                                isDragging.value = false;
+                                selectedCharacter.value = null;
+                                selectedShopItem.value = null;
+                            }}
+                            onDrop={() => clickCharacter(i)()}
                         />
                     ))}
                 </Row>
@@ -167,6 +181,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             character={item == null ? undefined : item}
                             isSelected={selectedShopItem.value === i}
                             isShop={true}
+                            isDragging={isDragging.value}
                             onClick={(e: MouseEvent) => {
                                 if (item == null) {
                                     return;
@@ -174,6 +189,16 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 selectedShopItem.value = selectedShopItem.value === i ? null : i;
                                 selectedCharacter.value = null;
                                 e.stopPropagation();
+                            }}
+                            onDragstart={() => {
+                                isDragging.value = true;
+                                selectedCharacter.value = null;
+                                selectedShopItem.value = i;
+                            }}
+                            onDragend={() => {
+                                isDragging.value = false;
+                                selectedCharacter.value = null;
+                                selectedShopItem.value = null;
                             }}
                         />
                     ))}
@@ -183,7 +208,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     <div class="waiting">Finding opposing team...</div>
                 ) : (
                     <img
-                        style="height: 16vmin; cursor: pointer"
+                        class="startStream"
+                        draggable="false"
                         onClick={() => {
                             emit("stream");
                             findingMatch.value = true;
@@ -207,7 +233,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
 });
 
 function clickCharacter(index: number) {
-    return (e: MouseEvent) => {
+    return (e?: MouseEvent) => {
         if (main.selectedCharacter.value != null && main.selectedCharacter.value !== index) {
             if (
                 main.team.value[main.selectedCharacter.value]?.type ===
@@ -237,7 +263,7 @@ function clickCharacter(index: number) {
         } else {
             main.selectedCharacter.value = index;
         }
-        e.stopPropagation();
+        e?.stopPropagation();
     };
 }
 

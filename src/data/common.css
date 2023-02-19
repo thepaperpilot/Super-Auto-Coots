@@ -44,6 +44,12 @@
     transition-duration: 0s;
 }
 
+.startStream {
+    height: 16vmin;
+    cursor: pointer;
+    filter: drop-shadow(2px 4px 6px black);
+}
+
 .waiting {
     font-size: 4vmin;
     height: 16vmin;
