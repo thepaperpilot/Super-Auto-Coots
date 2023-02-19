@@ -83,6 +83,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const shop = ref<(Character | null)[]>([]);
     const selectedCharacter = ref<number | null>(null);
     const selectedShopItem = ref<number | null>(null);
+    const findingMatch = ref<boolean>(false);
 
     const reset = createReset(() => ({
         onReset() {
@@ -173,7 +174,18 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     ))}
                 </Row>
                 <Spacer style="margin-top: 10vh" />
-                <button onClick={() => console.log("play")}>Start Stream!</button>
+                {findingMatch.value ? (
+                    <div style="font-size: 2vmin">Finding opposing team...</div>
+                ) : (
+                    <button
+                        onClick={() => {
+                            emit("stream");
+                            findingMatch.value = true;
+                        }}
+                    >
+                        Start Stream!
+                    </button>
+                )}
             </div>
         )),
         lives,
@@ -184,6 +196,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         shop,
         selectedCharacter,
         selectedShopItem,
+        findingMatch,
         reset
     };
 });

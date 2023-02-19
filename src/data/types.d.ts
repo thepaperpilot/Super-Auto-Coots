@@ -21,6 +21,7 @@ interface ServerToClientEvents {
     buy: (shopIndex: number, teamIndex: number, char: Character) => void;
     move: (index: number, otherIndex: number) => void;
     merge: (shopIndex: number, teamIndex: number, char: Character) => void;
+    stream: (enemyTeam: Character[], nickname: string, victory: boolean) => void;
 }
 
 interface ClientToServerEvents {
@@ -28,4 +29,6 @@ interface ClientToServerEvents {
     move: (index: number, otherIndex: number) => void;
     merge: (index: number, otherIndex: number) => void;
     reroll: () => void;
+    stream: () => void;
+    newTurn: () => void;
 }

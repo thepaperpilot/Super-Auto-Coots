@@ -132,6 +132,16 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.team.value[index] = null;
         main.team.value[otherIndex] = char;
     });
+    socket.on("stream", (enemyTeam, enemyNickname, victory) => {
+        if (victory) {
+            main.wins.value++;
+        } else {
+            main.lives.value--;
+        }
+        main.findingMatch.value = false;
+        // TODO display combat
+        emit("newTurn");
+    });
 }
 
 declare module "game/settings" {
