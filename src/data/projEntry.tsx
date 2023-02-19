@@ -162,6 +162,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <CharacterSlot
                             character={item == null ? undefined : item}
                             isSelected={selectedShopItem.value === i}
+                            isShop={true}
                             onClick={(e: MouseEvent) => {
                                 if (item == null) {
                                     return;

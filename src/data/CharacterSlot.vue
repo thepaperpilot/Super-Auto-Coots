@@ -7,7 +7,12 @@
             class="character"
             :class="{ selected: isSelected, empty: character == null && selected == null }"
         >
-            <span class="move-indicator" v-if="character == null && selected != null">
+            <span
+                class="move-indicator"
+                v-if="
+                    selected != null && !isShop && (character?.type !== selected.type || isSelected)
+                "
+            >
                 <span class="material-icons">straight</span></span
             >
             <span
@@ -59,6 +64,7 @@ import level3 from "../../public/Lvl 3.png";
 defineProps<{
     character?: Character | null;
     isSelected?: boolean;
+    isShop?: boolean;
     selected?: Character | null;
 }>();
 </script>
