@@ -78,7 +78,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const turn = ref<number>(0);
     const gold = ref<number>(0);
     const team = ref<(Character | null)[]>([null, null, null]);
-    const shop = ref<(string | null)[]>([]);
+    const shop = ref<(Character | null)[]>([]);
     const selectedCharacter = ref<number | null>(null);
     const selectedShopItem = ref<number | null>(null);
 
@@ -123,37 +123,34 @@ export const main = createLayer("main", function (this: BaseLayer) {
                 <h2>{nickname.value}</h2>
                 <Spacer height="10vh" />
                 <Row>
-                    <CharacterSlot
-                        character={team.value[0]}
-                        selected={selectedCharacter.value === 0}
-                        onClick={clickCharacter(0)}
-                    />
-                    <CharacterSlot
-                        character={team.value[1]}
-                        selected={selectedCharacter.value === 1}
-                        onClick={clickCharacter(1)}
-                    />
-                    <CharacterSlot
-                        character={team.value[2]}
-                        selected={selectedCharacter.value === 2}
-                        onClick={clickCharacter(2)}
-                    />
+                    {new Array(3).fill(0).map((_, i) => (
+                        <CharacterSlot
+                            character={team.value[i]}
+                            isSelected={selectedCharacter.value === i}
+                            selected={
+                                selectedCharacter.value == null
+                                    ? selectedShopItem.value == null ||
+                                      (team.value[i] != null &&
+                                          shop.value[selectedShopItem.value]?.type !==
+                                              team.value[i]?.type)
+                                        ? null
+                                        : shop.value[selectedShopItem.value]
+                                    : team.value[selectedCharacter.value]
+                            }
+                            onClick={clickCharacter(i)}
+                        />
+                    ))}
                 </Row>
                 <Spacer height="10vh" />
                 <Row>
                     {shop.value.map((item, i) => (
                         <CharacterSlot
-                            character={
-                                item == null
-                                    ? undefined
-                                    : {
-                                          type: item,
-                                          relevancy: characters[item].initialRelevancy,
-                                          presence: characters[item].initialPresence
-                                      }
-                            }
-                            selected={selectedShopItem.value === i}
+                            character={item == null ? undefined : item}
+                            isSelected={selectedShopItem.value === i}
                             onClick={(e: MouseEvent) => {
+                                if (item == null) {
+                                    return;
+                                }
                                 selectedShopItem.value = selectedShopItem.value === i ? null : i;
                                 selectedCharacter.value = null;
                                 e.stopPropagation();

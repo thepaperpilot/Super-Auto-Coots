@@ -102,10 +102,20 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     socket.on("newTurn", shop => {
         main.gold.value = 10;
         main.turn.value++;
-        main.shop.value = shop;
+        main.shop.value = shop.map(item => ({
+            type: item,
+            relevancy: characters[item].initialRelevancy,
+            presence: characters[item].initialPresence,
+            exp: 1
+        }));
     });
     socket.on("reroll", shop => {
-        main.shop.value = shop;
+        main.shop.value = shop.map(item => ({
+            type: item,
+            relevancy: characters[item].initialRelevancy,
+            presence: characters[item].initialPresence,
+            exp: 1
+        }));
     });
     socket.on("buy", (shopIndex, teamIndex, char) => {
         main.team.value[teamIndex] = char;
@@ -116,6 +126,10 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         const temp = main.team.value[index];
         main.team.value[index] = main.team.value[otherIndex];
         main.team.value[otherIndex] = temp;
+    });
+    socket.on("merge", (index, otherIndex, char) => {
+        main.team.value[index] = null;
+        main.team.value[otherIndex] = char;
     });
 }
 
