@@ -7,7 +7,10 @@
             class="character"
             :class="{ selected: isSelected, empty: character == null && selected == null }"
         >
-            <span class="move-indicator" v-if="character == null && selected != null">
+            <span
+                class="move-indicator"
+                v-if="(character == null && selected != null) || isSelected"
+            >
                 <span class="material-icons">straight</span></span
             >
             <span
@@ -136,6 +139,17 @@ const filledSegments = computed(() => {
     transform: scale(1.5);
 }
 
+.character:not(.selected):not(.empty):hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='2' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+    transform: scale(1.5);
+}
+
 .relevancy-display {
     position: absolute;
     top: 0;
@@ -232,8 +246,26 @@ const filledSegments = computed(() => {
     top: -75%;
     left: 50%;
     font-size: xxx-large;
+    animation: bouncingMoveIndicator 1s infinite;
 }
 .move-indicator .material-icons {
     font-size: xxx-large;
+    transition: all 0.5s ease, color 0s;
+}
+
+.character:hover .move-indicator .material-icons {
+    color: var(--feature-foreground);
+}
+
+@keyframes bouncingMoveIndicator {
+    0% {
+        transform: translateX(-50%) rotate(180deg) translateY(0%);
+    }
+    50% {
+        transform: translateX(-50%) rotate(180deg) translateY(50%);
+    }
+    100% {
+        transform: translateX(-50%) rotate(180deg) translateY(0%);
+    }
 }
 </style>
