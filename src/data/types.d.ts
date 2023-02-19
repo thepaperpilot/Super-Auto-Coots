@@ -23,7 +23,16 @@ interface ServerToClientEvents {
     buy: (shopIndex: number, teamIndex: number, char: Character) => void;
     move: (index: number, otherIndex: number) => void;
     merge: (shopIndex: number, teamIndex: number, char: Character) => void;
-    stream: (enemyTeam: (Character | null)[], nickname: string, outcome: BattleOutcome) => void;
+    stream: (
+        enemy: {
+            team: (Character | null)[];
+            nickname: string;
+            lives: number;
+            wins: number;
+            turn: number;
+        },
+        outcome: BattleOutcome
+    ) => void;
 }
 
 interface ClientToServerEvents {

@@ -15,13 +15,16 @@
 }
 
 .resource-box {
-    margin-right: 20px !important;
-    font-size: large;
+    display: flex;
     border: solid 2px var(--bought);
     padding: 0 4px;
     border-radius: 4px;
     font-size: 2em;
     align-items: center;
+}
+
+.resource-box:not(:last-child) {
+    margin-right: 20px !important;
 }
 
 .resource-box .material-icons {
@@ -55,4 +58,145 @@
     height: 16vmin;
     display: flex;
     align-items: center;
+}
+
+.battle-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
+.battle-container:not(.fast) * {
+    transition-duration: 1s;
+}
+
+.teams-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.team-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 4vmin;
+}
+
+.stream-container {
+    aspect-ratio: 16/9;
+    width: calc(100% - 4px);
+    margin: 0 auto;
+    border: solid 2px var(--accent1);
+    position: relative;
+    background: var(--background);
+    filter: drop-shadow(2px 4px 6px black);
+}
+
+.stream-details {
+    position: absolute;
+    top: 1vmin;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-details .stats {
+    display: flex;
+    margin-top: 1vmin;
+}
+
+.view-counter {
+    font-size: 2vmin;
+    position: absolute;
+    top: 1vmin;
+}
+
+.streamers-container {
+    width: 90%;
+    height: 18vmin;
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+    overflow: hidden;
+}
+
+.members-container {
+    height: 18vmin;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.streamers-container .row,
+.members-container .row {
+    flex-flow: row
+}
+
+.streamers-container .character {
+    margin: 4vmin 1vmin;
+}
+
+.battle-controls {
+    margin-bottom: 2vmin;
+    display: flex;
+}
+
+.battle-controls .button {
+    display: flex;
+    flex-direction: column;
+    font-size: 2vmin;
+    margin: 1vmin;
+    border: solid 2px var(--link);
+    border-radius: var(--border-radius);
+}
+
+.battle-controls .button.active {
+    background: var(--link);
+    color: var(--feature-foreground);
+}
+
+.outcome {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2vmin 4vmin;
+    background: var(--tooltip-background);
+    border-radius: 4vmin;
+    font-size: 6vmin;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.outcome span {
+    margin: 1vmin;
+}
+
+.character-transition-enter-from {
+    transform: translateY(100%);
+}
+.character-transition-leave-to {
+    transform: translateY(-100%);
+}
+.character-trensition-active {
+    position: absolute;
+}
+
+@media (orientation: portrait) {
+    .teams-container {
+        flex-direction: column;
+    }
+
+    .team-container {
+        margin: 4vmin 0;
+    }
+   
+    .stream-container {
+        width: unset;
+        height: 100%;
+    }
 }

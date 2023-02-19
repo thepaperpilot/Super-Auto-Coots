@@ -14,7 +14,8 @@
                 empty: character == null && selected == null,
                 dragging,
                 isDragging,
-                draggingOver
+                draggingOver,
+                shake
             }"
             draggable="true"
             :ondragstart="() => (dragging = true)"
@@ -105,6 +106,7 @@ defineProps<{
     isShop?: boolean;
     isDragging?: boolean;
     selected?: Character | null;
+    shake?: boolean;
 }>();
 
 const dragging = ref(false);
@@ -137,6 +139,10 @@ watch(dragging, dragging => {
 
 .character:not(.empty) {
     cursor: pointer;
+}
+
+.character.shake {
+    animation: shake 0.5s infinite;
 }
 
 .character * {
@@ -232,8 +238,9 @@ watch(dragging, dragging => {
 
 .level-display {
     position: absolute;
-    bottom: -15%;
+    bottom: -5%;
     right: -5%;
+    z-index: 1;
     transform: translate(50%, 50%);
 }
 
@@ -268,6 +275,42 @@ watch(dragging, dragging => {
     }
     100% {
         transform: translateX(-50%) rotate(180deg) translateY(0%);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
     }
 }
 </style>

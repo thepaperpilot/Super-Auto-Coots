@@ -20,6 +20,8 @@ export interface Settings {
     unthrottled: boolean;
     /** Whether to align modifiers to the unit. */
     alignUnits: boolean;
+    autoplay: boolean;
+    fast: boolean;
 }
 
 const state = reactive<Partial<Settings>>({
@@ -28,7 +30,9 @@ const state = reactive<Partial<Settings>>({
     showTPS: true,
     theme: Themes.Nordic,
     unthrottled: false,
-    alignUnits: false
+    alignUnits: false,
+    autoplay: false,
+    fast: false
 });
 
 watch(
@@ -61,7 +65,9 @@ export const hardResetSettings = (window.hardResetSettings = () => {
         saves: [],
         showTPS: true,
         theme: Themes.Nordic,
-        alignUnits: false
+        alignUnits: false,
+        autoplay: false,
+        fast: false
     };
     globalBus.emit("loadSettings", settings);
     Object.assign(state, settings);

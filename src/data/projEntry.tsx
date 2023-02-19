@@ -4,7 +4,7 @@ import { jsx } from "features/feature";
 import type { BaseLayer, GenericLayer } from "game/layers";
 import { createLayer } from "game/layers";
 import type { Player } from "game/player";
-import { computed, ref } from "vue";
+import { computed, ref, Transition, TransitionGroup } from "vue";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./socket";
 import "./common.css";
@@ -20,6 +20,7 @@ import vespa from "../../public/Vespa Coots.png";
 import heart from "../../public/Heart.png";
 import startStream from "../../public/start stream.png";
 import { createReset } from "features/reset";
+import settings from "game/settings";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
@@ -85,6 +86,49 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const selectedCharacter = ref<number | null>(null);
     const selectedShopItem = ref<number | null>(null);
     const findingMatch = ref<boolean>(false);
+    const outcome = ref<BattleOutcome | "">("");
+    const showingOutcome = ref<boolean>(false);
+    const previewing = ref<boolean>(false);
+    const playClicked = ref<boolean>(false);
+    const queue = ref<
+        {
+            action: "join";
+        }[]
+    >([]);
+
+    const battle = ref<{
+        team: Character[];
+        streamers: Character[];
+        enemyTeam: Character[];
+        enemyStreamers: Character[];
+        enemyNickname: string;
+        enemyLives: number;
+        enemyWins: number;
+        enemyTurn: number;
+    } | null>(null);
+
+    const views = computed(() => {
+        if (battle.value == null) {
+            return 0;
+        }
+        return (
+            battle.value.streamers.reduce(
+                (acc, curr) => acc + Math.max(0, curr.presence) * Math.max(0, curr.relevancy),
+                0
+            ) * 100
+        );
+    });
+    const enemyViews = computed(() => {
+        if (battle.value == null) {
+            return 0;
+        }
+        return (
+            battle.value.enemyStreamers.reduce(
+                (acc, curr) => acc + Math.max(0, curr.presence) * Math.max(0, curr.relevancy),
+                0
+            ) * 100
+        );
+    });
 
     const reset = createReset(() => ({
         onReset() {
@@ -97,128 +141,331 @@ export const main = createLayer("main", function (this: BaseLayer) {
             selectedCharacter.value = null;
             selectedShopItem.value = null;
             findingMatch.value = false;
+            battle.value = null;
+            outcome.value = "";
+            showingOutcome.value = false;
+            playClicked.value = false;
+            queue.value = [];
         }
     }));
 
     const isDragging = ref(false);
 
+    function prepareMove() {
+        if (battle.value == null) {
+            throw "Preparing move while not in battle";
+        }
+        if (
+            queue.value.length === 0 &&
+            battle.value.team.length === 0 &&
+            battle.value.enemyTeam.length === 0
+        ) {
+            if (outcome.value === "Victory") {
+                wins.value++;
+            } else if (outcome.value === "Defeat") {
+                lives.value--;
+            }
+            showingOutcome.value = true;
+            return;
+        }
+        if (queue.value.length === 0) {
+            queue.value.push({
+                action: "join"
+            });
+        }
+        if (settings.autoplay === false && playClicked.value === false) {
+            previewing.value = true;
+        } else {
+            previewing.value = false;
+            const action = queue.value.shift()!;
+            switch (action.action) {
+                case "join":
+                    if ((battle.value.team.length ?? 0) > 0) {
+                        battle.value.streamers.push(battle.value.team.pop()!);
+                    }
+                    if ((battle.value.enemyTeam.length ?? 0) > 0) {
+                        battle.value.enemyStreamers.push(battle.value.enemyTeam.pop()!);
+                    }
+                    break;
+            }
+            playClicked.value = false;
+            setTimeout(prepareMove, settings.fast ? 750 : 1250);
+        }
+    }
+
     return {
         name: "Game",
         minimizable: false,
-        display: jsx(() => (
-            <div
-                class="game-container"
-                style={findingMatch.value ? "pointer-events: none" : ""}
-                onClick={() => {
-                    selectedCharacter.value = null;
-                    selectedShopItem.value = null;
-                }}
-            >
-                <Row style="position: absolute; top: 10px; left: -5px">
-                    <div class="resource-box">
-                        <span class="material-icons">credit_card</span>
-                        {gold.value}
+        display: jsx(() => {
+            if (battle.value != null) {
+                return (
+                    <div class={{ ["battle-container"]: true, fast: settings.fast }}>
+                        <div class="battle-controls">
+                            <button
+                                class="button"
+                                onClick={() => {
+                                    playClicked.value = true;
+                                    prepareMove();
+                                }}
+                            >
+                                <span class="material-icons">play_arrow</span>
+                                <span>Play</span>
+                            </button>
+                            <button
+                                class={{ button: true, active: settings.autoplay }}
+                                onClick={() => {
+                                    settings.autoplay = !settings.autoplay;
+                                    if (previewing.value) {
+                                        prepareMove();
+                                    }
+                                }}
+                            >
+                                <span class="material-icons">all_inclusive</span>
+                                <span>Autoplay</span>
+                            </button>
+                            <button
+                                class={{ button: true, active: settings.fast }}
+                                onClick={() => (settings.fast = !settings.fast)}
+                            >
+                                <span class="material-icons">fast_forward</span>
+                                <span>Fast</span>
+                            </button>
+                        </div>
+                        <div
+                            class="teams-container"
+                            style={showingOutcome.value ? "pointer-events: none;" : ""}
+                        >
+                            <div class="team-container">
+                                <div class="stream-container">
+                                    <div class="stream-details" style="left: 1vmin">
+                                        <span style="margin-left: 0">{nickname.value} (YOU)</span>
+                                        <div class="stats" style="margin-left: 0">
+                                            <div class="resource-box">
+                                                <img src={heart} />
+                                                <span>{lives.value}</span>
+                                            </div>
+                                            <div class="resource-box">
+                                                <span class="material-icons">emoji_events</span>
+                                                <span>{wins.value}/5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="view-counter" style="right: 1vmin">
+                                        {views.value} Views
+                                    </div>
+                                    <Row class="streamers-container">
+                                        <TransitionGroup name="character-transition">
+                                            {battle.value.streamers
+                                                .slice()
+                                                .reverse()
+                                                .map((streamer, i) => (
+                                                    <CharacterSlot
+                                                        key={battle.value!.streamers.length - i}
+                                                        character={streamer}
+                                                    />
+                                                ))}
+                                        </TransitionGroup>
+                                    </Row>
+                                </div>
+                                <Row class="members-container" style="margin-left: 0">
+                                    <TransitionGroup name="character-transition">
+                                        {battle.value.team.map((member, i) => (
+                                            <CharacterSlot
+                                                character={member}
+                                                key={i}
+                                                shake={
+                                                    previewing.value &&
+                                                    queue.value[0]?.action === "join" &&
+                                                    member ===
+                                                        battle.value?.team[
+                                                            (battle.value?.team.length ?? 0) - 1
+                                                        ]
+                                                }
+                                            />
+                                        ))}
+                                    </TransitionGroup>
+                                </Row>
+                            </div>
+                            <div class="team-container">
+                                <div class="stream-container">
+                                    <div class="stream-details" style="right: 1vmin">
+                                        <span style="margin-right: 0">
+                                            {battle.value.enemyNickname}
+                                        </span>
+                                        <div class="stats" style="margin-right: 0">
+                                            <div class="resource-box">
+                                                <img src={heart} />
+                                                <span>{battle.value.enemyLives}</span>
+                                            </div>
+                                            <div class="resource-box">
+                                                <span class="material-icons">emoji_events</span>
+                                                <span>{battle.value.enemyWins}/5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="view-counter" style="left: 1vmin">
+                                        {enemyViews.value} Views
+                                    </div>
+                                    <Row class="streamers-container">
+                                        <TransitionGroup name="character-transition">
+                                            {battle.value.enemyStreamers.map((streamer, i) => (
+                                                <CharacterSlot key={i} character={streamer} />
+                                            ))}
+                                        </TransitionGroup>
+                                    </Row>
+                                </div>
+                                <Row class="members-container" style="margin-right: 0">
+                                    <TransitionGroup name="character-transition">
+                                        {battle.value.enemyTeam
+                                            .slice()
+                                            .reverse()
+                                            .map((member, i) => (
+                                                <CharacterSlot
+                                                    character={member}
+                                                    key={battle.value!.enemyStreamers.length + i}
+                                                    shake={
+                                                        previewing.value &&
+                                                        queue.value[0]?.action === "join" &&
+                                                        member ===
+                                                            battle.value?.enemyTeam[
+                                                                (battle.value?.enemyTeam.length ??
+                                                                    0) - 1
+                                                            ]
+                                                    }
+                                                />
+                                            ))}
+                                    </TransitionGroup>
+                                </Row>
+                            </div>
+                        </div>
+                        {showingOutcome.value ? (
+                            <div class="outcome" onClick={() => emit("newTurn")}>
+                                <span>{outcome.value}</span>
+                                <span style="font-size: 2vmin">Next Turn</span>
+                            </div>
+                        ) : null}
                     </div>
-                    <div class="resource-box">
-                        <img src={heart} />
-                        {lives.value}
-                    </div>
-                    <div class="resource-box">
-                        <span class="material-icons">emoji_events</span>
-                        {wins.value}/5
-                    </div>
-                </Row>
-                <h2 style="font-size: 3vmin">{nickname.value}</h2>
-                <Row style="margin-top: 10vh">
-                    {new Array(3).fill(0).map((_, i) => (
-                        <CharacterSlot
-                            character={team.value[i]}
-                            isSelected={selectedCharacter.value === i}
-                            selected={
-                                selectedCharacter.value == null
-                                    ? selectedShopItem.value == null ||
-                                      (team.value[i] != null &&
-                                          shop.value[selectedShopItem.value]?.type !==
-                                              team.value[i]?.type) ||
-                                      gold.value < 3
-                                        ? null
-                                        : shop.value[selectedShopItem.value]
-                                    : team.value[selectedCharacter.value]
-                            }
-                            isDragging={isDragging.value}
-                            onClick={clickCharacter(i)}
-                            onDragstart={() => {
-                                isDragging.value = true;
-                                selectedCharacter.value = i;
-                                selectedShopItem.value = null;
-                            }}
-                            onDragend={() => {
-                                isDragging.value = false;
-                                selectedCharacter.value = null;
-                                selectedShopItem.value = null;
-                            }}
-                            onDrop={() => clickCharacter(i)()}
-                        />
-                    ))}
-                </Row>
-                <Row style="margin-top: 10vh">
-                    <div
-                        class="reroll"
-                        style={gold.value > 0 ? "" : "color: var(--locked); cursor: not-allowed"}
-                        onClick={() => {
-                            if (gold.value > 0) {
-                                emit("reroll");
-                            }
-                        }}
-                    >
-                        <span class="material-icons" style="font-size: 8vmin">
-                            casino
-                        </span>
-                        <span style="font-size: 2vmin">Roll</span>
-                    </div>
-                    {shop.value.map((item, i) => (
-                        <CharacterSlot
-                            character={item == null ? undefined : item}
-                            isSelected={selectedShopItem.value === i}
-                            isShop={true}
-                            isDragging={isDragging.value}
-                            onClick={(e: MouseEvent) => {
-                                if (item == null) {
-                                    return;
+                );
+            }
+
+            return (
+                <div
+                    class="game-container"
+                    style={findingMatch.value ? "pointer-events: none" : ""}
+                    onClick={() => {
+                        selectedCharacter.value = null;
+                        selectedShopItem.value = null;
+                    }}
+                >
+                    <Row style="position: absolute; top: 10px; left: -5px">
+                        <div class="resource-box">
+                            <span class="material-icons">credit_card</span>
+                            {gold.value}
+                        </div>
+                        <div class="resource-box">
+                            <img src={heart} />
+                            {lives.value}
+                        </div>
+                        <div class="resource-box">
+                            <span class="material-icons">emoji_events</span>
+                            {wins.value}/5
+                        </div>
+                    </Row>
+                    <h2 style="font-size: 3vmin">{nickname.value}</h2>
+                    <Row style="margin-top: 10vh">
+                        {new Array(3).fill(0).map((_, i) => (
+                            <CharacterSlot
+                                character={team.value[i]}
+                                isSelected={selectedCharacter.value === i}
+                                selected={
+                                    selectedCharacter.value == null
+                                        ? selectedShopItem.value == null ||
+                                          (team.value[i] != null &&
+                                              shop.value[selectedShopItem.value]?.type !==
+                                                  team.value[i]?.type) ||
+                                          gold.value < 3
+                                            ? null
+                                            : shop.value[selectedShopItem.value]
+                                        : team.value[selectedCharacter.value]
                                 }
-                                selectedShopItem.value = selectedShopItem.value === i ? null : i;
-                                selectedCharacter.value = null;
-                                e.stopPropagation();
+                                isDragging={isDragging.value}
+                                onClick={clickCharacter(i)}
+                                onDragstart={() => {
+                                    isDragging.value = true;
+                                    selectedCharacter.value = i;
+                                    selectedShopItem.value = null;
+                                }}
+                                onDragend={() => {
+                                    isDragging.value = false;
+                                    selectedCharacter.value = null;
+                                    selectedShopItem.value = null;
+                                }}
+                                onDrop={() => clickCharacter(i)()}
+                            />
+                        ))}
+                    </Row>
+                    <Row style="margin-top: 10vh">
+                        <div
+                            class="reroll"
+                            style={
+                                gold.value > 0 ? "" : "color: var(--locked); cursor: not-allowed"
+                            }
+                            onClick={() => {
+                                if (gold.value > 0) {
+                                    emit("reroll");
+                                }
                             }}
-                            onDragstart={() => {
-                                isDragging.value = true;
-                                selectedCharacter.value = null;
-                                selectedShopItem.value = i;
+                        >
+                            <span class="material-icons" style="font-size: 8vmin">
+                                casino
+                            </span>
+                            <span style="font-size: 2vmin">Roll</span>
+                        </div>
+                        {shop.value.map((item, i) => (
+                            <CharacterSlot
+                                character={item == null ? undefined : item}
+                                isSelected={selectedShopItem.value === i}
+                                isShop={true}
+                                isDragging={isDragging.value}
+                                onClick={(e: MouseEvent) => {
+                                    if (item == null) {
+                                        return;
+                                    }
+                                    selectedShopItem.value =
+                                        selectedShopItem.value === i ? null : i;
+                                    selectedCharacter.value = null;
+                                    e.stopPropagation();
+                                }}
+                                onDragstart={() => {
+                                    isDragging.value = true;
+                                    selectedCharacter.value = null;
+                                    selectedShopItem.value = i;
+                                }}
+                                onDragend={() => {
+                                    isDragging.value = false;
+                                    selectedCharacter.value = null;
+                                    selectedShopItem.value = null;
+                                }}
+                            />
+                        ))}
+                    </Row>
+                    <Spacer height="4vh" />
+                    {findingMatch.value ? (
+                        <div class="waiting">Finding opposing team...</div>
+                    ) : (
+                        <img
+                            class="startStream"
+                            draggable="false"
+                            onClick={() => {
+                                emit("stream");
+                                findingMatch.value = true;
                             }}
-                            onDragend={() => {
-                                isDragging.value = false;
-                                selectedCharacter.value = null;
-                                selectedShopItem.value = null;
-                            }}
+                            src={startStream}
                         />
-                    ))}
-                </Row>
-                <Spacer height="4vh" />
-                {findingMatch.value ? (
-                    <div class="waiting">Finding opposing team...</div>
-                ) : (
-                    <img
-                        class="startStream"
-                        draggable="false"
-                        onClick={() => {
-                            emit("stream");
-                            findingMatch.value = true;
-                        }}
-                        src={startStream}
-                    />
-                )}
-            </div>
-        )),
+                    )}
+                </div>
+            );
+        }),
         lives,
         wins,
         turn,
@@ -228,7 +475,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
         selectedCharacter,
         selectedShopItem,
         findingMatch,
-        reset
+        showingOutcome,
+        outcome,
+        reset,
+        battle,
+        playClicked,
+        prepareMove
     };
 });
 

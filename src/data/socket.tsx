@@ -105,6 +105,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     socket.on("newTurn", shop => {
         main.gold.value = 10;
         main.turn.value++;
+        main.battle.value = null;
         main.shop.value = shop.map(item => ({
             type: item,
             relevancy: characters[item].initialRelevancy,
@@ -135,15 +136,22 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.team.value[index] = null;
         main.team.value[otherIndex] = char;
     });
-    socket.on("stream", (enemyTeam, enemyNickname, outcome) => {
-        if (outcome === "Victory") {
-            main.wins.value++;
-        } else if (outcome === "Defeat") {
-            main.lives.value--;
-        }
+    socket.on("stream", (enemy, outcome) => {
         main.findingMatch.value = false;
-        // TODO display combat
-        emit("newTurn");
+        main.battle.value = {
+            team: JSON.parse(JSON.stringify(main.team.value.filter(m => m != null))),
+            streamers: [],
+            enemyTeam: enemy.team.filter(m => m != null) as Character[],
+            enemyStreamers: [],
+            enemyNickname: enemy.nickname,
+            enemyLives: enemy.lives,
+            enemyWins: enemy.wins,
+            enemyTurn: enemy.turn
+        };
+        main.outcome.value = outcome;
+        main.showingOutcome.value = false;
+        main.playClicked.value = false;
+        setTimeout(main.prepareMove, 1000);
     });
 }
 
