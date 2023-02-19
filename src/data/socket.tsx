@@ -94,6 +94,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
 
     socket.on("info", message => {
         toast.info(message);
+        if (message === "Failed to start streaming") {
+            main.findingMatch.value = false;
+        }
     });
     socket.on("nickname", nick => {
         nickname.value = nick;

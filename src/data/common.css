@@ -1,3 +1,9 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .modifier-toggle {
     padding-right: 10px;
     transform: translateY(-1px);

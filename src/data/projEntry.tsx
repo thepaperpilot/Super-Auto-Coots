@@ -103,7 +103,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         minimizable: false,
         display: jsx(() => (
             <div
-                style="display: flex; flex-direction: column; height: 100%"
+                class="game-container"
+                style={findingMatch.value ? "pointer-events: none" : ""}
                 onClick={() => {
                     selectedCharacter.value = null;
                     selectedShopItem.value = null;
