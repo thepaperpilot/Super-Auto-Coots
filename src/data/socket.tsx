@@ -135,10 +135,10 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.team.value[index] = null;
         main.team.value[otherIndex] = char;
     });
-    socket.on("stream", (enemyTeam, enemyNickname, victory) => {
-        if (victory) {
+    socket.on("stream", (enemyTeam, enemyNickname, outcome) => {
+        if (outcome === "Victory") {
             main.wins.value++;
-        } else {
+        } else if (outcome === "Defeat") {
             main.lives.value--;
         }
         main.findingMatch.value = false;

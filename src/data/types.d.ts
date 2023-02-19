@@ -12,6 +12,8 @@ interface Character {
     presence: number;
 }
 
+type BattleOutcome = "Victory" | "Defeat" | "Tie";
+
 interface ServerToClientEvents {
     "server version": (semver: string) => void;
     nickname: (nickname: string) => void;
@@ -21,7 +23,7 @@ interface ServerToClientEvents {
     buy: (shopIndex: number, teamIndex: number, char: Character) => void;
     move: (index: number, otherIndex: number) => void;
     merge: (shopIndex: number, teamIndex: number, char: Character) => void;
-    stream: (enemyTeam: Character[], nickname: string, victory: boolean) => void;
+    stream: (enemyTeam: (Character | null)[], nickname: string, outcome: BattleOutcome) => void;
 }
 
 interface ClientToServerEvents {
