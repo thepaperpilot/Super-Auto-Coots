@@ -9,63 +9,64 @@ import CharacterSlot from "./CharacterSlot.vue";
 import "./socket";
 import "./common.css";
 import { emit, nickname } from "./socket";
-import coots from "../../public/coots.png";
+import ludwig from "../../public/Ludwig Coots.png";
+import maid from "../../public/Maid Coots.png";
+import mail from "../../public/Mogul Mail Coots.png";
+import money from "../../public/Mogul Money Coots.png";
+import coots from "../../public/Normal Coots.png";
+import qt from "../../public/QT Coots.png";
+import stanz from "../../public/Stanz Coots.png";
+import vespa from "../../public/Vespa Coots.png";
 import { createReset } from "features/reset";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
-        nickname: "Coots Prime",
+        nickname: "Coots",
         initialRelevancy: 1,
         initialPresence: 1,
         display: coots
     },
     ludwig: {
-        nickname: "Ludwig",
+        nickname: "Ludwig Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: ludwig
     },
     qt: {
-        nickname: "QtCinderella",
+        nickname: "Qt Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: qt
     },
-    ders: {
-        nickname: "Ders",
+    maid: {
+        nickname: "Maid Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: maid
     },
-    slime: {
-        nickname: "Slime",
+    mail: {
+        nickname: "Mogul Mail Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: mail
     },
     stanz: {
-        nickname: "Stanz",
+        nickname: "Stanz Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: stanz
     },
-    beast: {
-        nickname: "Mr.Beast",
+    money: {
+        nickname: "Mogul Money Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: money
     },
-    car: {
-        nickname: "Red Car",
+    vespa: {
+        nickname: "Vespa Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
-    },
-    hasan: {
-        nickname: "Hasanabi",
-        initialRelevancy: 1,
-        initialPresence: 1,
-        display: coots
+        display: vespa
     }
 };
 

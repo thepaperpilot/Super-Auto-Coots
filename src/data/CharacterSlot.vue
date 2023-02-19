@@ -28,24 +28,20 @@
                 <img :src="characters[character.type].display" />
             </span>
             <span class="relevancy-display" v-if="character != null">
-                <span class="material-icons"> extension </span>
-                {{ character?.relevancy }}
+                <img :src="heart" />
+                <span>{{ character?.relevancy }}</span>
             </span>
             <span class="presence-display" v-if="character != null">
                 <span class="material-icons"> extension </span>
-                {{ character?.presence }}
+                <span>{{ character?.presence }}</span>
             </span>
             <span class="level-display" v-if="character != null">
-                <span class="level">{{ level }}</span>
-                <span class="segments">
-                    <span
-                        v-for="i in segments"
-                        :key="i"
-                        class="segment"
-                        :class="{ filled: filledSegments >= i }"
-                    >
-                    </span>
-                </span>
+                <img :src="level1_0" v-if="character.exp === 1" />
+                <img :src="level1_1" v-if="character.exp === 2" />
+                <img :src="level2_0" v-if="character.exp === 3" />
+                <img :src="level2_1" v-if="character.exp === 4" />
+                <img :src="level2_2" v-if="character.exp === 5" />
+                <img :src="level3" v-if="character.exp === 6" />
             </span>
         </div>
     </Tooltip>
@@ -54,39 +50,20 @@
 <script setup lang="ts">
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
-import { computed, watch } from "vue";
 import { characters } from "./projEntry";
+import heart from "../../public/Heart.png";
+import level1_0 from "../../public/Lvl 1_0.png";
+import level1_1 from "../../public/Lvl 1_1.png";
+import level2_0 from "../../public/Lvl 2_0.png";
+import level2_1 from "../../public/Lvl 2_1.png";
+import level2_2 from "../../public/Lvl 2_2.png";
+import level3 from "../../public/Lvl 3.png";
 
-const props = defineProps<{
+defineProps<{
     character?: Character | null;
     isSelected?: boolean;
     selected?: Character | null;
 }>();
-
-const level = computed(() => {
-    const exp = props.character?.exp ?? 0;
-    if (exp < 3) {
-        return 1;
-    }
-    if (exp < 6) {
-        return 2;
-    }
-    return 3;
-});
-const segments = computed(() => {
-    const exp = props.character?.exp ?? 0;
-    if (exp < 3) {
-        return 2;
-    }
-    return 3;
-});
-const filledSegments = computed(() => {
-    const exp = props.character?.exp ?? 0;
-    if (exp < 3) {
-        return exp - 1;
-    }
-    return exp - 3;
-});
 </script>
 
 <style scoped>
@@ -104,26 +81,20 @@ const filledSegments = computed(() => {
     cursor: pointer;
 }
 
-.character-display {
-    text-shadow: 3px 3px 5px black;
-    width: 100%;
-    height: 100%;
-}
-
 .character-display img {
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 1/1;
+    image-rendering: pixelated;
+    width: 8vw;
+    height: 8vw;
 }
 
 .character::after {
     content: "";
     background: grey;
     position: absolute;
-    top: 50%;
+    top: 67.5%;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: -12.5%;
     border-radius: 50%;
     z-index: -1;
 }
@@ -136,7 +107,7 @@ const filledSegments = computed(() => {
     left: 0;
     right: 0;
     background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='8' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
-    transform: scale(1.5);
+    z-index: 1;
 }
 
 .character:not(.selected):not(.empty):hover::before {
@@ -146,31 +117,42 @@ const filledSegments = computed(() => {
     bottom: 0;
     left: 0;
     right: 0;
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='2' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
-    transform: scale(1.5);
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2388C0D0' stroke-width='4' stroke-dasharray='10%25%2c90%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+    z-index: 1;
 }
 
 .relevancy-display {
     position: absolute;
-    top: 0;
+    top: -15%;
     left: 0;
-    color: var(--feature-foreground);
+    transform: translate(-50%, -50%);
 }
 
-.relevancy-display .material-icons {
+.relevancy-display img {
+    position: absolute;
+    transform: translate(-45%, -45%);
+    z-index: -1;
+    width: 8vw;
+    height: 8vw;
+    image-rendering: pixelated;
+}
+
+.relevancy-display span {
+    font-family: "Roboto Mono";
+    font-size: large;
+    color: white;
+    text-shadow: -1px 1px 0 black, 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--accent1);
-    font-size: 200%;
-    z-index: -1;
 }
 
 .presence-display {
     position: absolute;
     top: 0;
     right: 0;
+    transform: translate(-50%, -50%);
     color: var(--feature-foreground);
 }
 
@@ -186,58 +168,14 @@ const filledSegments = computed(() => {
 
 .level-display {
     position: absolute;
-    bottom: -10%;
-    right: -20%;
-    color: var(--accent2);
-    font-size: xx-large;
-    text-shadow: -1px 1px 0 var(--outline), 1px 1px 0 var(--outline), 1px -1px 0 var(--outline),
-        -1px -1px 0 var(--outline);
+    bottom: -15%;
+    right: -5%;
+    transform: translate(50%, 50%);
 }
 
-.level {
-    background: var(--locked);
-    border-radius: 4px;
-    border-top-left-radius: 50%;
-    border-bottom-left-radius: 0;
-    border: solid 2px var(--raised-background);
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.level,
-.level::before {
-    font-family: "Mynerve", cursive;
-}
-
-.level::before {
-    content: "lv";
-    font-size: large;
-}
-
-.segments {
-    position: absolute;
-    right: calc(100% - 2px);
-    width: 100%;
-    height: 25%;
-    bottom: -2px;
-    background: var(--locked);
-    border-radius: 20px 0 0 0;
-    border: solid 2px var(--raised-background);
-    display: flex;
-    overflow: hidden;
-}
-
-.segment {
-    width: 100%;
-    height: 100%;
-}
-
-.segment:not(:last-child) {
-    border-right: solid 3px var(--raised-background);
-}
-
-.segment.filled {
-    background-color: var(--accent2);
+.level-display img {
+    width: 8vw;
+    height: 8vw;
 }
 
 .move-indicator {
