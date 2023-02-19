@@ -96,6 +96,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
             shop.value = [];
             selectedCharacter.value = null;
             selectedShopItem.value = null;
+            findingMatch.value = false;
         }
     }));
 
