@@ -134,7 +134,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     ? selectedShopItem.value == null ||
                                       (team.value[i] != null &&
                                           shop.value[selectedShopItem.value]?.type !==
-                                              team.value[i]?.type)
+                                              team.value[i]?.type) ||
+                                      gold.value < 3
                                         ? null
                                         : shop.value[selectedShopItem.value]
                                     : team.value[selectedCharacter.value]
