@@ -142,6 +142,20 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     ))}
                 </Row>
                 <Row style="margin-top: 10vh">
+                    <div
+                        class="reroll"
+                        style={gold.value > 0 ? "" : "color: var(--locked); cursor: not-allowed"}
+                        onClick={() => {
+                            if (gold.value > 0) {
+                                emit("reroll");
+                            }
+                        }}
+                    >
+                        <span class="material-icons" style="font-size: 8vmin">
+                            casino
+                        </span>
+                        <span style="font-size: 2vmin">Roll</span>
+                    </div>
                     {shop.value.map((item, i) => (
                         <CharacterSlot
                             character={item == null ? undefined : item}

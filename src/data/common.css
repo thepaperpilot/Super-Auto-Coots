@@ -19,3 +19,11 @@
 .resource-box .material-icons {
     margin-right: 6px;
 }
+
+.reroll {
+    flex-direction: column;
+    margin: 2vmin;
+    cursor: pointer;
+    user-select: none;
+    transition-duration: 0s;
+}

@@ -27,4 +27,5 @@ interface ClientToServerEvents {
     buy: (shopIndex: number, teamIndex: number) => void;
     move: (index: number, otherIndex: number) => void;
     merge: (index: number, otherIndex: number) => void;
+    reroll: () => void;
 }

@@ -110,6 +110,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         }));
     });
     socket.on("reroll", shop => {
+        main.gold.value--;
         main.shop.value = shop.map(item => ({
             type: item,
             relevancy: characters[item].initialRelevancy,
