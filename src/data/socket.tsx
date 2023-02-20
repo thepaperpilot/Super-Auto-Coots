@@ -7,8 +7,9 @@ import satisfies from "semver/functions/satisfies";
 import { io, Socket } from "socket.io-client";
 import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
+import particle from "./particle.json";
 import { characters, main } from "./projEntry";
-import { ServerToClientEvents, ClientToServerEvents, Character } from "./types";
+import { ClientToServerEvents, ServerToClientEvents } from "./types";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -70,6 +71,23 @@ globalBus.on("loadSettings", settings => {
     );
 });
 
+function poof(id: string) {
+    const boundingRect = main.particles.boundingRect.value;
+    if (!boundingRect) {
+        return;
+    }
+    const rect = main.nodes.value[id]?.rect;
+    if (rect) {
+        main.particles.addEmitter(particle).then(e => {
+            e.updateOwnerPos(
+                rect.x + rect.width / 2 - boundingRect.x,
+                rect.y + rect.height / 2 - boundingRect.y
+            );
+            e.playOnceAndDestroy();
+        });
+    }
+}
+
 function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>) {
     socket.on("connect", () => {
         connectionError.value = "";
@@ -113,6 +131,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             presence: characters[item].initialPresence,
             exp: 1
         }));
+        setTimeout(() => {
+            shop.forEach((_, i) => poof(`shop-char-${i}`));
+        }, 0);
     });
     socket.on("reroll", shop => {
         main.gold.value--;
@@ -122,20 +143,29 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             presence: characters[item].initialPresence,
             exp: 1
         }));
+        setTimeout(() => {
+            shop.forEach((_, i) => poof(`shop-char-${i}`));
+        }, 0);
     });
     socket.on("buy", (shopIndex, teamIndex, char) => {
         main.team.value[teamIndex] = char;
         main.shop.value[shopIndex] = null;
         main.gold.value -= 3;
+        poof(`shop-char-${shopIndex}`);
+        poof(`team-char-${teamIndex}`);
     });
     socket.on("move", (index, otherIndex) => {
         const temp = main.team.value[index];
         main.team.value[index] = main.team.value[otherIndex];
         main.team.value[otherIndex] = temp;
+        poof(`team-char-${index}`);
+        poof(`team-char-${otherIndex}`);
     });
     socket.on("merge", (index, otherIndex, char) => {
         main.team.value[index] = null;
         main.team.value[otherIndex] = char;
+        poof(`team-char-${index}`);
+        poof(`team-char-${otherIndex}`);
     });
     socket.on("stream", (enemy, outcome) => {
         main.findingMatch.value = false;

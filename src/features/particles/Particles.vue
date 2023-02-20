@@ -90,5 +90,6 @@ export default defineComponent({
     right: -4px;
     bottom: 5px;
     pointer-events: none;
+    z-index: 10;
 }
 </style>

@@ -23,6 +23,9 @@ import { createReset } from "features/reset";
 import settings from "game/settings";
 import type { AbilityTypes, CharacterInfo, Character, BattleOutcome } from "./types";
 import { formatWhole } from "util/bignum";
+import particles from "./particle.json";
+import { createParticles } from "features/particles/particles";
+import { render } from "util/vue";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
@@ -252,6 +255,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
         }
     }
 
+    const particles = createParticles(() => ({
+        fullscreen: false,
+        zIndex: 10,
+        boundingRect: ref<null | DOMRect>(null),
+        onContainerResized(boundingRect) {
+            this.boundingRect.value = boundingRect;
+        }
+    }));
+
     return {
         name: "Game",
         minimizable: false,
@@ -445,6 +457,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     <Row style="margin-top: 10vh">
                         {new Array(3).fill(0).map((_, i) => (
                             <CharacterSlot
+                                id={`team-char-${i}`}
                                 character={team.value[i]}
                                 isSelected={selectedCharacter.value === i}
                                 selected={
@@ -493,6 +506,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         </div>
                         {shop.value.map((item, i) => (
                             <CharacterSlot
+                                id={`shop-char-${i}`}
                                 character={item == null ? undefined : item}
                                 isSelected={selectedShopItem.value === i}
                                 isShop={true}
@@ -533,6 +547,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             src={startStream}
                         />
                     )}
+                    {render(particles)}
                 </div>
             );
         }),
@@ -550,7 +565,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         reset,
         battle,
         playClicked,
-        prepareMove
+        prepareMove,
+        particles
     };
 });
 

@@ -79,11 +79,13 @@
                 <img :src="level2_2" v-if="character.exp === 5" />
                 <img :src="level3" v-if="character.exp === 6" />
             </span>
+            <Node v-if="id" :id="id" />
         </div>
     </Tooltip>
 </template>
 
 <script setup lang="tsx">
+import Node from "components/Node.vue";
 import { jsx, JSXFunction } from "features/feature";
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
@@ -100,6 +102,7 @@ import { characters } from "./projEntry";
 import { Character } from "./types";
 
 const props = defineProps<{
+    id?: string;
     character?: Character | null;
     isSelected?: boolean;
     isShop?: boolean;
