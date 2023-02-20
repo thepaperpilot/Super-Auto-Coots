@@ -4,7 +4,7 @@ import { jsx } from "features/feature";
 import type { BaseLayer, GenericLayer } from "game/layers";
 import { createLayer } from "game/layers";
 import type { Player } from "game/player";
-import { computed, ref, Transition, TransitionGroup } from "vue";
+import { computed, ref, TransitionGroup } from "vue";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./socket";
 import "./common.css";
@@ -21,55 +21,88 @@ import heart from "../../public/Heart.png";
 import startStream from "../../public/start stream.png";
 import { createReset } from "features/reset";
 import settings from "game/settings";
+import type { AbilityTypes, CharacterInfo, Character, BattleOutcome } from "./types";
+import { formatWhole } from "util/bignum";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
         nickname: "Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: coots
+        display: coots,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     ludwig: {
         nickname: "Ludwig Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: ludwig
+        display: ludwig,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     qt: {
         nickname: "Qt Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: qt
+        display: qt,
+        abilityType: "LivestreamJoined",
+        abilityDescription: jsx(() => (
+            <>
+                <i>Livestream joined</i>: Set both stats to 100
+            </>
+        )),
+        performAbility(char) {
+            char.presence = 100;
+            char.relevancy = 100;
+        }
     },
     maid: {
         nickname: "Maid Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: maid
+        display: maid,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     mail: {
         nickname: "Mogul Mail Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: mail
+        display: mail,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     stanz: {
         nickname: "Stanz Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: stanz
+        display: stanz,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     money: {
         nickname: "Mogul Money Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: money
+        display: money,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     },
     vespa: {
         nickname: "Vespa Coots",
         initialRelevancy: 1,
         initialPresence: 1,
-        display: vespa
+        display: vespa,
+        abilityType: "LivestreamJoined",
+        abilityDescription: "Do nothing",
+        performAbility() {}
     }
 };
 
@@ -92,7 +125,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const playClicked = ref<boolean>(false);
     const queue = ref<
         {
-            action: "join";
+            action: AbilityTypes | "join";
+            target?: Character;
         }[]
     >([]);
 
@@ -172,6 +206,16 @@ export const main = createLayer("main", function (this: BaseLayer) {
             queue.value.push({
                 action: "join"
             });
+        } else if (queue.value.length > 1) {
+            queue.value = queue.value.sort((a, b) => {
+                if (a.action !== b.action) {
+                    return 1;
+                }
+                if (a.target != null && b.target != null) {
+                    return b.target.relevancy - a.target.relevancy;
+                }
+                return 0;
+            });
         }
         if (settings.autoplay === false && playClicked.value === false) {
             previewing.value = true;
@@ -181,11 +225,26 @@ export const main = createLayer("main", function (this: BaseLayer) {
             switch (action.action) {
                 case "join":
                     if ((battle.value.team.length ?? 0) > 0) {
-                        battle.value.streamers.push(battle.value.team.pop()!);
+                        const char = battle.value.team.pop()!;
+                        battle.value.streamers.push(char);
+                        if (characters[char.type].abilityType === "LivestreamJoined") {
+                            queue.value.unshift({ action: "LivestreamJoined", target: char });
+                        }
                     }
                     if ((battle.value.enemyTeam.length ?? 0) > 0) {
-                        battle.value.enemyStreamers.push(battle.value.enemyTeam.pop()!);
+                        const char = battle.value.enemyTeam.pop()!;
+                        battle.value.enemyStreamers.push(char);
+                        if (characters[char.type].abilityType === "LivestreamJoined") {
+                            queue.value.unshift({ action: "LivestreamJoined", target: char });
+                        }
                     }
+                    break;
+                default:
+                    if (action.target == null) {
+                        console.error("Invalid action", action);
+                        break;
+                    }
+                    characters[action.target.type].performAbility(action.target);
                     break;
             }
             playClicked.value = false;
@@ -251,7 +310,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </div>
                                     </div>
                                     <div class="view-counter" style="right: 1vmin">
-                                        {views.value} Views
+                                        {formatWhole(views.value)} Views
                                     </div>
                                     <Row class="streamers-container">
                                         <TransitionGroup name="character-transition">
@@ -262,6 +321,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                                     <CharacterSlot
                                                         key={battle.value!.streamers.length - i}
                                                         character={streamer}
+                                                        shake={
+                                                            previewing.value &&
+                                                            queue.value[0]?.target === streamer
+                                                        }
                                                     />
                                                 ))}
                                         </TransitionGroup>
@@ -304,12 +367,19 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </div>
                                     </div>
                                     <div class="view-counter" style="left: 1vmin">
-                                        {enemyViews.value} Views
+                                        {formatWhole(enemyViews.value)} Views
                                     </div>
                                     <Row class="streamers-container">
                                         <TransitionGroup name="character-transition">
                                             {battle.value.enemyStreamers.map((streamer, i) => (
-                                                <CharacterSlot key={i} character={streamer} />
+                                                <CharacterSlot
+                                                    key={i}
+                                                    character={streamer}
+                                                    shake={
+                                                        previewing.value &&
+                                                        queue.value[0]?.target === streamer
+                                                    }
+                                                />
                                             ))}
                                         </TransitionGroup>
                                     </Row>

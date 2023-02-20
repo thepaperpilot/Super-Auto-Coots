@@ -1,8 +1,15 @@
+import { CoercableComponent } from "features/feature";
+
+type AbilityTypes = "LivestreamJoined";
+
 interface CharacterInfo {
     nickname: string;
     initialRelevancy: number;
     initialPresence: number;
     display: string;
+    abilityType: AbilityTypes;
+    abilityDescription: CoercableComponent;
+    performAbility: (char: Character) => void;
 }
 
 interface Character {
@@ -25,7 +32,7 @@ interface ServerToClientEvents {
     merge: (shopIndex: number, teamIndex: number, char: Character) => void;
     stream: (
         enemy: {
-            team: (Character | null)[];
+            team: Character[];
             nickname: string;
             lives: number;
             wins: number;

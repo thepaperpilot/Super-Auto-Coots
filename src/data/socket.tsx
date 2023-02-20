@@ -8,6 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
 import { characters, main } from "./projEntry";
+import { ServerToClientEvents, ClientToServerEvents, Character } from "./types";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -141,7 +142,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.battle.value = {
             team: JSON.parse(JSON.stringify(main.team.value.filter(m => m != null))),
             streamers: [],
-            enemyTeam: enemy.team.filter(m => m != null) as Character[],
+            enemyTeam: enemy.team,
             enemyStreamers: [],
             enemyNickname: enemy.nickname,
             enemyLives: enemy.lives,

@@ -1,10 +1,6 @@
 <template>
     <Tooltip
-        :display="
-            character && selected == null && dragging === false
-                ? characters[character.type].nickname
-                : ''
-        "
+        :display="comp"
         :direction="Direction.Up"
     >
         <div
@@ -87,10 +83,12 @@
     </Tooltip>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
+import { jsx, JSXFunction } from "features/feature";
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
-import { ref, watch } from "vue";
+import { coerceComponent } from "util/vue";
+import { ref, shallowRef, watch, watchEffect } from "vue";
 import heart from "../../public/Heart.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
@@ -99,8 +97,9 @@ import level2_1 from "../../public/Lvl 2_1.png";
 import level2_2 from "../../public/Lvl 2_2.png";
 import level3 from "../../public/Lvl 3.png";
 import { characters } from "./projEntry";
+import { Character } from "./types";
 
-defineProps<{
+const props = defineProps<{
     character?: Character | null;
     isSelected?: boolean;
     isShop?: boolean;
@@ -124,6 +123,16 @@ watch(dragging, dragging => {
         emits("dragend");
     }
 });
+
+const comp = shallowRef<JSXFunction | "">("");
+watchEffect(() => {
+    if (props.character == null || props.selected != null || dragging.value) {
+        comp.value = "";
+        return;
+    }
+    const Ability = coerceComponent(characters[props.character.type].abilityDescription);
+    comp.value = jsx(() => (<><b>{characters[props.character!.type].nickname}</b><br /><Ability /></>));
+})
 </script>
 
 <style scoped>
