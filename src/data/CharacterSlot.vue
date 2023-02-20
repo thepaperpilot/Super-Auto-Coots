@@ -89,7 +89,7 @@ import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
 import { coerceComponent } from "util/vue";
 import { ref, shallowRef, watch, watchEffect } from "vue";
-import heart from "../../public/Heart.png";
+import heart from "../../public/heart.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
 import level2_0 from "../../public/Lvl 2_0.png";

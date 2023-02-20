@@ -17,7 +17,7 @@ import coots from "../../public/Normal Coots.png";
 import qt from "../../public/QT Coots.png";
 import stanz from "../../public/Stanz Coots.png";
 import vespa from "../../public/Vespa Coots.png";
-import heart from "../../public/Heart.png";
+import heart from "../../public/heart.png";
 import startStream from "../../public/start stream.png";
 import { createReset } from "features/reset";
 import settings from "game/settings";
