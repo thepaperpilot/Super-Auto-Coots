@@ -23,7 +23,6 @@ import { createReset } from "features/reset";
 import settings from "game/settings";
 import type { AbilityTypes, CharacterInfo, Character, BattleOutcome } from "./types";
 import { formatWhole } from "util/bignum";
-import particles from "./particle.json";
 import { createParticles } from "features/particles/particles";
 import { render } from "util/vue";
 
@@ -132,6 +131,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
             target?: Character;
         }[]
     >([]);
+    const frozen = ref<number[]>([]);
 
     const battle = ref<{
         team: Character[];
@@ -183,6 +183,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
             showingOutcome.value = false;
             playClicked.value = false;
             queue.value = [];
+            frozen.value = [];
         }
     }));
 
@@ -507,6 +508,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         {shop.value.map((item, i) => (
                             <CharacterSlot
                                 id={`shop-char-${i}`}
+                                frozen={frozen.value.includes(i)}
                                 character={item == null ? undefined : item}
                                 isSelected={selectedShopItem.value === i}
                                 isShop={true}
@@ -587,6 +589,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         outcome,
         reset,
         battle,
+        frozen,
         playClicked,
         prepareMove,
         particles

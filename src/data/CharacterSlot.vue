@@ -79,6 +79,7 @@
                 <img :src="level2_2" v-if="character.exp === 5" />
                 <img :src="level3" v-if="character.exp === 6" />
             </span>
+            <div v-if="frozen" class="frozen" />
             <Node v-if="id" :id="id" />
         </div>
     </Tooltip>
@@ -109,6 +110,7 @@ const props = defineProps<{
     isDragging?: boolean;
     selected?: Character | null;
     shake?: boolean;
+    frozen?: boolean;
 }>();
 
 const dragging = ref(false);
@@ -276,6 +278,17 @@ watchEffect(() => {
 .character:not(.isDragging):hover .move-indicator .material-icons,
 .character.draggingOver .move-indicator .material-icons {
     color: var(--feature-foreground);
+}
+
+.frozen {
+    position: absolute;
+    background: skyblue;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.5;
+    transform: rotate(45deg);
 }
 
 @keyframes bouncingMoveIndicator {

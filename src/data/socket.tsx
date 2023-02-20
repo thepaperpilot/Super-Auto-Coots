@@ -143,6 +143,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             presence: characters[item].initialPresence,
             exp: 1
         }));
+        main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {
             shop.forEach((_, i) => poof(`shop-char-${i}`));
         }, 0);
@@ -197,6 +198,13 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.gold.value += level;
         main.team.value[index] = null;
         poof(`team-char-${index}`);
+    });
+    socket.on("freeze", index => {
+        if (main.frozen.value.includes(index)) {
+            main.frozen.value = main.frozen.value.filter(m => m !== index);
+        } else {
+            main.frozen.value.push(index);
+        }
     });
 }
 
