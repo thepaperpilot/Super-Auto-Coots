@@ -40,12 +40,16 @@ interface ServerToClientEvents {
         },
         outcome: BattleOutcome
     ) => void;
+    freeze: (index: number) => void;
+    sell: (index: number) => void;
 }
 
 interface ClientToServerEvents {
     buy: (shopIndex: number, teamIndex: number) => void;
     move: (index: number, otherIndex: number) => void;
     merge: (index: number, otherIndex: number) => void;
+    freeze: (index: number) => void;
+    sell: (index: number) => void;
     reroll: () => void;
     stream: () => void;
     newTurn: () => void;

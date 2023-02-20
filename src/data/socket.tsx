@@ -184,6 +184,20 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.playClicked.value = false;
         setTimeout(main.prepareMove, 1000);
     });
+    socket.on("sell", index => {
+        const member = main.team.value[index]!;
+        let level;
+        if (member.exp >= 6) {
+            level = 3;
+        } else if (member.exp >= 3) {
+            level = 2;
+        } else {
+            level = 1;
+        }
+        main.gold.value += level;
+        main.team.value[index] = null;
+        poof(`team-char-${index}`);
+    });
 }
 
 declare module "game/settings" {

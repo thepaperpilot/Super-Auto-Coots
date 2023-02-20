@@ -51,6 +51,7 @@
     height: 16vmin;
     cursor: pointer;
     filter: drop-shadow(2px 4px 6px black);
+    margin-right: 0;
 }
 
 .waiting {
@@ -184,6 +185,20 @@
 }
 .character-trensition-active {
     position: absolute;
+}
+
+.bottom-row {
+    width: 90%;
+}
+
+.bottom-row .row {
+    width: 100%;
+    align-items: center;
+}
+
+.bottom-row .button {
+    font-size: 4vmin;
+    padding: 4vmin;
 }
 
 @media (orientation: portrait) {
