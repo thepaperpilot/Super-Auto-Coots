@@ -201,6 +201,29 @@
     padding: 4vmin;
 }
 
+.total-outcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.total-outcome {
+    font-size: 4vmin;
+    margin: 0;
+}
+
+.smiley {
+    font-size: 20vmin;
+    margin: 0;
+    animation: swing 2s infinite ease;
+}
+
+.total-outcome-container .button {
+    margin: 0;
+    font-size: xx-large;
+}
+
 @media (orientation: portrait) {
     .teams-container {
         flex-direction: column;
@@ -214,4 +237,11 @@
         width: unset;
         height: 100%;
     }
+}
+
+@keyframes swing {
+  0%, 100% { transform: rotate(-30deg); }
+  20% {transform:scale(.95);}
+  50% { transform: rotate(30deg); }
+  80% {transform:scale(.95);}
 }

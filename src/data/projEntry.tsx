@@ -25,6 +25,8 @@ import type { AbilityTypes, CharacterInfo, Character, BattleOutcome } from "./ty
 import { formatWhole } from "util/bignum";
 import { createParticles } from "features/particles/particles";
 import { render } from "util/vue";
+import { globalBus } from "game/events";
+import victoryParticles from "./victory.json";
 
 export const characters: Record<string, CharacterInfo> = {
     coots: {
@@ -269,6 +271,40 @@ export const main = createLayer("main", function (this: BaseLayer) {
         name: "Game",
         minimizable: false,
         display: jsx(() => {
+            if (wins.value >= 5) {
+                return (
+                    <div class="total-outcome-container">
+                        <span class="total-outcome">You Won!</span>
+                        <span class="smiley">😃</span>
+                        <Row>
+                            {new Array(3).fill(0).map((_, i) => (
+                                <CharacterSlot character={team.value[i]} />
+                            ))}
+                        </Row>
+                        <button class="button" onClick={() => location.reload()}>
+                            Play again
+                        </button>
+                        {render(particles)}
+                    </div>
+                );
+            }
+            if (lives.value <= 0) {
+                return (
+                    <div class="total-outcome-container">
+                        <span class="total-outcome">You ran out of lives!</span>
+                        <span class="smiley">😰</span>
+                        <Row>
+                            {new Array(3).fill(0).map((_, i) => (
+                                <CharacterSlot character={team.value[i]} />
+                            ))}
+                        </Row>
+                        <button class="button" onClick={() => location.reload()}>
+                            Play again
+                        </button>
+                        {render(particles)}
+                    </div>
+                );
+            }
             if (battle.value != null) {
                 return (
                     <div class={{ ["battle-container"]: true, fast: settings.fast }}>
@@ -594,6 +630,30 @@ export const main = createLayer("main", function (this: BaseLayer) {
         prepareMove,
         particles
     };
+});
+
+let timeSinceFirework = 0;
+globalBus.on("update", diff => {
+    if (main.wins.value >= 5) {
+        timeSinceFirework += diff;
+        if (timeSinceFirework >= 1) {
+            timeSinceFirework = 0;
+            const boundingRect = main.particles.boundingRect.value;
+            if (!boundingRect) {
+                return;
+            }
+            main.particles.addEmitter(victoryParticles).then(e => {
+                e.updateOwnerPos(
+                    Math.random() * boundingRect.width,
+                    Math.random() * boundingRect.height
+                );
+                console.log(e);
+                e.playOnceAndDestroy();
+            });
+        }
+    } else {
+        timeSinceFirework = 0;
+    }
 });
 
 function clickCharacter(index: number) {
