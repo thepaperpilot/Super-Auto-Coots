@@ -624,7 +624,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         selectedShopItem.value = null;
                     }}
                 >
-                    <Row style="position: absolute; top: 10px; left: -5px">
+                    <h2 class="team-nickname">{nickname.value}</h2>
+                    <Row class="manager-header">
                         <div class="resource-box">
                             <span class="material-icons">credit_card</span>
                             {gold.value}
@@ -637,8 +638,44 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <span class="material-icons">emoji_events</span>
                             {wins.value}/5
                         </div>
+                        <div style="flex-grow: 1" />
+                        {findingMatch.value ? (
+                            <div class="waiting">Finding opposing team...</div>
+                        ) : (
+                            <>
+                                {selectedCharacter.value == null ? null : (
+                                    <button
+                                        class="button"
+                                        onDragover={e => e.preventDefault()}
+                                        onClick={() => emit("sell", selectedCharacter.value!)}
+                                        onDrop={() => emit("sell", selectedCharacter.value!)}
+                                    >
+                                        Sell
+                                    </button>
+                                )}
+                                {selectedShopItem.value == null ? null : (
+                                    <button
+                                        class="button"
+                                        onDragover={e => e.preventDefault()}
+                                        onClick={() => emit("freeze", selectedShopItem.value!)}
+                                        onDrop={() => emit("freeze", selectedShopItem.value!)}
+                                    >
+                                        Freeze
+                                    </button>
+                                )}
+                                <img
+                                    class="startStream"
+                                    draggable="false"
+                                    onClick={() => {
+                                        emit("stream");
+                                        findingMatch.value = true;
+                                    }}
+                                    src={startStream}
+                                />
+                            </>
+                        )}
                     </Row>
-                    <h2 class="team-nickname">{nickname.value}</h2>
+                    <div style="flex-grow: 1" />
                     <Row style="margin-top: 10vh">
                         {new Array(3).fill(0).map((_, i) => (
                             <CharacterSlot
@@ -716,43 +753,6 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             />
                         ))}
                     </Row>
-                    <Spacer height="4vh" />
-                    {findingMatch.value ? (
-                        <div class="waiting">Finding opposing team...</div>
-                    ) : (
-                        <Row class="bottom-row">
-                            {selectedCharacter.value == null ? null : (
-                                <button
-                                    class="button"
-                                    onDragover={e => e.preventDefault()}
-                                    onClick={() => emit("sell", selectedCharacter.value!)}
-                                    onDrop={() => emit("sell", selectedCharacter.value!)}
-                                >
-                                    Sell
-                                </button>
-                            )}
-                            {selectedShopItem.value == null ? null : (
-                                <button
-                                    class="button"
-                                    onDragover={e => e.preventDefault()}
-                                    onClick={() => emit("freeze", selectedShopItem.value!)}
-                                    onDrop={() => emit("freeze", selectedShopItem.value!)}
-                                >
-                                    Freeze
-                                </button>
-                            )}
-                            <div style="flex-grow: 1" />
-                            <img
-                                class="startStream"
-                                draggable="false"
-                                onClick={() => {
-                                    emit("stream");
-                                    findingMatch.value = true;
-                                }}
-                                src={startStream}
-                            />
-                        </Row>
-                    )}
                     {render(particles)}
                 </div>
             );

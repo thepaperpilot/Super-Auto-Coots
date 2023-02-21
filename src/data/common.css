@@ -7,7 +7,8 @@
 .game-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 5vmin);
+    padding-top: 5vmin;
 }
 
 .game-container::before {
@@ -46,6 +47,20 @@
     position: absolute;
     left: 6.3vmin;
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
+}
+
+.manager-header {
+    width: calc(100% - 10vmin);
+}
+
+.manager-header .row {
+    align-items: center;
+    width: 100%;
+}
+
+.manager-header .button {
+    font-size: 4vmin;
+    padding: 2vmin;
 }
 
 .modifier-toggle {
@@ -117,7 +132,8 @@
     height: 16vmin;
     cursor: pointer;
     filter: drop-shadow(2px 4px 6px black);
-    margin-right: 0;
+    margin-right: 0 !important;
+    margin-bottom: -8vmin !important;
 }
 
 .waiting {
@@ -253,20 +269,6 @@
 }
 .character-trensition-active {
     position: absolute;
-}
-
-.bottom-row {
-    width: 90%;
-}
-
-.bottom-row .row {
-    width: 100%;
-    align-items: center;
-}
-
-.bottom-row .button {
-    font-size: 4vmin;
-    padding: 4vmin;
 }
 
 .total-outcome-container {
