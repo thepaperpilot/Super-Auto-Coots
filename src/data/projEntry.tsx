@@ -1,34 +1,33 @@
 import Row from "components/layout/Row.vue";
-import Spacer from "components/layout/Spacer.vue";
 import { jsx } from "features/feature";
+import { createParticles } from "features/particles/particles";
+import { createReset } from "features/reset";
+import { globalBus } from "game/events";
 import type { BaseLayer, GenericLayer } from "game/layers";
 import { createLayer } from "game/layers";
 import type { Player } from "game/player";
+import settings from "game/settings";
+import { formatWhole } from "util/bignum";
+import { render } from "util/vue";
 import { computed, ref, TransitionGroup } from "vue";
-import CharacterSlot from "./CharacterSlot.vue";
-import "./socket";
-import "./common.css";
-import { emit, nickname } from "./socket";
+import heart from "../../public/heart.png";
 import ludwig from "../../public/Ludwig Coots.png";
 import maid from "../../public/Maid Coots.png";
 import mail from "../../public/Mogul Mail Coots.png";
 import money from "../../public/Mogul Money Coots.png";
 import coots from "../../public/Normal Coots.png";
 import qt from "../../public/QT Coots.png";
-import stanz from "../../public/Stanz Coots.png";
-import vespa from "../../public/Vespa Coots.png";
-import heart from "../../public/heart.png";
-import startStream from "../../public/start stream.png";
-import { createReset } from "features/reset";
-import settings from "game/settings";
-import type { AbilityTypes, CharacterInfo, Character, BattleOutcome } from "./types";
-import { formatWhole } from "util/bignum";
-import { createParticles } from "features/particles/particles";
-import { render } from "util/vue";
-import { globalBus } from "game/events";
-import victoryParticles from "./victory.json";
-import shopStill from "../../public/shop1.png";
 import shopGif from "../../public/shop.gif";
+import shopStill from "../../public/shop1.png";
+import stanz from "../../public/Stanz Coots.png";
+import startStream from "../../public/start stream.png";
+import vespa from "../../public/Vespa Coots.png";
+import CharacterSlot from "./CharacterSlot.vue";
+import "./common.css";
+import "./socket";
+import { emit, nickname } from "./socket";
+import type { AbilityTypes, BattleOutcome, Character, CharacterInfo } from "./types";
+import victoryParticles from "./victory.json";
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -64,7 +63,7 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream joined</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
-                    presence for every character on a stream
+                    presence for every character on that livestream
                 </>
             )),
         performAbility(char) {
