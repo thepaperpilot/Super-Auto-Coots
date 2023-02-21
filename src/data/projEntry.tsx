@@ -29,48 +29,93 @@ import { globalBus } from "game/events";
 import victoryParticles from "./victory.json";
 
 export const characters: Record<string, CharacterInfo> = {
+    // Tier 1
     coots: {
         nickname: "Coots",
-        initialRelevancy: 1,
+        initialRelevancy: 3,
         initialPresence: 1,
         display: coots,
         abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Deal {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
+                    relevancy damage to every character on a stream
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const damage = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
+            main.battle.value.streamers.forEach(s => (s.relevancy -= damage));
+            main.battle.value.enemyStreamers.forEach(s => (s.relevancy -= damage));
+        }
     },
     ludwig: {
         nickname: "Ludwig Coots",
-        initialRelevancy: 1,
+        initialRelevancy: 2,
         initialPresence: 1,
         display: ludwig,
         abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    presence for every character on a stream
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const presenceGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            char.presence +=
+                presenceGain *
+                (main.battle.value.streamers.length + main.battle.value.enemyStreamers.length);
+        }
     },
     qt: {
         nickname: "Qt Coots",
         initialRelevancy: 1,
-        initialPresence: 1,
+        initialPresence: 2,
         display: qt,
-        abilityType: "LivestreamJoined",
-        abilityDescription: jsx(() => (
-            <>
-                <i>Livestream joined</i>: Set both stats to 100
-            </>
-        )),
+        abilityType: "Sold",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Sold</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} mogul
+                    {char.exp >= 3 ? "s" : ""}
+                </>
+            )),
         performAbility(char) {
-            char.presence = 100;
-            char.relevancy = 100;
+            const goldGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            main.gold.value += goldGain;
         }
     },
+    // Tier 2
     maid: {
         nickname: "Maid Coots",
-        initialRelevancy: 1,
-        initialPresence: 1,
+        initialRelevancy: 2,
+        initialPresence: 2,
         display: maid,
-        abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityType: "LevelUp",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Level up</i>: Every character gains {char.exp >= 3 ? 2 : 1} relevancy and
+                    presence
+                </>
+            )),
+        performAbility(char) {
+            const statGain = char.exp >= 6 ? 2 : 1;
+            main.team.value.forEach(char => {
+                if (char) {
+                    char.relevancy += statGain;
+                    char.presence += statGain;
+                }
+            });
+        }
     },
     mail: {
         nickname: "Mogul Mail Coots",
@@ -78,26 +123,79 @@ export const characters: Record<string, CharacterInfo> = {
         initialPresence: 1,
         display: mail,
         abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Summon a lv{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Ludwig Coots with this character's
+                    stats.
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const level = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            const newChar = {
+                type: "ludwig",
+                exp: level === 3 ? 6 : level === 2 ? 3 : 1,
+                presence: char.presence,
+                relevancy: char.relevancy
+            };
+            main.queue.value.push({ action: "LivestreamJoined", target: newChar });
+            if (main.battle.value.streamers.includes(char)) {
+                main.battle.value.streamers.push(newChar);
+            } else {
+                main.battle.value.enemyStreamers.push(newChar);
+            }
+        }
     },
     stanz: {
         nickname: "Stanz Coots",
         initialRelevancy: 1,
         initialPresence: 1,
         display: stanz,
-        abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityType: "LivestreamEnded",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream ended</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    relevancy for every character on either livestream with more relevancy.
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const relevancyGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            char.relevancy +=
+                relevancyGain *
+                (main.battle.value.streamers.filter(m => m.relevancy < char.relevancy).length +
+                    main.battle.value.enemyStreamers.filter(m => m.relevancy < char.relevancy)
+                        .length);
+        }
     },
+    // Tier 3
     money: {
         nickname: "Mogul Money Coots",
         initialRelevancy: 1,
         initialPresence: 1,
         display: money,
-        abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityType: "StreamStarted",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Stream started</i>: Permanently gain{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} presence if you have 2 or more
+                    moguls.
+                </>
+            )),
+        performAbility(char) {
+            if (main.gold.value >= 2) {
+                const presenceGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+                char.presence += presenceGain;
+            }
+        }
     },
     vespa: {
         nickname: "Vespa Coots",
@@ -105,8 +203,30 @@ export const characters: Record<string, CharacterInfo> = {
         initialPresence: 1,
         display: vespa,
         abilityType: "LivestreamJoined",
-        abilityDescription: "Do nothing",
-        performAbility() {}
+        abilityDescription: () =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Set the character that most recently joined the enemy
+                    livestream's presence to 0. This effect does not improve on level up.
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            if (main.battle.value.streamers.includes(char)) {
+                if (main.battle.value.enemyStreamers.length > 0) {
+                    main.battle.value.enemyStreamers.splice(
+                        main.battle.value.enemyStreamers.length - 1,
+                        1
+                    );
+                }
+            } else {
+                if (main.battle.value.streamers.length > 0) {
+                    main.battle.value.streamers.splice(main.battle.value.streamers.length - 1, 1);
+                }
+            }
+        }
     }
 };
 
@@ -144,6 +264,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         enemyLives: number;
         enemyWins: number;
         enemyTurn: number;
+        ranLivestreamEnded: boolean;
     } | null>(null);
 
     const views = computed(() => {
@@ -200,6 +321,21 @@ export const main = createLayer("main", function (this: BaseLayer) {
             battle.value.team.length === 0 &&
             battle.value.enemyTeam.length === 0
         ) {
+            if (battle.value.ranLivestreamEnded === false) {
+                battle.value.streamers.forEach(m => {
+                    if (characters[m.type].abilityType === "LivestreamEnded") {
+                        queue.value.push({ action: "LivestreamEnded", target: m });
+                    }
+                });
+                battle.value.enemyStreamers.forEach(m => {
+                    if (characters[m.type].abilityType === "LivestreamEnded") {
+                        queue.value.push({ action: "LivestreamEnded", target: m });
+                    }
+                });
+                battle.value.ranLivestreamEnded = true;
+                prepareMove();
+                return;
+            }
             if (outcome.value === "Victory") {
                 wins.value++;
             } else if (outcome.value === "Defeat") {
@@ -628,7 +764,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         frozen,
         playClicked,
         prepareMove,
-        particles
+        particles,
+        queue
     };
 });
 

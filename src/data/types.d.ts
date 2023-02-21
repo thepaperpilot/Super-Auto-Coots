@@ -1,6 +1,6 @@
 import { CoercableComponent } from "features/feature";
 
-type AbilityTypes = "LivestreamJoined";
+type AbilityTypes = "LivestreamJoined" | "Sold" | "LevelUp" | "LivestreamEnded" | "StreamStarted";
 
 interface CharacterInfo {
     nickname: string;
@@ -8,7 +8,7 @@ interface CharacterInfo {
     initialPresence: number;
     display: string;
     abilityType: AbilityTypes;
-    abilityDescription: CoercableComponent;
+    abilityDescription: (char: Character) => CoercableComponent;
     performAbility: (char: Character) => void;
 }
 

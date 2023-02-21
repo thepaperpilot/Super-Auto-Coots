@@ -9,7 +9,7 @@ import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
 import particle from "./particle.json";
 import { characters, main } from "./projEntry";
-import { ClientToServerEvents, ServerToClientEvents } from "./types";
+import { BattleOutcome, Character, ClientToServerEvents, ServerToClientEvents } from "./types";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -163,27 +163,33 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         poof(`team-char-${otherIndex}`);
     });
     socket.on("merge", (index, otherIndex, char) => {
+        const oldExp = main.team.value[otherIndex]?.exp ?? 0;
+        const oldLevel = oldExp >= 6 ? 3 : oldExp >= 3 ? 2 : 1;
+        const newLevel = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
         main.team.value[index] = null;
         main.team.value[otherIndex] = char;
         poof(`team-char-${index}`);
         poof(`team-char-${otherIndex}`);
+        if (characters[char.type].abilityType === "LevelUp" && oldLevel !== newLevel) {
+            setTimeout(() => characters[char.type].performAbility(char), 1250);
+        }
     });
     socket.on("stream", (enemy, outcome) => {
-        main.findingMatch.value = false;
-        main.battle.value = {
-            team: JSON.parse(JSON.stringify(main.team.value.filter(m => m != null))),
-            streamers: [],
-            enemyTeam: enemy.team,
-            enemyStreamers: [],
-            enemyNickname: enemy.nickname,
-            enemyLives: enemy.lives,
-            enemyWins: enemy.wins,
-            enemyTurn: enemy.turn
-        };
-        main.outcome.value = outcome;
-        main.showingOutcome.value = false;
-        main.playClicked.value = false;
-        setTimeout(main.prepareMove, 1000);
+        let needsWait = false;
+        main.team.value.forEach(m => {
+            if (m == null) {
+                return;
+            }
+            if (characters[m.type].abilityType === "StreamStarted") {
+                needsWait = true;
+                characters[m.type].performAbility(m);
+            }
+        });
+        if (needsWait) {
+            setTimeout(() => startStream(enemy, outcome));
+        } else {
+            startStream(enemy, outcome);
+        }
     });
     socket.on("sell", index => {
         const member = main.team.value[index]!;
@@ -198,6 +204,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.gold.value += level;
         main.team.value[index] = null;
         poof(`team-char-${index}`);
+        if (characters[member.type].abilityType === "Sold") {
+            setTimeout(() => characters[member.type].performAbility(member), 500);
+        }
     });
     socket.on("freeze", index => {
         if (main.frozen.value.includes(index)) {
@@ -206,6 +215,34 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             main.frozen.value.push(index);
         }
     });
+}
+
+function startStream(
+    enemy: {
+        team: Character[];
+        nickname: string;
+        lives: number;
+        wins: number;
+        turn: number;
+    },
+    outcome: BattleOutcome
+) {
+    main.findingMatch.value = false;
+    main.battle.value = {
+        team: JSON.parse(JSON.stringify(main.team.value.filter(m => m != null))),
+        streamers: [],
+        enemyTeam: enemy.team,
+        enemyStreamers: [],
+        enemyNickname: enemy.nickname,
+        enemyLives: enemy.lives,
+        enemyWins: enemy.wins,
+        enemyTurn: enemy.turn,
+        ranLivestreamEnded: false
+    };
+    main.outcome.value = outcome;
+    main.showingOutcome.value = false;
+    main.playClicked.value = false;
+    setTimeout(main.prepareMove, 1000);
 }
 
 declare module "game/settings" {
