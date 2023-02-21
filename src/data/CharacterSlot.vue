@@ -163,6 +163,10 @@ watchEffect(() => {
     pointer-events: none;
 }
 
+.character-display {
+    z-index: 1;
+}
+
 .character-display img {
     image-rendering: pixelated;
     width: 10vmin;
@@ -178,7 +182,6 @@ watchEffect(() => {
     left: 0;
     right: 0;
     bottom: -15%;
-    z-index: -1;
     background-size: contain;
 }
 

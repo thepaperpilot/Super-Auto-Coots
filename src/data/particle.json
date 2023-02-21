@@ -114,7 +114,7 @@
             "type": "textureRandom",
             "config": {
                 "textures": [
-                    "/particle.png"
+                    "particle.png"
                 ]
             }
         },
