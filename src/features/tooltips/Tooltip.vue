@@ -133,7 +133,7 @@ export default defineComponent({
     padding: 7px;
     border-radius: 3px;
     background-color: var(--tooltip-background);
-    color: var(--points);
+    color: var(--background);
     z-index: 100 !important;
     word-break: break-word;
 }

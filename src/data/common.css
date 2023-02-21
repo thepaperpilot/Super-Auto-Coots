@@ -1,3 +1,7 @@
+.inner-tab {
+    background: url("./Kitchen BG.png");
+}
+
 .game-container {
     display: flex;
     flex-direction: column;
@@ -49,6 +53,7 @@
 .reroll img {
     height: 100%;
     transform: scale(1.5) translateY(-18%);
+    filter: drop-shadow(2px 4px 6px black);
 }
 
 .startStream {
