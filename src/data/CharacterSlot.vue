@@ -135,7 +135,7 @@ watchEffect(() => {
         comp.value = "";
         return;
     }
-    const Ability = coerceComponent(characters[props.character.type].abilityDescription);
+    const Ability = coerceComponent(characters[props.character.type].abilityDescription(props.character));
     comp.value = jsx(() => (<><b>{characters[props.character!.type].nickname}</b><br /><Ability /></>));
 })
 </script>

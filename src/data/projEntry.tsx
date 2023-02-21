@@ -70,9 +70,11 @@ export const characters: Record<string, CharacterInfo> = {
                 return;
             }
             const presenceGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
-            char.presence +=
-                presenceGain *
-                (main.battle.value.streamers.length + main.battle.value.enemyStreamers.length);
+            if (main.battle.value.streamers.includes(char)) {
+                char.presence += presenceGain * main.battle.value.streamers.length;
+            } else {
+                char.presence += presenceGain * main.battle.value.enemyStreamers.length;
+            }
         }
     },
     qt: {
@@ -216,14 +218,15 @@ export const characters: Record<string, CharacterInfo> = {
             }
             if (main.battle.value.streamers.includes(char)) {
                 if (main.battle.value.enemyStreamers.length > 0) {
-                    main.battle.value.enemyStreamers.splice(
-                        main.battle.value.enemyStreamers.length - 1,
-                        1
-                    );
+                    main.battle.value.enemyStreamers[
+                        main.battle.value.enemyStreamers.length - 1
+                    ].presence = 0;
                 }
             } else {
                 if (main.battle.value.streamers.length > 0) {
-                    main.battle.value.streamers.splice(main.battle.value.streamers.length - 1, 1);
+                    main.battle.value.streamers[
+                        main.battle.value.streamers.length - 1
+                    ].presence = 0;
                 }
             }
         }
@@ -515,7 +518,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </TransitionGroup>
                                     </Row>
                                 </div>
-                                <Row class="members-container" style="margin-left: 0">
+                                <Row
+                                    class="members-container"
+                                    style="margin-left: 0; padding-right: 4vmin;"
+                                >
                                     <TransitionGroup name="character-transition">
                                         {battle.value.team.map((member, i) => (
                                             <CharacterSlot
@@ -569,7 +575,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </TransitionGroup>
                                     </Row>
                                 </div>
-                                <Row class="members-container" style="margin-right: 0">
+                                <Row
+                                    class="members-container"
+                                    style="margin-right: 0; padding: 0 4vmin;"
+                                >
                                     <TransitionGroup name="character-transition">
                                         {battle.value.enemyTeam
                                             .slice()

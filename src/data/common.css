@@ -120,13 +120,14 @@
     position: absolute;
     left: 5%;
     bottom: 5%;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .members-container {
     height: 18vmin;
-    overflow: hidden;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .streamers-container .row,
@@ -134,7 +135,8 @@
     flex-flow: row
 }
 
-.streamers-container .character {
+.streamers-container .character,
+.members-container .character {
     margin: 4vmin 1vmin;
 }
 

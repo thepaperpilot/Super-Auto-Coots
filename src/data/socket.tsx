@@ -154,6 +154,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.gold.value -= 3;
         poof(`shop-char-${shopIndex}`);
         poof(`team-char-${teamIndex}`);
+        if (main.frozen.value.includes(shopIndex)) {
+            main.frozen.value = main.frozen.value.filter(m => m !== shopIndex);
+        }
     });
     socket.on("move", (index, otherIndex) => {
         const temp = main.team.value[index];
