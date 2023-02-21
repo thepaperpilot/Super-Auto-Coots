@@ -83,11 +83,28 @@
     image-rendering: pixelated;
 }
 
+.shop {
+    margin-top: 10vh !important;
+}
+
+.shop .row {
+    border-image: url("./shop window.png");
+    border-image-slice: 106 53 53 424 fill;
+    border-style: solid;
+    border-width: 5vmin 2.5vmin 2.5vmin 20vmin;
+    width: 72.5vmin;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 .reroll {
+    margin-left: -19vmin !important;
+    margin-top: -1vmin !important;
     height: 18vmin;
     cursor: pointer;
     user-select: none;
     transition-duration: 0s;
+	image-rendering: pixelated;
 }
 
 .reroll img {

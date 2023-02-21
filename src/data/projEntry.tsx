@@ -672,7 +672,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             />
                         ))}
                     </Row>
-                    <Row style="margin-top: 10vh">
+                    <Row class="shop">
                         <div
                             class="reroll"
                             style={
