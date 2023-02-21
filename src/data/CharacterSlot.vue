@@ -176,7 +176,7 @@ watchEffect(() => {
 
 .character::after {
     content: "";
-    background: url(./Shadow.png);
+    background: url(../../public/Shadow.png);
     position: absolute;
     top: 15%;
     left: 0;
