@@ -172,14 +172,14 @@ watchEffect(() => {
 
 .character::after {
     content: "";
-    background: grey;
+    background: url(./Shadow.png);
     position: absolute;
-    top: 67.5%;
+    top: 15%;
     left: 0;
     right: 0;
-    bottom: -12.5%;
-    border-radius: 50%;
+    bottom: -15%;
     z-index: -1;
+    background-size: contain;
 }
 
 .character.selected:not(.dragging)::before {
