@@ -61,6 +61,7 @@
 .manager-header .button {
     font-size: 4vmin;
     padding: 2vmin;
+    height: 8vmin;
 }
 
 .modifier-toggle {
@@ -100,6 +101,7 @@
 
 .shop {
     margin-top: 10vh !important;
+    position: relative;
 }
 
 .shop .row {
@@ -110,6 +112,20 @@
     width: 72.5vmin;
     justify-content: flex-start;
     align-items: center;
+}
+
+.shop .row::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 5vmin;
+    aspect-ratio: 516/102;
+    background-size: contain;
+    background-image: url("./shop cat.png");
+    z-index: 3;
+    pointer-events: none;
 }
 
 .reroll {

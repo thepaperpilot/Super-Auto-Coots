@@ -134,7 +134,7 @@ export default defineComponent({
     border-radius: 3px;
     background-color: var(--tooltip-background);
     color: var(--background);
-    z-index: 100 !important;
+    z-index: 1000 !important;
     word-break: break-word;
 }
 
