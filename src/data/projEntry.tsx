@@ -638,7 +638,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             {wins.value}/5
                         </div>
                     </Row>
-                    <h2 style="font-size: 3vmin">{nickname.value}</h2>
+                    <h2 class="team-nickname">{nickname.value}</h2>
                     <Row style="margin-top: 10vh">
                         {new Array(3).fill(0).map((_, i) => (
                             <CharacterSlot

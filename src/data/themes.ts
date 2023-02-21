@@ -111,7 +111,7 @@ export default {
             "--bought": "#fff7f6",
             "--danger": "#D08770",
             "--link": "#412323",
-            "--outline": "#3B4252",
+            "--outline": "#551842",
             "--accent1": "#dc7d71",
             "--accent2": "#8423a9",
             "--accent3": "#47f2ca",
