@@ -131,9 +131,12 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             presence: characters[item].initialPresence,
             exp: 1
         }));
+        main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {
             shop.forEach((_, i) => poof(`shop-char-${i}`));
         }, 0);
+        main.showRefreshAnim.value = true;
+        setTimeout(() => (main.showRefreshAnim.value = false), 500);
     });
     socket.on("reroll", shop => {
         main.gold.value--;
@@ -147,6 +150,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         setTimeout(() => {
             shop.forEach((_, i) => poof(`shop-char-${i}`));
         }, 0);
+        main.showRefreshAnim.value = true;
+        setTimeout(() => (main.showRefreshAnim.value = false), 500);
     });
     socket.on("buy", (shopIndex, teamIndex, char) => {
         main.team.value[teamIndex] = char;

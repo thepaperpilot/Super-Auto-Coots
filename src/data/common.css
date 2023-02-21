@@ -40,11 +40,15 @@
 }
 
 .reroll {
-    flex-direction: column;
-    margin: 2vmin;
+    height: 18vmin;
     cursor: pointer;
     user-select: none;
     transition-duration: 0s;
+}
+
+.reroll img {
+    height: 100%;
+    transform: scale(1.5) translateY(-18%);
 }
 
 .startStream {

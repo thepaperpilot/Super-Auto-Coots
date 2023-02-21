@@ -27,6 +27,8 @@ import { createParticles } from "features/particles/particles";
 import { render } from "util/vue";
 import { globalBus } from "game/events";
 import victoryParticles from "./victory.json";
+import shopStill from "../../public/shop1.png";
+import shopGif from "../../public/shop.gif";
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -257,6 +259,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         }[]
     >([]);
     const frozen = ref<number[]>([]);
+    const showRefreshAnim = ref<boolean>(false);
 
     const battle = ref<{
         team: Character[];
@@ -681,10 +684,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 }
                             }}
                         >
-                            <span class="material-icons" style="font-size: 8vmin">
-                                casino
-                            </span>
-                            <span style="font-size: 2vmin">Roll</span>
+                            <img src={showRefreshAnim.value ? shopGif : shopStill} />
                         </div>
                         {shop.value.map((item, i) => (
                             <CharacterSlot
@@ -774,7 +774,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         playClicked,
         prepareMove,
         particles,
-        queue
+        queue,
+        showRefreshAnim
     };
 });
 
