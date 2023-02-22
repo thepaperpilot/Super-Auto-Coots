@@ -75,28 +75,34 @@
 }
 
 .resource-box {
-    display: flex;
-    border: solid 2px var(--bought);
-    padding: 0 4px;
-    border-radius: 4px;
-    font-size: 2em;
+    font-size: 3vmin;
     align-items: center;
+    image-rendering: pixelated;
+    border-style: solid;
+    height: 3vmin;
+    display: flex;
+}
+
+.resource-box.wins {
+    border-image: url("../../public/win bar.png");
+    border-image-slice: 12 12 18 96 fill;
+    border-width: 0.5vmin 0.5vmin 0.75vmin 4vmin;
+}
+
+.resource-box.lives {
+    border-image: url("../../public/health bar.png");
+    border-image-slice: 12 12 18 84 fill;
+    border-width: 0.5vmin 0.5vmin 0.75vmin 3.5vmin;
+}
+
+.resource-box.moguls {
+    border-image: url("../../public/money bar.png");
+    border-image-slice: 12 12 18 84 fill;
+    border-width: 0.5vmin 0.5vmin 0.75vmin 3.5vmin;
 }
 
 .resource-box:not(:last-child) {
-    margin-right: 20px !important;
-}
-
-.resource-box .material-icons {
-    margin-right: 6px;
-    font-size: 1em;
-}
-
-.resource-box img {
-    margin-right: 6px;
-    width: 1em;
-    transform: scale(2);
-    image-rendering: pixelated;
+    margin-right: 1vmin !important;
 }
 
 .shop {

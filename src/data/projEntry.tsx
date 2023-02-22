@@ -489,14 +489,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     <div class="stream-details" style="left: 1vmin">
                                         <span style="margin-left: 0">{nickname.value} (YOU)</span>
                                         <div class="stats" style="margin-left: 0">
-                                            <div class="resource-box">
-                                                <img src={heart} />
-                                                <span>{lives.value}</span>
-                                            </div>
-                                            <div class="resource-box">
-                                                <span class="material-icons">emoji_events</span>
-                                                <span>{wins.value}/5</span>
-                                            </div>
+                                            <div class="resource-box lives">{lives.value}</div>
+                                            <div class="resource-box wins">{wins.value}/5</div>
                                         </div>
                                     </div>
                                     <div class="view-counter" style="right: 1vmin">
@@ -549,13 +543,11 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             {battle.value.enemyNickname}
                                         </span>
                                         <div class="stats" style="margin-right: 0">
-                                            <div class="resource-box">
-                                                <img src={heart} />
-                                                <span>{battle.value.enemyLives}</span>
+                                            <div class="resource-box lives">
+                                                {battle.value.enemyLives}
                                             </div>
-                                            <div class="resource-box">
-                                                <span class="material-icons">emoji_events</span>
-                                                <span>{battle.value.enemyWins}/5</span>
+                                            <div class="resource-box wins">
+                                                {battle.value.enemyWins}/5
                                             </div>
                                         </div>
                                     </div>
@@ -625,18 +617,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
                 >
                     <h2 class="team-nickname">{nickname.value}</h2>
                     <Row class="manager-header">
-                        <div class="resource-box">
-                            <span class="material-icons">credit_card</span>
-                            {gold.value}
-                        </div>
-                        <div class="resource-box">
-                            <img src={heart} />
-                            {lives.value}
-                        </div>
-                        <div class="resource-box">
-                            <span class="material-icons">emoji_events</span>
-                            {wins.value}/5
-                        </div>
+                        <div class="resource-box moguls">{gold.value}</div>
+                        <div class="resource-box lives">{lives.value}</div>
+                        <div class="resource-box wins">{wins.value}/5</div>
                         <div style="flex-grow: 1" />
                         {findingMatch.value ? (
                             <div class="waiting">Finding opposing team...</div>
