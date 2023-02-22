@@ -14,7 +14,7 @@
                 shake
             }"
             draggable="true"
-            :ondragstart="() => (dragging = true)"
+            :ondragstart="dragStartHandler"
             :ondragend="() => (dragging = false)"
             :ondragenter="() => (draggingOver = true)"
             :ondragleave="() => (draggingOver = false)"
@@ -61,7 +61,7 @@
                 ><span class="material-icons">merge</span></span
             >
             <span class="character-display" v-if="character != null">
-                <img :src="characters[character.type].display" />
+                <img ref="imageElement" :src="characters[character.type].display" />
             </span>
             <span class="relevancy-display" v-if="character != null">
                 <img :src="heart" />
@@ -91,7 +91,7 @@ import { jsx, JSXFunction } from "features/feature";
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
 import { coerceComponent } from "util/vue";
-import { ref, shallowRef, watch, watchEffect } from "vue";
+import { Component, ref, shallowRef, watch, watchEffect } from "vue";
 import heart from "../../public/heart.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
@@ -115,6 +115,12 @@ const props = defineProps<{
 
 const dragging = ref(false);
 const draggingOver = ref(false);
+const imageElement = ref<Element | undefined>(undefined);
+
+function dragStartHandler(e: DragEvent) {
+    dragging.value = true;
+    e.dataTransfer?.setDragImage(imageElement.value as Element, 0, 0);
+}
 
 const emits = defineEmits<{
     (e: "dragstart"): void;
