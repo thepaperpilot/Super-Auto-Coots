@@ -68,7 +68,7 @@
                 <span>{{ character?.relevancy }}</span>
             </span>
             <span class="presence-display" v-if="character != null">
-                <span class="material-icons"> extension </span>
+                <img :src="star" />
                 <span>{{ character?.presence }}</span>
             </span>
             <span class="level-display" v-if="character != null">
@@ -93,6 +93,7 @@ import { Direction } from "util/common";
 import { coerceComponent } from "util/vue";
 import { Component, ref, shallowRef, watch, watchEffect } from "vue";
 import heart from "../../public/heart.png";
+import star from "../../public/presence_v2.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
 import level2_0 from "../../public/Lvl 2_0.png";
@@ -214,23 +215,40 @@ watchEffect(() => {
     z-index: 100;
 }
 
-.relevancy-display {
+.relevancy-display,
+.presence-display {
     position: absolute;
     top: -15%;
-    left: 0;
     transform: translate(-50%, -50%);
 }
 
-.relevancy-display img {
+.relevancy-display {
+    left: 0;
+}
+
+.presence-display {
+    right: 0;
+}
+
+.relevancy-display img,
+.presence-display img {
     position: absolute;
-    transform: translate(-45%, -45%);
     z-index: -1;
     width: 10vmin;
     height: 10vmin;
     image-rendering: pixelated;
 }
 
-.relevancy-display span {
+.relevancy-display img {
+    transform: translate(-45%, -45%);
+}
+
+.presence-display img {
+    transform: translate(-50%, -50%);
+}
+
+.relevancy-display span,
+.presence-display span {
     font-size: 1.5vmin;
     color: white;
     text-shadow: -1px 1px 0 black, 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
@@ -238,24 +256,6 @@ watchEffect(() => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.presence-display {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-50%, -50%);
-    color: var(--feature-foreground);
-}
-
-.presence-display .material-icons {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--accent1);
-    font-size: 2vmin;
-    z-index: -1;
 }
 
 .level-display {
