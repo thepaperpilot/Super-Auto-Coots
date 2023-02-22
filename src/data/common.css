@@ -170,7 +170,6 @@
 .battle-container {
     display: flex;
     flex-direction: column;
-    height: 100%
 }
 
 .battle-container:not(.fast) * {
@@ -179,23 +178,24 @@
 
 .teams-container {
     display: flex;
-    height: 100%;
-    width: 100%;
+    height: calc(93vh - 154px);
+    width: 93%;
+    flex-direction: column;
 }
 
 .team-container {
-    width: 100%;
-    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 0 4vmin;
+    margin: 2vmin 0;
+    height: calc(50% - 4vmin);
+}
+
+.team-container:first-child {
+    flex-direction: row-reverse;
 }
 
 .stream-container {
-    aspect-ratio: 16/9;
-    width: calc(100% - 4px);
-    margin: 0 auto;
+    height: 100%;
+    width: calc(100% - 18vmin);
     border: solid 2px var(--accent1);
     position: relative;
     background: var(--background);
@@ -207,17 +207,19 @@
     top: 1vmin;
     display: flex;
     flex-direction: column;
+    width: calc(100% - 2vmin);
 }
 
 .stream-details .stats {
     display: flex;
     margin-top: 1vmin;
+    width: 100%;
 }
 
 .view-counter {
     font-size: 2vmin;
-    position: absolute;
-    top: 1vmin;
+    flex-grow: 1;
+    text-align: right;
 }
 
 .streamers-container {
@@ -226,28 +228,30 @@
     position: absolute;
     left: 5%;
     bottom: 5%;
-    overflow-x: auto;
-    overflow-y: hidden;
 }
 
 .members-container {
-    height: 18vmin;
-    flex-shrink: 0;
-    overflow: hidden;
+    width: 18vmin;
 }
 
-.streamers-container .row,
-.members-container .row {
+.members-container .col {
+    flex-flow: column-reverse;
+}
+
+.members-container .tooltip-container {
+    margin-bottom: 0;
+    margin-top: -4vmin;
+}
+
+.members-container .tooltip-container:last-child {
+    margin-bottom: -2vmin;
+}
+
+.streamers-container .row {
     flex-flow: row
 }
 
-.streamers-container .character,
-.members-container .character {
-    margin: 4vmin 1vmin;
-}
-
 .battle-controls {
-    margin-bottom: 2vmin;
     display: flex;
 }
 
@@ -317,21 +321,6 @@
 .total-outcome-container .button {
     margin: 0;
     font-size: xx-large;
-}
-
-@media (orientation: portrait) {
-    .teams-container {
-        flex-direction: column;
-    }
-
-    .team-container {
-        margin: 4vmin 0;
-    }
-   
-    .stream-container {
-        width: unset;
-        height: 100%;
-    }
 }
 
 @keyframes swing {

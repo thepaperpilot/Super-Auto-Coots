@@ -1,3 +1,4 @@
+import Column from "components/layout/Column.vue";
 import Row from "components/layout/Row.vue";
 import { jsx } from "features/feature";
 import { createParticles } from "features/particles/particles";
@@ -487,14 +488,14 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div class="team-container">
                                 <div class="stream-container">
                                     <div class="stream-details" style="left: 1vmin">
-                                        <span style="margin-left: 0">{nickname.value} (YOU)</span>
-                                        <div class="stats" style="margin-left: 0">
+                                        <span>{nickname.value} (YOU)</span>
+                                        <div class="stats">
                                             <div class="resource-box lives">{lives.value}</div>
                                             <div class="resource-box wins">{wins.value}/5</div>
+                                            <div class="view-counter">
+                                                {formatWhole(views.value)} Views
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="view-counter" style="right: 1vmin">
-                                        {formatWhole(views.value)} Views
                                     </div>
                                     <Row class="streamers-container">
                                         <TransitionGroup name="character-transition">
@@ -514,10 +515,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </TransitionGroup>
                                     </Row>
                                 </div>
-                                <Row
-                                    class="members-container"
-                                    style="margin-left: 0; padding-right: 4vmin;"
-                                >
+                                <Column class="members-container">
                                     <TransitionGroup name="character-transition">
                                         {battle.value.team.map((member, i) => (
                                             <CharacterSlot
@@ -534,14 +532,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             />
                                         ))}
                                     </TransitionGroup>
-                                </Row>
+                                </Column>
                             </div>
                             <div class="team-container">
                                 <div class="stream-container">
                                     <div class="stream-details" style="right: 1vmin">
-                                        <span style="margin-right: 0">
-                                            {battle.value.enemyNickname}
-                                        </span>
+                                        <span>{battle.value.enemyNickname}</span>
                                         <div class="stats" style="margin-right: 0">
                                             <div class="resource-box lives">
                                                 {battle.value.enemyLives}
@@ -549,10 +545,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             <div class="resource-box wins">
                                                 {battle.value.enemyWins}/5
                                             </div>
+                                            <div class="view-counter">
+                                                {formatWhole(enemyViews.value)} Views
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="view-counter" style="left: 1vmin">
-                                        {formatWhole(enemyViews.value)} Views
                                     </div>
                                     <Row class="streamers-container">
                                         <TransitionGroup name="character-transition">
@@ -569,31 +565,25 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </TransitionGroup>
                                     </Row>
                                 </div>
-                                <Row
-                                    class="members-container"
-                                    style="margin-right: 0; padding: 0 4vmin;"
-                                >
+                                <Column class="members-container">
                                     <TransitionGroup name="character-transition">
-                                        {battle.value.enemyTeam
-                                            .slice()
-                                            .reverse()
-                                            .map((member, i) => (
-                                                <CharacterSlot
-                                                    character={member}
-                                                    key={battle.value!.enemyStreamers.length + i}
-                                                    shake={
-                                                        previewing.value &&
-                                                        queue.value[0]?.action === "join" &&
-                                                        member ===
-                                                            battle.value?.enemyTeam[
-                                                                (battle.value?.enemyTeam.length ??
-                                                                    0) - 1
-                                                            ]
-                                                    }
-                                                />
-                                            ))}
+                                        {battle.value.enemyTeam.map((member, i) => (
+                                            <CharacterSlot
+                                                character={member}
+                                                key={battle.value!.enemyStreamers.length + i}
+                                                shake={
+                                                    previewing.value &&
+                                                    queue.value[0]?.action === "join" &&
+                                                    member ===
+                                                        battle.value?.enemyTeam[
+                                                            (battle.value?.enemyTeam.length ?? 0) -
+                                                                1
+                                                        ]
+                                                }
+                                            />
+                                        ))}
                                     </TransitionGroup>
-                                </Row>
+                                </Column>
                             </div>
                         </div>
                         {showingOutcome.value ? (
