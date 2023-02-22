@@ -231,8 +231,7 @@ watchEffect(() => {
 }
 
 .relevancy-display span {
-    font-family: "Roboto Mono";
-    font-size: 2vmin;
+    font-size: 1.5vmin;
     color: white;
     text-shadow: -1px 1px 0 black, 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;
     position: absolute;

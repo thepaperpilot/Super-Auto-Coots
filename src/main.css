@@ -4,10 +4,11 @@
 
 * {
 	transition-duration: 0.5s;
-	font-family: "Roboto Mono", monospace;
-	font-weight: bold;
+	font-family: DogicaPixelBold,  "Roboto Mono", monospace;
+	font-weight: normal;
 	margin: auto;
 	text-size-adjust: none;
+    line-height: 1.25;
 }
 
 *:focus {

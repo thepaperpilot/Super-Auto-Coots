@@ -41,9 +41,9 @@
 }
 
 .team-nickname {
-    font-size: 3vmin;
+    font-size: 2.5vmin;
     z-index: 105;
-    top: 2.8vmin;
+    top: 3.2vmin;
     position: absolute;
     left: 6.3vmin;
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
@@ -75,7 +75,7 @@
 }
 
 .resource-box {
-    font-size: 3vmin;
+    font-size: 2vmin;
     align-items: center;
     image-rendering: pixelated;
     border-style: solid;
