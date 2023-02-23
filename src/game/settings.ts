@@ -22,6 +22,7 @@ export interface Settings {
     alignUnits: boolean;
     autoplay: boolean;
     fast: boolean;
+    showTutorial: boolean;
 }
 
 const state = reactive<Partial<Settings>>({
@@ -32,7 +33,8 @@ const state = reactive<Partial<Settings>>({
     unthrottled: false,
     alignUnits: false,
     autoplay: false,
-    fast: false
+    fast: false,
+    showTutorial: true
 });
 
 watch(

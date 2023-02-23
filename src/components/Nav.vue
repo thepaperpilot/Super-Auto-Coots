@@ -36,6 +36,11 @@
                 <span class="material-icons">info</span>
             </Tooltip>
         </div>
+        <div @click="() => (settings.showTutorial = true)">
+            <Tooltip display="Help" :direction="Direction.Down" class="info">
+                <span class="material-icons">help</span>
+            </Tooltip>
+        </div>
         <div @click="options?.open()">
             <Tooltip display="Settings" :direction="Direction.Down" xoffset="-66px">
                 <span class="material-icons">settings</span>
@@ -92,6 +97,7 @@
 import Changelog from "data/Changelog.vue";
 import projInfo from "data/projInfo.json";
 import Tooltip from "features/tooltips/Tooltip.vue";
+import settings from "game/settings";
 import { Direction } from "util/common";
 import type { ComponentPublicInstance } from "vue";
 import { ref } from "vue";

@@ -80,9 +80,9 @@ export default defineComponent({
 .tabButton {
     background-color: transparent;
     color: var(--foreground);
-    font-size: 20px;
+    font-size: 14px;
     cursor: pointer;
-    padding: 5px 20px;
+    padding: 5px 10px;
     margin: 5px;
     border-radius: 5px;
     border: 2px solid;
