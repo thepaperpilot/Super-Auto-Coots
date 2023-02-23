@@ -50,7 +50,7 @@ const tutorialTabs = createTabFamily({
         glowColor(): string {
             return tutorialTabs.activeTab.value === this.tab ? "var(--foreground)" : ""
         },
-        tab: jsx(() => <div>Have you ever played Super Auto Pets? Great, then you already know the basics! I'd suggest checking out the Livestream tab because it's quite different!<br/><br/>For those unfamiliar with SAP, this is a game in which you'll manage a team of Coots that have a livestream battle with another player's team of Coots. You win the game by winning 5 <img src={wins} /><span style="color: cadetblue">trophies</span> before losing all 3 <img src={heart} /><span style="color: red">lives</span>.</div>)
+        tab: jsx(() => <div>Have you ever played Super Auto Pets? Great, then you already know the basics! I'd suggest checking out the Livestream tab because it's quite different!<br/><br/>For those unfamiliar with SAP, this is a game in which you'll manage a team of Coots that have a series of livestream battles with other player's teams of Coots. You win the game by winning 5 <img src={wins} /><span style="color: cadetblue">trophies</span> before losing all 3 <img src={heart} /><span style="color: red">lives</span>.</div>)
     }),
     managing: () => ({
         display: "Managing",
