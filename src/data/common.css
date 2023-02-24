@@ -323,6 +323,11 @@
     font-size: xx-large;
 }
 
+.tooltip img {
+    height: 1em;
+    padding-right: 0.5em;
+}
+
 @keyframes swing {
   0%, 100% { transform: rotate(-30deg); }
   20% {transform:scale(.95);}

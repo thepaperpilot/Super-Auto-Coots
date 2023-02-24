@@ -11,17 +11,19 @@ import settings from "game/settings";
 import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
 import { computed, ref, TransitionGroup } from "vue";
-import heart from "../../public/heart.png";
+import heart_small from "../../public/heart_small.png";
 import ludwig from "../../public/Ludwig Coots.png";
 import maid from "../../public/Maid Coots.png";
 import mail from "../../public/Mogul Mail Coots.png";
 import money from "../../public/Mogul Money Coots.png";
+import money_small from "../../public/money_small.png";
 import coots from "../../public/Normal Coots.png";
 import qt from "../../public/QT Coots.png";
 import shopGif from "../../public/shop.gif";
 import shopStill from "../../public/shop1.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
+import star_small from "../../public/presence_small.png";
 import vespa from "../../public/Vespa Coots.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
@@ -42,7 +44,8 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream joined</i>: Deal {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
-                    relevancy damage to every character on a stream
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> damage to every character on a stream
                 </>
             )),
         performAbility(char) {
@@ -64,7 +67,8 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream joined</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
-                    presence for every character on that livestream
+                    <img src={star_small} />
+                    <span style="color: gold">Presence</span> for every character on that livestream
                 </>
             )),
         performAbility(char) {
@@ -88,8 +92,12 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: char =>
             jsx(() => (
                 <>
-                    <i>Sold</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} mogul
-                    {char.exp >= 3 ? "s" : ""}
+                    <i>Sold</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    <img src={money_small} />
+                    <span style="color: yellow">
+                        Mogul
+                        {char.exp >= 3 ? "s" : ""}
+                    </span>
                 </>
             )),
         performAbility(char) {
@@ -107,8 +115,10 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: char =>
             jsx(() => (
                 <>
-                    <i>Level up</i>: Every character gains {char.exp >= 3 ? 2 : 1} relevancy and
-                    presence
+                    <i>Level up</i>: Every character gains {char.exp >= 3 ? 2 : 1}{" "}
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span>
                 </>
             )),
         performAbility(char) {
@@ -132,7 +142,9 @@ export const characters: Record<string, CharacterInfo> = {
                 <>
                     <i>Livestream joined</i>: Summon a lv{" "}
                     {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Ludwig Coots with this character's
-                    stats.
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span>.
                 </>
             )),
         performAbility(char) {
@@ -164,7 +176,10 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream ended</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
-                    relevancy for every character on either livestream with more relevancy.
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> for every character on either
+                    livestream with more <img src={heart_small} />
+                    <span style="color: red">Relevancy</span>.
                 </>
             )),
         performAbility(char) {
@@ -190,8 +205,10 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Stream started</i>: Permanently gain{" "}
-                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} presence if you have 2 or more
-                    moguls.
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={star_small} />
+                    <span style="color: gold">Presence</span> if you have 2 or more
+                    <img src={money_small} />
+                    <span style="color: yellow">Moguls</span>.
                 </>
             )),
         performAbility(char) {
@@ -211,7 +228,9 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream joined</i>: Set the character that most recently joined the enemy
-                    livestream's presence to 0. This effect does not improve on level up.
+                    livestream's <img src={star_small} />
+                    <span style="color: gold">Presence</span> to 0. This effect does not improve on
+                    level up.
                 </>
             )),
         performAbility(char) {
