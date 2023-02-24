@@ -71,6 +71,9 @@
                 <img :src="star" />
                 <span>{{ character?.presence }}</span>
             </span>
+            <span class="frozen" v-if="character != null && frozen">
+                <img :src="lock" />
+            </span>
             <span class="level-display" v-if="character != null">
                 <img :src="level1_0" v-if="character.exp === 1" />
                 <img :src="level1_1" v-if="character.exp === 2" />
@@ -79,7 +82,6 @@
                 <img :src="level2_2" v-if="character.exp === 5" />
                 <img :src="level3" v-if="character.exp === 6" />
             </span>
-            <div v-if="frozen" class="frozen" />
             <Node v-if="id" :id="id" />
         </div>
     </Tooltip>
@@ -94,6 +96,7 @@ import { coerceComponent } from "util/vue";
 import { Component, ref, shallowRef, watch, watchEffect } from "vue";
 import heart from "../../public/heart.png";
 import star from "../../public/presence_v2.png";
+import lock from "../../public/Freeze icon.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
 import level2_0 from "../../public/Lvl 2_0.png";
@@ -290,13 +293,19 @@ watchEffect(() => {
 
 .frozen {
     position: absolute;
-    background: skyblue;
-    top: 0;
     left: 0;
-    right: 0;
     bottom: 0;
-    opacity: 0.5;
-    transform: rotate(45deg);
+    transform: translate(-50%, -50%);
+    left: 0;
+}
+
+.frozen img {
+    position: absolute;
+    z-index: -1;
+    width: 10vmin;
+    height: 10vmin;
+    image-rendering: pixelated;
+    transform: translate(-50%, -50%);
 }
 
 @keyframes bouncingMoveIndicator {
