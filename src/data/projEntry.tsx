@@ -3,6 +3,7 @@ import Row from "components/layout/Row.vue";
 import { jsx } from "features/feature";
 import { createParticles } from "features/particles/particles";
 import { createReset } from "features/reset";
+import Tooltip from "features/tooltips/Tooltip.vue";
 import { globalBus } from "game/events";
 import type { BaseLayer, GenericLayer } from "game/layers";
 import { createLayer } from "game/layers";
@@ -18,13 +19,15 @@ import mail from "../../public/Mogul Mail Coots.png";
 import money from "../../public/Mogul Money Coots.png";
 import money_small from "../../public/money_small.png";
 import coots from "../../public/Normal Coots.png";
+import star_small from "../../public/presence_small.png";
 import qt from "../../public/QT Coots.png";
 import shopGif from "../../public/shop.gif";
 import shopStill from "../../public/shop1.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
-import star_small from "../../public/presence_small.png";
 import vespa from "../../public/Vespa Coots.png";
+import sellShop from "../../public/shop_Sell1.png";
+import freezeShop from "../../public/Freeze shop.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
@@ -700,49 +703,79 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             />
                         ))}
                     </Row>
-                    <Row class="shop">
-                        <div
-                            class="reroll"
-                            style={
-                                gold.value > 0 ? "" : "color: var(--locked); cursor: not-allowed"
-                            }
-                            onClick={() => {
-                                if (gold.value > 0) {
-                                    emit("reroll");
-                                }
-                            }}
-                        >
-                            <img src={showRefreshAnim.value ? shopGif : shopStill} />
-                        </div>
-                        {shop.value.map((item, i) => (
-                            <CharacterSlot
-                                id={`shop-char-${i}`}
-                                frozen={frozen.value.includes(i)}
-                                character={item == null ? undefined : item}
-                                isSelected={selectedShopItem.value === i}
-                                isShop={true}
-                                isDragging={isDragging.value}
-                                onClick={(e: MouseEvent) => {
-                                    if (item == null) {
-                                        return;
+                    <Row style="margin-top: 10vh;">
+                        {selectedCharacter.value != null ? (
+                            <Tooltip display="Sell Coots">
+                                <div
+                                    class="reroll"
+                                    onDragover={e => e.preventDefault()}
+                                    onClick={() => emit("sell", selectedCharacter.value!)}
+                                    onDrop={() => emit("sell", selectedCharacter.value!)}
+                                >
+                                    <img src={sellShop} />
+                                </div>
+                            </Tooltip>
+                        ) : selectedShopItem.value != null ? (
+                            <Tooltip display="Freeze Coots">
+                                <div
+                                    class="reroll"
+                                    onDragover={e => e.preventDefault()}
+                                    onClick={() => emit("freeze", selectedShopItem.value!)}
+                                    onDrop={() => emit("freeze", selectedShopItem.value!)}
+                                >
+                                    <img src={freezeShop} />
+                                </div>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip display="Re-roll store">
+                                <div
+                                    class="reroll"
+                                    style={
+                                        gold.value > 0
+                                            ? ""
+                                            : "color: var(--locked); cursor: not-allowed"
                                     }
-                                    selectedShopItem.value =
-                                        selectedShopItem.value === i ? null : i;
-                                    selectedCharacter.value = null;
-                                    e.stopPropagation();
-                                }}
-                                onDragstart={() => {
-                                    isDragging.value = true;
-                                    selectedCharacter.value = null;
-                                    selectedShopItem.value = i;
-                                }}
-                                onDragend={() => {
-                                    isDragging.value = false;
-                                    selectedCharacter.value = null;
-                                    selectedShopItem.value = null;
-                                }}
-                            />
-                        ))}
+                                    onClick={() => {
+                                        if (gold.value > 0) {
+                                            emit("reroll");
+                                        }
+                                    }}
+                                >
+                                    <img src={showRefreshAnim.value ? shopGif : shopStill} />
+                                </div>
+                            </Tooltip>
+                        )}
+                        <Row class="shop">
+                            {shop.value.map((item, i) => (
+                                <CharacterSlot
+                                    id={`shop-char-${i}`}
+                                    frozen={frozen.value.includes(i)}
+                                    character={item == null ? undefined : item}
+                                    isSelected={selectedShopItem.value === i}
+                                    isShop={true}
+                                    isDragging={isDragging.value}
+                                    onClick={(e: MouseEvent) => {
+                                        if (item == null) {
+                                            return;
+                                        }
+                                        selectedShopItem.value =
+                                            selectedShopItem.value === i ? null : i;
+                                        selectedCharacter.value = null;
+                                        e.stopPropagation();
+                                    }}
+                                    onDragstart={() => {
+                                        isDragging.value = true;
+                                        selectedCharacter.value = null;
+                                        selectedShopItem.value = i;
+                                    }}
+                                    onDragend={() => {
+                                        isDragging.value = false;
+                                        selectedCharacter.value = null;
+                                        selectedShopItem.value = null;
+                                    }}
+                                />
+                            ))}
+                        </Row>
                     </Row>
                     {render(particles)}
                 </div>
