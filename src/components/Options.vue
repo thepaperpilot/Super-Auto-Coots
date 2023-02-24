@@ -5,25 +5,24 @@
         </template>
         <template v-slot:body>
             <component :is="settingFieldsComponent" />
+            <Text title="Private room name" v-model="privateRoomName" />
+            <Text title="Private room PW" :password="true" v-model="privateRoomPassword" />
+            <div>Currently in: {{room ? room : "Public lobby"}}.</div>
+            <button class="button" style="padding: 1em" v-if="room !== privateRoomName" @click="joinRoom">Connect to {{privateRoomName || "Public Lobby"}}</button>
+            <div style="color: red" v-if="roomConnectionError">{{ roomConnectionError }}</div>
         </template>
     </Modal>
 </template>
 
 <script setup lang="tsx">
 import Modal from "components/Modal.vue";
-import projInfo from "data/projInfo.json";
-import { save } from "util/save";
-import rawThemes from "data/themes";
+import { emit, room, roomConnectionError } from "data/socket";
 import { jsx } from "features/feature";
-import Tooltip from "features/tooltips/Tooltip.vue";
-import player from "game/player";
 import settings, { settingFields } from "game/settings";
-import { camelToTitle, Direction } from "util/common";
+import { save } from "util/save";
 import { coerceComponent, render } from "util/vue";
 import { computed, ref, toRefs } from "vue";
-import Select from "./fields/Select.vue";
-import Toggle from "./fields/Toggle.vue";
-import FeedbackButton from "./fields/FeedbackButton.vue";
+import Text from "./fields/Text.vue";
 
 const isOpen = ref(false);
 const currentTab = ref("behaviour");
@@ -45,68 +44,16 @@ defineExpose({
     }
 });
 
-const themes = Object.keys(rawThemes).map(theme => ({
-    label: camelToTitle(theme),
-    value: theme
-}));
-
 const settingFieldsComponent = computed(() => {
     return coerceComponent(jsx(() => (<>{settingFields.map(render)}</>)));
 });
 
-const { showTPS, theme, unthrottled, alignUnits } = toRefs(settings);
-const { autosave, offlineProd } = toRefs(player);
-const isPaused = computed({
-    get() {
-        return player.devSpeed === 0;
-    },
-    set(value: boolean) {
-        player.devSpeed = value ? 0 : null;
-    }
-});
+const { privateRoomName, privateRoomPassword } = toRefs(settings);
 
-const unthrottledTitle = jsx(() => (
-    <span class="option-title">
-        Unthrottled
-        <desc>Allow the game to run as fast as possible. Not battery friendly.</desc>
-    </span>
-));
-const offlineProdTitle = jsx(() => (
-    <span class="option-title">
-        Offline Production<Tooltip display="Save-specific" direction={Direction.Right}>*</Tooltip>
-        <desc>Simulate production that occurs while the game is closed.</desc>
-    </span>
-));
-const autosaveTitle = jsx(() => (
-    <span class="option-title">
-        Autosave<Tooltip display="Save-specific" direction={Direction.Right}>*</Tooltip>
-        <desc>Automatically save the game every second or when the game is closed.</desc>
-    </span>
-));
-const isPausedTitle = jsx(() => (
-    <span class="option-title">
-        Pause game<Tooltip display="Save-specific" direction={Direction.Right}>*</Tooltip>
-        <desc>Stop everything from moving.</desc>
-    </span>
-));
-const themeTitle = jsx(() => (
-    <span class="option-title">
-        Theme
-        <desc>How the game looks.</desc>
-    </span>
-));
-const showTPSTitle = jsx(() => (
-    <span class="option-title">
-        Show TPS
-        <desc>Show TPS meter at the bottom-left corner of the page.</desc>
-    </span>
-));
-const alignModifierUnitsTitle = jsx(() => (
-    <span class="option-title">
-        Align modifier units
-        <desc>Align numbers to the beginning of the unit in modifier view.</desc>
-    </span>
-));
+function joinRoom() {
+    roomConnectionError.value = "";
+    emit("change room", settings.privateRoomName, settings.privateRoomPassword);
+}
 </script>
 
 <style>

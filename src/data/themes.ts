@@ -110,7 +110,7 @@ export default {
             "--highlighted": "#434c5e",
             "--bought": "#fff7f6",
             "--danger": "#D08770",
-            "--link": "#412323",
+            "--link": "#8423a9",
             "--outline": "#551842",
             "--accent1": "#dc7d71",
             "--accent2": "#8423a9",

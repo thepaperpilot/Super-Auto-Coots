@@ -42,6 +42,8 @@ interface ServerToClientEvents {
     ) => void;
     freeze: (index: number) => void;
     sell: (index: number) => void;
+    room: (room: string) => void;
+    "room failed": (err: string) => void;
 }
 
 interface ClientToServerEvents {
@@ -53,4 +55,5 @@ interface ClientToServerEvents {
     reroll: () => void;
     stream: () => void;
     newTurn: () => void;
+    "change room": (room: string, password: string) => void;
 }

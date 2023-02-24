@@ -23,6 +23,8 @@ export interface Settings {
     autoplay: boolean;
     fast: boolean;
     showTutorial: boolean;
+    privateRoomName: string;
+    privateRoomPassword: string;
 }
 
 const state = reactive<Partial<Settings>>({
@@ -34,7 +36,9 @@ const state = reactive<Partial<Settings>>({
     alignUnits: false,
     autoplay: false,
     fast: false,
-    showTutorial: true
+    showTutorial: true,
+    privateRoomName: "",
+    privateRoomPassword: ""
 });
 
 watch(

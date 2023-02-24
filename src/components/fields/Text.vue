@@ -14,7 +14,7 @@
             />
             <input
                 v-else
-                type="text"
+                :type="password == true ? 'password' : 'text'"
                 v-model="value"
                 :placeholder="placeholder"
                 :class="{ fullWidth: !title }"
@@ -39,6 +39,7 @@ const props = defineProps<{
     placeholder?: string;
     maxHeight?: number;
     submitOnBlur?: boolean;
+    password?: boolean;
 }>();
 const emit = defineEmits<{
     (e: "update:modelValue", value: string): void;

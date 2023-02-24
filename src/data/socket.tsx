@@ -2,7 +2,7 @@ import Text from "components/fields/Text.vue";
 import projInfo from "data/projInfo.json";
 import { jsx, setDefault } from "features/feature";
 import { globalBus } from "game/events";
-import { registerSettingField } from "game/settings";
+import settings, { registerSettingField } from "game/settings";
 import satisfies from "semver/functions/satisfies";
 import { io, Socket } from "socket.io-client";
 import { ref, watch } from "vue";
@@ -13,6 +13,8 @@ import { BattleOutcome, Character, ClientToServerEvents, ServerToClientEvents } 
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
+export const room = ref<string>("");
+export const roomConnectionError = ref<string>("");
 
 const toast = useToast();
 
@@ -93,6 +95,11 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         connectionError.value = "";
         connected.value = true;
         main.reset.reset();
+        room.value = "";
+        roomConnectionError.value = "";
+        if (settings.privateRoomName) {
+            socket.emit("change room", settings.privateRoomName, settings.privateRoomPassword);
+        }
     });
     socket.on("connect_error", error => {
         connectionError.value = `${error.name}: ${error.message}`;
@@ -222,6 +229,15 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         } else {
             main.frozen.value.push(index);
         }
+    });
+    socket.on("room", r => {
+        main.reset.reset();
+        room.value = r;
+        roomConnectionError.value = "";
+    });
+    socket.on("room failed", err => {
+        room.value = "";
+        roomConnectionError.value = err;
     });
 }
 
