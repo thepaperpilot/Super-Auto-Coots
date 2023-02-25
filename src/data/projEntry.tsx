@@ -50,6 +50,7 @@ import slime from "../../public/SlimeCoots.png";
 import smash from "../../public/smash coots.png";
 import awards from "../../public/streamer award coots.png";
 import aimen from "../../public/aimen coots.png";
+import moves from "../../public/mogul moves coots.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
