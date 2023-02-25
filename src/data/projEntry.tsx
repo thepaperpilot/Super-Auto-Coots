@@ -336,7 +336,7 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: char =>
             jsx(() => (
                 <>
-                    <i>Turn started</i>: If you won the last battle, all Coots gain
+                    <i>Turn started</i>: If you won the last battle, all Coots gain{" "}
                     {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={heart_small} />
                     <span style="color: red">Relevancy</span>
                 </>
