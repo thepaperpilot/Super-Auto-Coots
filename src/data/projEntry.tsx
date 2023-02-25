@@ -79,8 +79,10 @@ export const characters: Record<string, CharacterInfo> = {
                 return;
             }
             const damage = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
-            main.battle.value.streamers.forEach(s => (s.relevancy -= damage));
-            main.battle.value.enemyStreamers.forEach(s => (s.relevancy -= damage));
+            [...main.battle.value.streamers, ...main.battle.value.enemyStreamers].forEach(s => {
+                s.relevancy -= damage;
+                main.hurt(s);
+            });
         }
     },
     ludwig: {
@@ -159,6 +161,7 @@ export const characters: Record<string, CharacterInfo> = {
             }
             for (let i = 0; i < 2 && i < opposingTeam.length; i++) {
                 opposingTeam[i].presence -= damage;
+                main.hurt(opposingTeam[i]);
             }
         }
     },
@@ -570,6 +573,7 @@ export const characters: Record<string, CharacterInfo> = {
                 });
                 if (m != null) {
                     m.presence -= 3;
+                    main.hurt(m);
                 }
             } else {
                 const m = main.battle.value.streamers.reduce((a, b) => {
@@ -580,6 +584,7 @@ export const characters: Record<string, CharacterInfo> = {
                 });
                 if (m != null) {
                     m.presence -= 3;
+                    main.hurt(m);
                 }
             }
         }
@@ -829,6 +834,20 @@ export const main = createLayer("main", function (this: BaseLayer) {
             }
             playClicked.value = false;
             setTimeout(prepareMove, settings.fast ? 750 : 1250);
+        }
+    }
+
+    function hurt(char: Character) {
+        if (main.battle.value == null) {
+            return;
+        }
+        if (characters[char.type].abilityType === "Hurt") {
+            main.queue.value.unshift({ action: "Hurt", target: char });
+        } else if (
+            characters[char.type].abilityType === "Faint" &&
+            (char.presence <= 0 || char.relevancy <= 0)
+        ) {
+            main.queue.value.unshift({ action: "Faint", target: char });
         }
     }
 
@@ -1185,7 +1204,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         prepareMove,
         particles,
         queue,
-        showRefreshAnim
+        showRefreshAnim,
+        hurt
     };
 });
 
