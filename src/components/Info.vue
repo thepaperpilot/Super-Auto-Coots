@@ -43,6 +43,9 @@
                 </div>
                 <br />
                 <div>Time Played: {{ timePlayed }}</div>
+                <br />
+                <div>Games won: {{ victories }}</div>
+                <div>Games lost: {{ losses }}</div>
                 <component :is="infoComponent" />
             </div>
         </template>
@@ -55,7 +58,7 @@ import type Changelog from "data/Changelog.vue";
 import projInfo from "data/projInfo.json";
 import { jsx } from "features/feature";
 import player from "game/player";
-import { infoComponents } from "game/settings";
+import settings, { infoComponents } from "game/settings";
 import { formatTime } from "util/bignum";
 import { coerceComponent, render } from "util/vue";
 import { computed, ref, toRefs, unref } from "vue";
@@ -68,6 +71,8 @@ const props = toRefs(_props);
 const isOpen = ref(false);
 
 const timePlayed = computed(() => formatTime(player.timePlayed));
+
+const { victories, losses } = toRefs(settings);
 
 const infoComponent = computed(() => {
     return coerceComponent(jsx(() => (<>{infoComponents.map(render)}</>)));

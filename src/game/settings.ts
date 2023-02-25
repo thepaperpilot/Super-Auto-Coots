@@ -25,6 +25,8 @@ export interface Settings {
     showTutorial: boolean;
     privateRoomName: string;
     privateRoomPassword: string;
+    victories: number;
+    losses: number;
 }
 
 const state = reactive<Partial<Settings>>({
@@ -38,7 +40,9 @@ const state = reactive<Partial<Settings>>({
     fast: false,
     showTutorial: true,
     privateRoomName: "",
-    privateRoomPassword: ""
+    privateRoomPassword: "",
+    victories: 0,
+    losses: 0
 });
 
 watch(
@@ -73,7 +77,12 @@ export const hardResetSettings = (window.hardResetSettings = () => {
         theme: Themes.Nordic,
         alignUnits: false,
         autoplay: false,
-        fast: false
+        fast: false,
+        showTutorial: true,
+        privateRoomName: "",
+        privateRoomPassword: "",
+        victories: 0,
+        losses: 0
     };
     globalBus.emit("loadSettings", settings);
     Object.assign(state, settings);

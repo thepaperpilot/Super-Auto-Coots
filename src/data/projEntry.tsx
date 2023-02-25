@@ -11,7 +11,7 @@ import type { Player } from "game/player";
 import settings from "game/settings";
 import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
-import { computed, ref, TransitionGroup } from "vue";
+import { computed, ref, TransitionGroup, watch } from "vue";
 import autoplay from "../../public/autoplay.png";
 import defeatButton from "../../public/Defeat Button.png";
 import defeatFace from "../../public/defeat face.png";
@@ -863,6 +863,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
             this.boundingRect.value = boundingRect;
         }
     }));
+
+    watch([wins, lives], ([wins, lives]) => {
+        if (wins >= 5) {
+            settings.victories++;
+        }
+        if (lives <= 0) {
+            settings.losses++;
+        }
+    });
 
     return {
         name: "Game",
