@@ -6,7 +6,9 @@ type AbilityTypes =
     | "LevelUp"
     | "LivestreamEnded"
     | "StreamStarted"
-    | "StartTurn";
+    | "StartTurn"
+    | "Hurt"
+    | "Faint";
 
 interface CharacterInfo {
     nickname: string;
