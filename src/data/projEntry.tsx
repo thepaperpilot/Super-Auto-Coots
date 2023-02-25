@@ -12,6 +12,9 @@ import settings from "game/settings";
 import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
 import { computed, ref, TransitionGroup } from "vue";
+import autoplay from "../../public/autoplay.png";
+import fast from "../../public/fast forward.png";
+import freezeShop from "../../public/Freeze shop.png";
 import heart_small from "../../public/heart_small.png";
 import ludwig from "../../public/Ludwig Coots.png";
 import maid from "../../public/Maid Coots.png";
@@ -19,15 +22,15 @@ import mail from "../../public/Mogul Mail Coots.png";
 import money from "../../public/Mogul Money Coots.png";
 import money_small from "../../public/money_small.png";
 import coots from "../../public/Normal Coots.png";
+import play from "../../public/play.png";
 import star_small from "../../public/presence_small.png";
 import qt from "../../public/QT Coots.png";
 import shopGif from "../../public/shop.gif";
 import shopStill from "../../public/shop1.png";
+import sellShop from "../../public/shop_Sell1.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
 import vespa from "../../public/Vespa Coots.png";
-import sellShop from "../../public/shop_Sell1.png";
-import freezeShop from "../../public/Freeze shop.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
@@ -480,8 +483,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     prepareMove();
                                 }}
                             >
-                                <span class="material-icons">play_arrow</span>
-                                <span>Play</span>
+                                <img src={play} />
                             </button>
                             <button
                                 class={{ button: true, active: settings.autoplay }}
@@ -492,15 +494,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     }
                                 }}
                             >
-                                <span class="material-icons">all_inclusive</span>
-                                <span>Autoplay</span>
+                                <img src={autoplay} />
                             </button>
                             <button
                                 class={{ button: true, active: settings.fast }}
                                 onClick={() => (settings.fast = !settings.fast)}
                             >
-                                <span class="material-icons">fast_forward</span>
-                                <span>Fast</span>
+                                <img src={fast} />
                             </button>
                         </div>
                         <div

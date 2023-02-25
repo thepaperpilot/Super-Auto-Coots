@@ -255,20 +255,20 @@
 
 .battle-controls {
     display: flex;
+    margin-top: -2vmin;
 }
 
 .battle-controls .button {
-    display: flex;
-    flex-direction: column;
-    font-size: 2vmin;
     margin: 1vmin;
-    border: solid 2px var(--link);
-    border-radius: var(--border-radius);
 }
 
 .battle-controls .button.active {
-    background: var(--link);
-    color: var(--feature-foreground);
+    filter: brightness(0.65);
+}
+
+.battle-controls .button img {
+    height: 7vmin;
+    image-rendering: pixelated;
 }
 
 .outcome {
