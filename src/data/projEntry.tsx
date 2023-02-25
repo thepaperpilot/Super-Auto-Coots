@@ -328,7 +328,7 @@ export const characters: Record<string, CharacterInfo> = {
         }
     },
     hasan: {
-        nickname: "Chessboxing Coots",
+        nickname: "Hasan Coots",
         initialRelevancy: 2,
         initialPresence: 3,
         display: hasan,
