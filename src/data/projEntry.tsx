@@ -31,6 +31,9 @@ import sellShop from "../../public/shop_Sell1.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
 import vespa from "../../public/Vespa Coots.png";
+import victoryFace from "../../public/win face.png";
+import defeatFace from "../../public/defeat face.png";
+import playAgain from "../../public/Play Again.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
@@ -441,16 +444,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
             if (wins.value >= 5) {
                 return (
                     <div class="total-outcome-container">
-                        <span class="total-outcome">You Won!</span>
-                        <span class="smiley">😃</span>
-                        <Row>
+                        <img class="smiley" src={victoryFace} />
+                        <Row style="margin-top: 5vmin;">
                             {new Array(3).fill(0).map((_, i) => (
                                 <CharacterSlot character={team.value[i]} />
                             ))}
                         </Row>
-                        <button class="button" onClick={() => location.reload()}>
-                            Play again
-                        </button>
+                        <img src={playAgain} class="button" onClick={() => location.reload()} />
                         {render(particles)}
                     </div>
                 );
@@ -458,16 +458,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
             if (lives.value <= 0) {
                 return (
                     <div class="total-outcome-container">
-                        <span class="total-outcome">You ran out of lives!</span>
-                        <span class="smiley">😰</span>
-                        <Row>
+                        <img class="smiley" src={defeatFace} />
+                        <Row style="margin-top: 5vmin;">
                             {new Array(3).fill(0).map((_, i) => (
                                 <CharacterSlot character={team.value[i]} />
                             ))}
                         </Row>
-                        <button class="button" onClick={() => location.reload()}>
-                            Play again
-                        </button>
+                        <img src={playAgain} class="replay" onClick={() => location.reload()} />
                         {render(particles)}
                     </div>
                 );
@@ -796,7 +793,6 @@ globalBus.on("update", diff => {
                     Math.random() * boundingRect.width,
                     Math.random() * boundingRect.height
                 );
-                console.log(e);
                 e.playOnceAndDestroy();
             });
         }

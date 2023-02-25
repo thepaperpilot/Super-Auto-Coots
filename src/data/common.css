@@ -309,20 +309,16 @@
     height: 100%;
 }
 
-.total-outcome {
-    font-size: 4vmin;
-    margin: 0;
-}
-
 .smiley {
-    font-size: 20vmin;
-    margin: 0;
+    margin: 0 auto;
     animation: swing 2s infinite ease;
+    height: 35vmin;
+    image-rendering: pixelated;
 }
 
-.total-outcome-container .button {
-    margin: 0;
-    font-size: xx-large;
+.total-outcome-container .replay {
+    margin: 0 auto;
+    height: 15vmin;
 }
 
 .tooltip img {
