@@ -636,37 +636,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         {findingMatch.value ? (
                             <div class="waiting">Finding opposing team...</div>
                         ) : (
-                            <>
-                                {selectedCharacter.value == null ? null : (
-                                    <button
-                                        class="button"
-                                        onDragover={e => e.preventDefault()}
-                                        onClick={() => emit("sell", selectedCharacter.value!)}
-                                        onDrop={() => emit("sell", selectedCharacter.value!)}
-                                    >
-                                        Sell
-                                    </button>
-                                )}
-                                {selectedShopItem.value == null ? null : (
-                                    <button
-                                        class="button"
-                                        onDragover={e => e.preventDefault()}
-                                        onClick={() => emit("freeze", selectedShopItem.value!)}
-                                        onDrop={() => emit("freeze", selectedShopItem.value!)}
-                                    >
-                                        Freeze
-                                    </button>
-                                )}
-                                <img
-                                    class="startStream"
-                                    draggable="false"
-                                    onClick={() => {
-                                        emit("stream");
-                                        findingMatch.value = true;
-                                    }}
-                                    src={startStream}
-                                />
-                            </>
+                            <img
+                                class="startStream"
+                                draggable="false"
+                                onClick={() => {
+                                    emit("stream");
+                                    findingMatch.value = true;
+                                }}
+                                src={startStream}
+                            />
                         )}
                     </Row>
                     <div style="flex-grow: 1" />
