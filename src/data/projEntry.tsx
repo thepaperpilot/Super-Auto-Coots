@@ -373,7 +373,7 @@ export const characters: Record<string, CharacterInfo> = {
         }
     },
     frog: {
-        nickname: "Mr.Beast Coots",
+        nickname: "Frog Coots",
         initialRelevancy: 1,
         initialPresence: 2,
         display: frog,
