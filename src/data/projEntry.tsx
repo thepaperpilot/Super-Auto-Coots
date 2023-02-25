@@ -37,6 +37,19 @@ import tieButton from "../../public/Tie Button.png";
 import vespa from "../../public/Vespa Coots.png";
 import victoryButton from "../../public/Victory Button.png";
 import victoryFace from "../../public/win face.png";
+import connor from "../../public/cdawg va.png";
+import chessboxing from "../../public/chessboxing coots.png";
+import frog from "../../public/frog Coots.png";
+import hasan from "../../public/hasan coots.png";
+import ironmouse from "../../public/ironmouse coots.png";
+import luddy from "../../public/luddy Coots.png";
+import mario from "../../public/mario coots.png";
+import beast from "../../public/mr beast coots.png";
+import nick from "../../public/nick coots.png";
+import slime from "../../public/SlimeCoots.png";
+import smash from "../../public/smash coots.png";
+import awards from "../../public/streamer award coots.png";
+import aimen from "../../public/aimen coots.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
@@ -57,7 +70,8 @@ export const characters: Record<string, CharacterInfo> = {
                 <>
                     <i>Livestream joined</i>: Deal {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
                     <img src={heart_small} />
-                    <span style="color: red">Relevancy</span> damage to every character on a stream
+                    <span style="color: red">Relevancy</span> damage to every Coots on either
+                    livestream
                 </>
             )),
         performAbility(char) {
@@ -80,7 +94,7 @@ export const characters: Record<string, CharacterInfo> = {
                 <>
                     <i>Livestream joined</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
                     <img src={star_small} />
-                    <span style="color: gold">Presence</span> for every character on that livestream
+                    <span style="color: gold">Presence</span> for every Coots on that livestream
                 </>
             )),
         performAbility(char) {
@@ -117,6 +131,86 @@ export const characters: Record<string, CharacterInfo> = {
             main.gold.value += goldGain;
         }
     },
+    mario: {
+        nickname: "Mario Coots",
+        initialPresence: 1,
+        initialRelevancy: 1,
+        display: mario,
+        abilityType: "LivestreamJoined",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Deal {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    <img src={star_small} />
+                    <span style="color: gold">Presence</span> damage to 2 Coots that most recently
+                    joined the enemy livestream
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const damage = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            let opposingTeam: Character[];
+            if (main.battle.value.streamers.includes(char)) {
+                opposingTeam = main.battle.value.enemyStreamers;
+            } else {
+                opposingTeam = main.battle.value.streamers;
+            }
+            for (let i = 0; i < 2 && i < opposingTeam.length; i++) {
+                opposingTeam[i].presence -= damage;
+            }
+        }
+    },
+    aimen: {
+        nickname: "Aimen Coots",
+        initialPresence: 1,
+        initialRelevancy: 2,
+        display: aimen,
+        abilityType: "Sold",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Sold</i>: Give {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> to leftmost Coots
+                </>
+            )),
+        performAbility(char) {
+            const team = main.team.value.filter(m => m != null);
+            if (team.length === 0) {
+                return;
+            }
+            const relevancyGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            team[team.length - 1]!.relevancy += relevancyGain;
+        }
+    },
+    nick: {
+        nickname: "Nick Coots",
+        initialPresence: 2,
+        initialRelevancy: 1,
+        display: nick,
+        abilityType: "LivestreamEnded",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream ended</i>: Each coots on this livestream gain{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={star_small} />
+                    <span style="color: gold">Presence</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            if (main.battle.value.streamers.includes(char)) {
+                main.battle.value.streamers.forEach(s => (s.presence += gain));
+            } else {
+                main.battle.value.enemyStreamers.forEach(s => (s.presence += gain));
+            }
+        }
+    },
     // Tier 2
     maid: {
         nickname: "Maid Coots",
@@ -127,7 +221,7 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: char =>
             jsx(() => (
                 <>
-                    <i>Level up</i>: Every character gains {char.exp >= 3 ? 2 : 1}{" "}
+                    <i>Level up</i>: Give every Coots {char.exp >= 3 ? 2 : 1}{" "}
                     <img src={heart_small} />
                     <span style="color: red">Relevancy</span> and <img src={star_small} />
                     <span style="color: gold">Presence</span>
@@ -153,10 +247,10 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Livestream joined</i>: Summon a lv{" "}
-                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Ludwig Coots with this character's
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Ludwig Coots with this Coots'
                     <img src={heart_small} />
                     <span style="color: red">Relevancy</span> and <img src={star_small} />
-                    <span style="color: gold">Presence</span>.
+                    <span style="color: gold">Presence</span>
                 </>
             )),
         performAbility(char) {
@@ -189,9 +283,9 @@ export const characters: Record<string, CharacterInfo> = {
                 <>
                     <i>Livestream ended</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
                     <img src={heart_small} />
-                    <span style="color: red">Relevancy</span> for every character on either
-                    livestream with more <img src={heart_small} />
-                    <span style="color: red">Relevancy</span>.
+                    <span style="color: red">Relevancy</span> for every Coots on either livestream
+                    with more <img src={heart_small} />
+                    <span style="color: red">Relevancy</span>
                 </>
             )),
         performAbility(char) {
@@ -204,6 +298,135 @@ export const characters: Record<string, CharacterInfo> = {
                 (main.battle.value.streamers.filter(m => m.relevancy < char.relevancy).length +
                     main.battle.value.enemyStreamers.filter(m => m.relevancy < char.relevancy)
                         .length);
+        }
+    },
+    chessbox: {
+        nickname: "Chessboxing Coots",
+        initialRelevancy: 3,
+        initialPresence: 2,
+        display: chessboxing,
+        abilityType: "StreamStarted",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Stream started</i>: Permanently gain{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and swap <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span>
+                </>
+            )),
+        performAbility(char) {
+            const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            const temp = char.relevancy + gain;
+            char.relevancy = char.presence;
+            char.presence = temp;
+        }
+    },
+    hasan: {
+        nickname: "Chessboxing Coots",
+        initialRelevancy: 2,
+        initialPresence: 3,
+        display: hasan,
+        abilityType: "StartTurn",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Turn started</i>: If you won the last battle, all Coots gain
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={heart_small} />
+                    <span style="color: red">Relevancy</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.outcome.value !== "Victory") {
+                return;
+            }
+            const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            main.team.value.forEach(m => {
+                if (m != null) {
+                    m.relevancy += gain;
+                }
+            });
+        }
+    },
+    beast: {
+        nickname: "Mr.Beast Coots",
+        initialRelevancy: 2,
+        initialPresence: 2,
+        display: beast,
+        abilityType: "StartTurn",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Turn started</i>: Gain
+                    {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2} <img src={money_small} />
+                    <span style="color: yellow">Moguls</span>
+                </>
+            )),
+        performAbility(char) {
+            const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
+            main.gold.value += gain;
+        }
+    },
+    frog: {
+        nickname: "Mr.Beast Coots",
+        initialRelevancy: 1,
+        initialPresence: 2,
+        display: frog,
+        abilityType: "Faint",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Either stat hits 0</i>: Summon a lv{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Mogul Mail Coots with this Coots'
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const level = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            const newChar = {
+                type: "mail",
+                exp: level === 3 ? 6 : level === 2 ? 3 : 1,
+                presence: char.presence,
+                relevancy: char.relevancy
+            };
+            main.queue.value.push({ action: "LivestreamJoined", target: newChar });
+            if (main.battle.value.streamers.includes(char)) {
+                main.battle.value.streamers.push(newChar);
+            } else {
+                main.battle.value.enemyStreamers.push(newChar);
+            }
+        }
+    },
+    moves: {
+        nickname: "Mogul Moves Coots",
+        initialRelevancy: 1,
+        initialPresence: 2,
+        display: moves,
+        abilityType: "LivestreamJoined",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Gain {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> for every battle you've won
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            if (main.battle.value.streamers.includes(char)) {
+                char.relevancy += gain * main.wins.value;
+            } else {
+                char.relevancy += gain * main.battle.value.enemyWins;
+            }
         }
     },
     // Tier 3
@@ -220,7 +443,7 @@ export const characters: Record<string, CharacterInfo> = {
                     {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={star_small} />
                     <span style="color: gold">Presence</span> if you have 2 or more
                     <img src={money_small} />
-                    <span style="color: yellow">Moguls</span>.
+                    <span style="color: yellow">Moguls</span>
                 </>
             )),
         performAbility(char) {
@@ -239,10 +462,10 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: () =>
             jsx(() => (
                 <>
-                    <i>Livestream joined</i>: Set the character that most recently joined the enemy
+                    <i>Livestream joined</i>: Set the Coots that most recently joined the enemy
                     livestream's <img src={star_small} />
                     <span style="color: gold">Presence</span> to 0. This effect does not improve on
-                    level up.
+                    level up
                 </>
             )),
         performAbility(char) {
@@ -262,6 +485,184 @@ export const characters: Record<string, CharacterInfo> = {
                     ].presence = 0;
                 }
             }
+        }
+    },
+    smash: {
+        nickname: "Smash Coots",
+        initialRelevancy: 2,
+        initialPresence: 4,
+        display: smash,
+        abilityType: "Hurt",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Hurt</i>: Gain {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
+                    <img src={star_small} />
+                    <span style="color: gold">Relevancy</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
+            char.relevancy += gain;
+        }
+    },
+    connor: {
+        nickname: "CDawgVA Coots",
+        initialRelevancy: 2,
+        initialPresence: 2,
+        display: connor,
+        abilityType: "Faint",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Either stat hits 0</i>: Summon a lv{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Ironmouse Coots
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const level = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            const newChar = {
+                type: "ironmouse",
+                exp: level === 3 ? 6 : level === 2 ? 3 : 1,
+                presence: characters.ironmouse.initialPresence,
+                relevancy: characters.ironmouse.initialRelevancy
+            };
+            main.queue.value.push({ action: "LivestreamJoined", target: newChar });
+            if (main.battle.value.streamers.includes(char)) {
+                main.battle.value.streamers.push(newChar);
+            } else {
+                main.battle.value.enemyStreamers.push(newChar);
+            }
+        }
+    },
+    luddy: {
+        nickname: "Luddy Coots",
+        initialRelevancy: 2,
+        initialPresence: 3,
+        display: luddy,
+        abilityType: "LivestreamEnded",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream ended</i>: Deal {char.exp >= 6 ? 9 : char.exp >= 3 ? 6 : 3}{" "}
+                    <img src={star_small} />
+                    <span style="color: gold">Presence</span> damage to the Coots on the enemy
+                    livestream with the highest <img src={star_small} />
+                    <span style="color: gold">Presence</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            if (main.battle.value.streamers.includes(char)) {
+                const m = main.battle.value.enemyStreamers.reduce((a, b) => {
+                    if (a.presence > b.presence) {
+                        return a;
+                    }
+                    return b;
+                });
+                if (m != null) {
+                    m.presence -= 3;
+                }
+            } else {
+                const m = main.battle.value.streamers.reduce((a, b) => {
+                    if (a.presence > b.presence) {
+                        return a;
+                    }
+                    return b;
+                });
+                if (m != null) {
+                    m.presence -= 3;
+                }
+            }
+        }
+    },
+    slime: {
+        nickname: "Slime Coots",
+        initialRelevancy: 3,
+        initialPresence: 3,
+        display: slime,
+        abilityType: "LivestreamJoined",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Give {char.exp >= 6 ? 4 : char.exp >= 3 ? 3 : 2}{" "}
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span> to the Coots who most recently joined
+                    this livestream.
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const gain = char.exp >= 6 ? 4 : char.exp >= 3 ? 3 : 2;
+            if (main.battle.value.streamers.includes(char)) {
+                if (main.battle.value.streamers.length > 1) {
+                    main.battle.value.streamers[1].relevancy += gain;
+                    main.battle.value.streamers[1].presence += gain;
+                }
+            } else {
+                if (main.battle.value.enemyStreamers.length > 1) {
+                    main.battle.value.enemyStreamers[1].relevancy += gain;
+                    main.battle.value.enemyStreamers[1].presence += gain;
+                }
+            }
+        }
+    },
+    awards: {
+        nickname: "Streamer Awards Coots",
+        initialRelevancy: 3,
+        initialPresence: 3,
+        display: awards,
+        abilityType: "StartTurn",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Turn Started</i>: If you won the last battle, gain{" "}
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} <img src={money_small} />
+                    <span style="color: yellow">Moguls</span> for every battle you've won
+                </>
+            )),
+        performAbility(char) {
+            if (main.outcome.value !== "Victory") {
+                return;
+            }
+            const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
+            main.gold.value += gain * main.wins.value;
+        }
+    },
+    // Other
+    ironmouse: {
+        nickname: "Ironmouse Coots",
+        initialRelevancy: 5,
+        initialPresence: 5,
+        display: ironmouse,
+        abilityType: "LivestreamJoined",
+        abilityDescription: char =>
+            jsx(() => (
+                <>
+                    <i>Livestream joined</i>: Gain {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
+                    <img src={heart_small} />
+                    <span style="color: red">Relevancy</span> and <img src={star_small} />
+                    <span style="color: gold">Presence</span>
+                </>
+            )),
+        performAbility(char) {
+            if (main.battle.value == null) {
+                return;
+            }
+            const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
+            char.relevancy += gain;
+            char.presence += gain;
         }
     }
 };

@@ -1,6 +1,12 @@
 import { CoercableComponent } from "features/feature";
 
-type AbilityTypes = "LivestreamJoined" | "Sold" | "LevelUp" | "LivestreamEnded" | "StreamStarted";
+type AbilityTypes =
+    | "LivestreamJoined"
+    | "Sold"
+    | "LevelUp"
+    | "LivestreamEnded"
+    | "StreamStarted"
+    | "StartTurn";
 
 interface CharacterInfo {
     nickname: string;

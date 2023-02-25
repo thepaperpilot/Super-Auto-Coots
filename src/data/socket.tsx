@@ -144,6 +144,13 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         }, 0);
         main.showRefreshAnim.value = true;
         setTimeout(() => (main.showRefreshAnim.value = false), 500);
+        setTimeout(() => {
+            main.team.value.forEach(m => {
+                if (m != null && characters[m.type].abilityType === "StartTurn") {
+                    characters[m.type].performAbility(m);
+                }
+            });
+        }, 1250);
     });
     socket.on("reroll", shop => {
         main.gold.value--;
