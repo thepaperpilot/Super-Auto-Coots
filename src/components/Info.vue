@@ -15,7 +15,7 @@
             <div v-if="shown">
                 <div v-if="author">By {{ author }}</div>
                 <div>
-                    Made in Profectus, by thepaperpilot with inspiration from Acameada and Jacorb
+                    Made in Profectus, by thepaperpilot
                 </div>
                 <br />
                 <div class="link" @click="openChangelog">Changelog</div>
@@ -39,16 +39,6 @@
                     >
                         <span class="material-icons info-modal-discord">discord</span>
                         The Paper Pilot Community
-                    </a>
-                </div>
-                <div>
-                    <a
-                        href="https://discord.gg/F3xveHV"
-                        class="info-modal-discord-link"
-                        target="_blank"
-                    >
-                        <span class="material-icons info-modal-discord">discord</span>
-                        The Modding Tree
                     </a>
                 </div>
                 <br />

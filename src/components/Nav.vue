@@ -19,9 +19,6 @@
                         >The Paper Pilot Community</a
                     >
                 </li>
-                <li>
-                    <a href="https://discord.gg/F3xveHV" target="_blank">The Modding Tree</a>
-                </li>
             </ul>
         </div>
         <div>
@@ -80,9 +77,6 @@
                     <a href="https://discord.gg/WzejVAx" target="_blank"
                         >The Paper Pilot Community</a
                     >
-                </li>
-                <li>
-                    <a href="https://discord.gg/F3xveHV" target="_blank">The Modding Tree</a>
                 </li>
             </ul>
         </div>
