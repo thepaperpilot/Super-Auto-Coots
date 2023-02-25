@@ -382,7 +382,7 @@ export const characters: Record<string, CharacterInfo> = {
             jsx(() => (
                 <>
                     <i>Either stat hits 0</i>: Summon a lv{" "}
-                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Mogul Mail Coots with this Coots'
+                    {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1} Mogul Mail Coots with this Coots'{" "}
                     <img src={heart_small} />
                     <span style="color: red">Relevancy</span> and <img src={star_small} />
                     <span style="color: gold">Presence</span>
@@ -828,6 +828,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
                 default:
                     if (action.target == null) {
                         console.error("Invalid action", action);
+                        break;
+                    }
+                    if (action.target.presence <= 0 || action.target.relevancy <= 0) {
                         break;
                     }
                     characters[action.target.type].performAbility(action.target);
