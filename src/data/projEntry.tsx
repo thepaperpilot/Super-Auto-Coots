@@ -13,6 +13,8 @@ import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
 import { computed, ref, TransitionGroup } from "vue";
 import autoplay from "../../public/autoplay.png";
+import defeatButton from "../../public/Defeat Button.png";
+import defeatFace from "../../public/defeat face.png";
 import fast from "../../public/fast forward.png";
 import freezeShop from "../../public/Freeze shop.png";
 import heart_small from "../../public/heart_small.png";
@@ -22,6 +24,7 @@ import mail from "../../public/Mogul Mail Coots.png";
 import money from "../../public/Mogul Money Coots.png";
 import money_small from "../../public/money_small.png";
 import coots from "../../public/Normal Coots.png";
+import playAgain from "../../public/Play Again.png";
 import play from "../../public/play.png";
 import star_small from "../../public/presence_small.png";
 import qt from "../../public/QT Coots.png";
@@ -30,10 +33,10 @@ import shopStill from "../../public/shop1.png";
 import sellShop from "../../public/shop_Sell1.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
+import tieButton from "../../public/Tie Button.png";
 import vespa from "../../public/Vespa Coots.png";
+import victoryButton from "../../public/Victory Button.png";
 import victoryFace from "../../public/win face.png";
-import defeatFace from "../../public/defeat face.png";
-import playAgain from "../../public/Play Again.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
@@ -607,8 +610,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         </div>
                         {showingOutcome.value ? (
                             <div class="outcome" onClick={() => emit("newTurn")}>
-                                <span>{outcome.value}</span>
-                                <span style="font-size: 2vmin">Next Turn</span>
+                                <img
+                                    src={
+                                        outcome.value === "Victory"
+                                            ? victoryButton
+                                            : outcome.value === "Defeat"
+                                            ? defeatButton
+                                            : tieButton
+                                    }
+                                />
                             </div>
                         ) : null}
                     </div>
