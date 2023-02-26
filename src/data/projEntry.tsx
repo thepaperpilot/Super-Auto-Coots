@@ -59,9 +59,11 @@ import victoryFace from "../../public/win face.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
-import { emit, nickname } from "./socket";
+import { emit, nickname, poof } from "./socket";
 import type { AbilityTypes, BattleOutcome, Character, CharacterInfo, StreamTypes } from "./types";
 import victoryParticles from "./victory.json";
+import healthParticles from "./health.json";
+import presenceParticles from "./presence.json";
 
 const streamTypeToBG: Record<StreamTypes, string> = {
     "Game Show": gameshow,
@@ -70,6 +72,11 @@ const streamTypeToBG: Record<StreamTypes, string> = {
     "Cooking Stream": kitchen,
     "Bro vs Bro": game
 };
+
+let nextCharID = 0;
+export function getCharID() {
+    return nextCharID++;
+}
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -120,8 +127,20 @@ export const characters: Record<string, CharacterInfo> = {
             const presenceGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             if (main.battle.value.streamers.includes(char)) {
                 char.presence += presenceGain * main.battle.value.streamers.length;
+                for (let i = 0; i < presenceGain * main.battle.value.streamers.length; i++) {
+                    poof(
+                        `battle-streamer-${main.battle.value.streamers.indexOf(char)}`,
+                        presenceParticles
+                    );
+                }
             } else {
                 char.presence += presenceGain * main.battle.value.enemyStreamers.length;
+                for (let i = 0; i < presenceGain * main.battle.value.enemyStreamers.length; i++) {
+                    poof(
+                        `battle-enemy-streamer-${main.battle.value.enemyStreamers.indexOf(char)}`,
+                        presenceParticles
+                    );
+                }
             }
         }
     },
@@ -200,6 +219,9 @@ export const characters: Record<string, CharacterInfo> = {
             }
             const relevancyGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             team[team.length - 1]!.relevancy += relevancyGain;
+            for (let i = 0; i < relevancyGain; i++) {
+                poof(`team-char-${team.length - 1}`, healthParticles);
+            }
         }
     },
     nick: {
@@ -222,9 +244,19 @@ export const characters: Record<string, CharacterInfo> = {
             }
             const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             if (main.battle.value.streamers.includes(char)) {
-                main.battle.value.streamers.forEach(s => (s.presence += gain));
+                main.battle.value.streamers.forEach((s, index) => {
+                    s.presence += gain;
+                    for (let i = 0; i < gain; i++) {
+                        poof(`battle-streamer-${index}`, presenceParticles);
+                    }
+                });
             } else {
-                main.battle.value.enemyStreamers.forEach(s => (s.presence += gain));
+                main.battle.value.enemyStreamers.forEach((s, index) => {
+                    s.presence += gain;
+                    for (let i = 0; i < gain; i++) {
+                        poof(`battle-enemy-streamer-${index}`, presenceParticles);
+                    }
+                });
             }
         }
     },
@@ -250,6 +282,10 @@ export const characters: Record<string, CharacterInfo> = {
                 if (char) {
                     char.relevancy += statGain;
                     char.presence += statGain;
+                    for (let i = 0; i < statGain; i++) {
+                        poof(`team-char-${main.team.value.indexOf(char)}`, healthParticles);
+                        poof(`team-char-${main.team.value.indexOf(char)}`, presenceParticles);
+                    }
                 }
             });
         }
@@ -279,7 +315,8 @@ export const characters: Record<string, CharacterInfo> = {
                 type: "ludwig",
                 exp: level === 3 ? 6 : level === 2 ? 3 : 1,
                 presence: char.presence,
-                relevancy: char.relevancy
+                relevancy: char.relevancy,
+                id: getCharID()
             };
             main.queue.value.push({ action: "LivestreamJoined", target: newChar });
             if (main.battle.value.streamers.includes(char)) {
@@ -362,6 +399,9 @@ export const characters: Record<string, CharacterInfo> = {
             main.team.value.forEach(m => {
                 if (m != null) {
                     m.relevancy += gain;
+                    for (let i = 0; i < gain * main.wins.value; i++) {
+                        poof(`team-char-${main.team.value.indexOf(char)}`, healthParticles);
+                    }
                 }
             });
         }
@@ -410,7 +450,8 @@ export const characters: Record<string, CharacterInfo> = {
                 type: "mail",
                 exp: level === 3 ? 6 : level === 2 ? 3 : 1,
                 presence: char.presence,
-                relevancy: char.relevancy
+                relevancy: char.relevancy,
+                id: getCharID()
             };
             main.queue.value.push({ action: "LivestreamJoined", target: newChar });
             if (main.battle.value.streamers.includes(char)) {
@@ -441,8 +482,20 @@ export const characters: Record<string, CharacterInfo> = {
             const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             if (main.battle.value.streamers.includes(char)) {
                 char.relevancy += gain * main.wins.value;
+                for (let i = 0; i < gain * main.wins.value; i++) {
+                    poof(
+                        `battle-streamer-${main.battle.value.streamers.indexOf(char)}`,
+                        healthParticles
+                    );
+                }
             } else {
                 char.relevancy += gain * main.battle.value.enemyWins;
+                for (let i = 0; i < gain * main.wins.value; i++) {
+                    poof(
+                        `battle-enemy-streamer-${main.battle.value.enemyStreamers.indexOf(char)}`,
+                        healthParticles
+                    );
+                }
             }
         }
     },
@@ -467,6 +520,9 @@ export const characters: Record<string, CharacterInfo> = {
             if (main.gold.value >= 2) {
                 const presenceGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
                 char.presence += presenceGain;
+                for (let i = 0; i < presenceGain; i++) {
+                    poof(`team-char-${i}`, presenceParticles);
+                }
             }
         }
     },
@@ -524,6 +580,9 @@ export const characters: Record<string, CharacterInfo> = {
             }
             const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
             char.relevancy += gain;
+            for (let i = 0; i < gain; i++) {
+                poof(`battle-streamer-${main.team.value.indexOf(char)}`, healthParticles);
+            }
         }
     },
     connor: {
@@ -548,7 +607,8 @@ export const characters: Record<string, CharacterInfo> = {
                 type: "ironmouse",
                 exp: level === 3 ? 6 : level === 2 ? 3 : 1,
                 presence: characters.ironmouse.initialPresence,
-                relevancy: characters.ironmouse.initialRelevancy
+                relevancy: characters.ironmouse.initialRelevancy,
+                id: getCharID()
             };
             main.queue.value.push({ action: "LivestreamJoined", target: newChar });
             if (main.battle.value.streamers.includes(char)) {
@@ -628,11 +688,19 @@ export const characters: Record<string, CharacterInfo> = {
                 if (main.battle.value.streamers.length > 1) {
                     main.battle.value.streamers[1].relevancy += gain;
                     main.battle.value.streamers[1].presence += gain;
+                    for (let i = 0; i < gain; i++) {
+                        poof(`battle-streamer-${1}`, healthParticles);
+                        poof(`battle-streamer-${1}`, presenceParticles);
+                    }
                 }
             } else {
                 if (main.battle.value.enemyStreamers.length > 1) {
                     main.battle.value.enemyStreamers[1].relevancy += gain;
                     main.battle.value.enemyStreamers[1].presence += gain;
+                    for (let i = 0; i < gain; i++) {
+                        poof(`battle-enemy-streamer-${1}`, healthParticles);
+                        poof(`battle-enemy-streamer-${1}`, presenceParticles);
+                    }
                 }
             }
         }
@@ -682,6 +750,20 @@ export const characters: Record<string, CharacterInfo> = {
             const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
             char.relevancy += gain;
             char.presence += gain;
+            for (let i = 0; i < gain; i++) {
+                poof(
+                    `battle-${
+                        main.battle.value.streamers.includes(char) ? "" : "enemy-"
+                    }streamer-${1}`,
+                    healthParticles
+                );
+                poof(
+                    `battle-${
+                        main.battle.value.streamers.includes(char) ? "" : "enemy-"
+                    }streamer-${1}`,
+                    presenceParticles
+                );
+            }
         }
     }
 };
@@ -948,7 +1030,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
             if (battle.value != null) {
                 return (
                     <div class={{ ["battle-container"]: true, fast: settings.fast }}>
-                        <div class="battle-controls">
+                        <div
+                            class="battle-controls"
+                            style={showingOutcome.value ? "pointer-events: none;" : ""}
+                        >
                             <button
                                 class="button"
                                 onClick={() => {
@@ -976,10 +1061,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 <img src={fast} />
                             </button>
                         </div>
-                        <div
-                            class="teams-container"
-                            style={showingOutcome.value ? "pointer-events: none;" : ""}
-                        >
+                        <div class="teams-container">
                             <div class="team-container">
                                 <div class="stream-container">
                                     <div
@@ -1007,7 +1089,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                                 .reverse()
                                                 .map((streamer, i) => (
                                                     <CharacterSlot
-                                                        key={battle.value!.streamers.length - i}
+                                                        id={`battle-streamer-${i}`}
+                                                        key={streamer.id}
                                                         character={streamer}
                                                         shake={
                                                             previewing.value &&
@@ -1022,8 +1105,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     <TransitionGroup name="character-transition">
                                         {battle.value.team.map((member, i) => (
                                             <CharacterSlot
+                                                id={`battle-member-${i}`}
                                                 character={member}
-                                                key={i}
+                                                key={member.id}
                                                 shake={
                                                     previewing.value &&
                                                     queue.value[0]?.action === "join" &&
@@ -1066,8 +1150,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         <TransitionGroup name="streamer-transition">
                                             {battle.value.enemyStreamers.map((streamer, i) => (
                                                 <CharacterSlot
-                                                    key={i}
-                                                    character={streamer}
+                                                    id={`battle-enemy-streamer-${i}`}
+                                                    key={streamer.id}
                                                     shake={
                                                         previewing.value &&
                                                         queue.value[0]?.target === streamer
@@ -1081,8 +1165,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     <TransitionGroup name="character-transition">
                                         {battle.value.enemyTeam.map((member, i) => (
                                             <CharacterSlot
+                                                id={`battle-enemy-member-${i}`}
                                                 character={member}
-                                                key={battle.value!.enemyStreamers.length + i}
+                                                key={member.id}
                                                 shake={
                                                     previewing.value &&
                                                     queue.value[0]?.action === "join" &&
@@ -1112,6 +1197,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 />
                             </div>
                         ) : null}
+                        {render(particles)}
                     </div>
                 );
             }
@@ -1293,7 +1379,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <Tooltip
                             display={jsx(() => (
                                 <>
-                                    <i>Stream started</i>: All Yard Coots gain 1
+                                    <i>Stream started</i>: All Yard Coots gain 1{" "}
                                     <img src={heart_small} />
                                     <span style="color: red">Relevancy</span> for every Yard Coots
                                     owned, for the rest of the battle
@@ -1314,9 +1400,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <Tooltip
                             display={jsx(() => (
                                 <>
-                                    <i>Stream started</i>: Give the rightmost Coots 2
+                                    <i>Stream started</i>: Give the rightmost Coots 2{" "}
                                     <img src={heart_small} />
-                                    <span style="color: red">Relevancy</span> and
+                                    <span style="color: red">Relevancy</span> and{" "}
                                     <img src={star_small} />
                                     <span style="color: gold">Presence</span> for the rest of the
                                     battle
@@ -1337,8 +1423,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <Tooltip
                             display={jsx(() => (
                                 <>
-                                    <i>Stream started</i>: Give 1
-                                    <img src={heart_small} />
+                                    <i>Stream started</i>: Give 1 <img src={heart_small} />
                                     <span style="color: red">Relevancy</span> to the rightmost Coots
                                     for the rest of the battle and deal 2 <img src={heart_small} />
                                     <span style="color: red">Relevancy</span> damage to the leftmost

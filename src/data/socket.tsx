@@ -8,7 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
 import particle from "./particle.json";
-import { characters, main } from "./projEntry";
+import { characters, getCharID, main } from "./projEntry";
 import {
     BattleOutcome,
     Character,
@@ -16,6 +16,9 @@ import {
     ServerToClientEvents,
     StreamTypes
 } from "./types";
+import healthParticles from "./health.json";
+import presenceParticles from "./presence.json";
+import { EmitterConfigV3 } from "@pixi/particle-emitter";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -79,14 +82,14 @@ globalBus.on("loadSettings", settings => {
     );
 });
 
-function poof(id: string) {
+export function poof(id: string, particleConfig?: EmitterConfigV3) {
     const boundingRect = main.particles.boundingRect.value;
     if (!boundingRect) {
         return;
     }
     const rect = main.nodes.value[id]?.rect;
     if (rect) {
-        main.particles.addEmitter(particle).then(e => {
+        main.particles.addEmitter(particleConfig ?? particle).then(e => {
             e.updateOwnerPos(
                 rect.x + rect.width / 2 - boundingRect.x,
                 rect.y + rect.height / 2 - boundingRect.y
@@ -146,7 +149,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             type: item,
             relevancy: characters[item].initialRelevancy,
             presence: characters[item].initialPresence,
-            exp: 1
+            exp: 1,
+            id: getCharID()
         }));
         main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {
@@ -168,7 +172,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             type: item,
             relevancy: characters[item].initialRelevancy,
             presence: characters[item].initialPresence,
-            exp: 1
+            exp: 1,
+            id: getCharID()
         }));
         main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {
@@ -209,11 +214,12 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     socket.on("stream", (enemy, outcome) => {
         let needsWait = false;
         if (main.streamType.value === "Reaction Stream") {
-            main.team.value.forEach(m => {
+            main.team.value.forEach((m, index) => {
                 if (m == null) {
                     return;
                 }
                 m.relevancy += 1;
+                poof(`team-char-${index}`, healthParticles);
             });
             needsWait = true;
         }
@@ -298,6 +304,10 @@ function startStream(
         enemyStreamType: enemy.streamType,
         ranLivestreamEnded: false
     };
+    main.battle.value.enemyTeam.forEach(m => {
+        m.id = getCharID();
+    });
+    console.log(enemy.team, main.battle.value.enemyTeam);
     main.outcome.value = outcome;
     main.showingOutcome.value = false;
     main.playClicked.value = false;
@@ -314,6 +324,12 @@ function startStream(
                 );
                 yards.forEach(m => {
                     m.relevancy += yards.length;
+                    for (let i = 0; i < yards.length; i++) {
+                        poof(
+                            `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(m)}`,
+                            healthParticles
+                        );
+                    }
                 });
                 setTimeout(main.prepareMove, 1250);
             }, 1250);
@@ -324,6 +340,22 @@ function startStream(
                         main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];
                     host.relevancy += 2;
                     host.presence += 2;
+                    poof(
+                        `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                        healthParticles
+                    );
+                    poof(
+                        `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                        healthParticles
+                    );
+                    poof(
+                        `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                        presenceParticles
+                    );
+                    poof(
+                        `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                        presenceParticles
+                    );
                 }
                 setTimeout(main.prepareMove, 1250);
             }, 1250);
@@ -333,6 +365,10 @@ function startStream(
                     const host =
                         main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];
                     host.relevancy++;
+                    poof(
+                        `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                        healthParticles
+                    );
                 }
                 if (main.battle.value!.team.length > 0) {
                     const host = main.battle.value!.team[main.battle.value!.team.length - 1];
@@ -357,6 +393,12 @@ function startStream(
             );
             yards.forEach(m => {
                 m.relevancy += yards.length;
+                for (let i = 0; i < yards.length; i++) {
+                    poof(
+                        `battle-member-${main.battle.value!.enemyTeam.indexOf(m)}`,
+                        healthParticles
+                    );
+                }
             });
             checkEnemyStreamType();
         }, 1250);
@@ -366,6 +408,22 @@ function startStream(
                 const host = main.battle.value!.team[main.battle.value!.team.length - 1];
                 host.relevancy += 2;
                 host.presence += 2;
+                poof(
+                    `battle-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                    healthParticles
+                );
+                poof(
+                    `battle-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                    healthParticles
+                );
+                poof(
+                    `battle-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                    presenceParticles
+                );
+                poof(
+                    `battle-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                    presenceParticles
+                );
             }
             checkEnemyStreamType();
         }, 1250);
@@ -374,6 +432,10 @@ function startStream(
             if (main.battle.value!.team.length > 0) {
                 const host = main.battle.value!.team[main.battle.value!.team.length - 1];
                 host.relevancy++;
+                poof(
+                    `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
+                    healthParticles
+                );
             }
             if (main.battle.value!.enemyTeam.length > 0) {
                 const host = main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];

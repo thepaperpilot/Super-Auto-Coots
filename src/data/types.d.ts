@@ -27,6 +27,7 @@ interface Character {
     exp: number;
     relevancy: number;
     presence: number;
+    id: number;
 }
 
 type BattleOutcome = "Victory" | "Defeat" | "Tie";

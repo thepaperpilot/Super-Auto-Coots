@@ -265,7 +265,6 @@
     filter: drop-shadow(2px 4px 6px black);
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
     z-index: 1;
-    overflow: hidden;
 }
 
 .stream-details {
@@ -357,7 +356,8 @@
     transform: translateY(100%);
 }
 .streamer-transition-leave-to {
-    transform: translateY(100%);
+    transform: translateY(50%) rotate(45deg);
+    opacity: 0;
 }
 .character-trensition-active,
 .streamer-transition-active {
