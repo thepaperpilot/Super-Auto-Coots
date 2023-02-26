@@ -220,7 +220,7 @@
 }
 
 .waiting {
-    font-size: 4vmin;
+    font-size: 2vmin;
     height: 8vmin;
     display: flex;
     align-items: center;
@@ -260,6 +260,7 @@
     background: var(--background);
     filter: drop-shadow(2px 4px 6px black);
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
+    z-index: 1;
 }
 
 .stream-details {
@@ -338,12 +339,19 @@
 }
 
 .character-transition-enter-from {
-    transform: translateY(100%);
+    transform: translateX(-100%);
 }
 .character-transition-leave-to {
+    transform: translateX(100%);
+}
+.streamer-transition-enter-from {
+    transform: translateY(100%);
+}
+.streamer-transition-leave-to {
     transform: translateY(-100%);
 }
-.character-trensition-active {
+.character-trensition-active,
+.streamer-transition-active {
     position: absolute;
 }
 

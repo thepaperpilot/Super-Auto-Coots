@@ -995,7 +995,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </div>
                                     </div>
                                     <Row class="streamers-container">
-                                        <TransitionGroup name="character-transition">
+                                        <TransitionGroup name="streamer-transition">
                                             {battle.value.streamers
                                                 .slice()
                                                 .reverse()
@@ -1056,7 +1056,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         </div>
                                     </div>
                                     <Row class="streamers-container">
-                                        <TransitionGroup name="character-transition">
+                                        <TransitionGroup name="streamer-transition">
                                             {battle.value.enemyStreamers.map((streamer, i) => (
                                                 <CharacterSlot
                                                     key={i}
