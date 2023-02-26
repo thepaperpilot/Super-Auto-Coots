@@ -348,7 +348,7 @@
     transform: translateY(100%);
 }
 .streamer-transition-leave-to {
-    transform: translateY(-100%);
+    transform: translateY(100%);
 }
 .character-trensition-active,
 .streamer-transition-active {
