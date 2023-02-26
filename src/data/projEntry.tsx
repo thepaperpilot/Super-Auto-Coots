@@ -778,6 +778,21 @@ export const main = createLayer("main", function (this: BaseLayer) {
         }
         if (
             queue.value.length === 0 &&
+            (battle.value.streamers.find(m => m.relevancy <= 0 || m.presence <= 0) ||
+                battle.value.enemyStreamers.find(m => m.relevancy <= 0 || m.presence <= 0))
+        ) {
+            battle.value.streamers = battle.value.streamers.filter(
+                m => m.relevancy > 0 && m.presence > 0
+            );
+            battle.value.enemyStreamers = battle.value.enemyStreamers.filter(
+                m => m.relevancy > 0 && m.presence > 0
+            );
+            playClicked.value = false;
+            setTimeout(prepareMove, settings.fast ? 750 : 1250);
+            return;
+        }
+        if (
+            queue.value.length === 0 &&
             battle.value.team.length === 0 &&
             battle.value.enemyTeam.length === 0
         ) {
