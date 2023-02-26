@@ -12,17 +12,31 @@ import settings from "game/settings";
 import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
 import { computed, ref, TransitionGroup, watch } from "vue";
+import aimen from "../../public/aimen coots.png";
 import autoplay from "../../public/autoplay.png";
+import connor from "../../public/cdawg va.png";
+import chessboxing from "../../public/chessboxing coots.png";
 import defeatButton from "../../public/Defeat Button.png";
 import defeatFace from "../../public/defeat face.png";
 import fast from "../../public/fast forward.png";
 import freezeShop from "../../public/Freeze shop.png";
+import frog from "../../public/frog Coots.png";
+import hasan from "../../public/hasan coots.png";
 import heart_small from "../../public/heart_small.png";
+import ironmouse from "../../public/ironmouse coots.png";
+import kitchen from "../../public/Kitchen BG.png";
+import reaction from "../../public/lud's room bg.png";
+import luddy from "../../public/luddy Coots.png";
 import ludwig from "../../public/Ludwig Coots.png";
 import maid from "../../public/Maid Coots.png";
+import mario from "../../public/mario coots.png";
 import mail from "../../public/Mogul Mail Coots.png";
+import gameshow from "../../public/mogul money bg.png";
 import money from "../../public/Mogul Money Coots.png";
+import moves from "../../public/mogul moves coots.png";
 import money_small from "../../public/money_small.png";
+import beast from "../../public/mr beast coots.png";
+import nick from "../../public/nick coots.png";
 import coots from "../../public/Normal Coots.png";
 import playAgain from "../../public/Play Again.png";
 import play from "../../public/play.png";
@@ -31,32 +45,31 @@ import qt from "../../public/QT Coots.png";
 import shopGif from "../../public/shop.gif";
 import shopStill from "../../public/shop1.png";
 import sellShop from "../../public/shop_Sell1.png";
+import slime from "../../public/SlimeCoots.png";
+import smash from "../../public/smash coots.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
+import awards from "../../public/streamer award coots.png";
+import yard from "../../public/the yard bg.png";
+import game from "../../public/bro vs bro bg.png";
 import tieButton from "../../public/Tie Button.png";
 import vespa from "../../public/Vespa Coots.png";
 import victoryButton from "../../public/Victory Button.png";
 import victoryFace from "../../public/win face.png";
-import connor from "../../public/cdawg va.png";
-import chessboxing from "../../public/chessboxing coots.png";
-import frog from "../../public/frog Coots.png";
-import hasan from "../../public/hasan coots.png";
-import ironmouse from "../../public/ironmouse coots.png";
-import luddy from "../../public/luddy Coots.png";
-import mario from "../../public/mario coots.png";
-import beast from "../../public/mr beast coots.png";
-import nick from "../../public/nick coots.png";
-import slime from "../../public/SlimeCoots.png";
-import smash from "../../public/smash coots.png";
-import awards from "../../public/streamer award coots.png";
-import aimen from "../../public/aimen coots.png";
-import moves from "../../public/mogul moves coots.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import "./socket";
 import { emit, nickname } from "./socket";
-import type { AbilityTypes, BattleOutcome, Character, CharacterInfo } from "./types";
+import type { AbilityTypes, BattleOutcome, Character, CharacterInfo, StreamTypes } from "./types";
 import victoryParticles from "./victory.json";
+
+const streamTypeToBG: Record<StreamTypes, string> = {
+    "Game Show": gameshow,
+    "Reaction Stream": reaction,
+    Podcast: yard,
+    "Cooking Stream": kitchen,
+    "Bro vs Bro": game
+};
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -177,7 +190,7 @@ export const characters: Record<string, CharacterInfo> = {
                 <>
                     <i>Sold</i>: Give {char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1}{" "}
                     <img src={heart_small} />
-                    <span style="color: red">Relevancy</span> to leftmost Coots
+                    <span style="color: red">Relevancy</span> to rightmost Coots
                 </>
             )),
         performAbility(char) {
@@ -698,6 +711,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
     >([]);
     const frozen = ref<number[]>([]);
     const showRefreshAnim = ref<boolean>(false);
+    const streamType = ref<StreamTypes>("Cooking Stream");
 
     const battle = ref<{
         team: Character[];
@@ -708,6 +722,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         enemyLives: number;
         enemyWins: number;
         enemyTurn: number;
+        enemyStreamType: StreamTypes;
         ranLivestreamEnded: boolean;
     } | null>(null);
 
@@ -751,6 +766,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
             playClicked.value = false;
             queue.value = [];
             frozen.value = [];
+            streamType.value = "Cooking Stream";
         }
     }));
 
@@ -942,6 +958,14 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         >
                             <div class="team-container">
                                 <div class="stream-container">
+                                    <div
+                                        class="stream-bg"
+                                        style={{
+                                            backgroundImage: `url("${
+                                                streamTypeToBG[streamType.value]
+                                            }")`
+                                        }}
+                                    />
                                     <div class="stream-details" style="left: 1vmin">
                                         <span>{nickname.value} (YOU)</span>
                                         <div class="stats">
@@ -991,6 +1015,14 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             </div>
                             <div class="team-container">
                                 <div class="stream-container">
+                                    <div
+                                        class="stream-bg"
+                                        style={{
+                                            backgroundImage: `url("${
+                                                streamTypeToBG[battle.value.enemyStreamType]
+                                            }")`
+                                        }}
+                                    />
                                     <div class="stream-details" style="right: 1vmin">
                                         <span>{battle.value.enemyNickname}</span>
                                         <div class="stats" style="margin-right: 0">
@@ -1067,6 +1099,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         selectedShopItem.value = null;
                     }}
                 >
+                    <div
+                        class="stream-bg"
+                        style={{ backgroundImage: `url("${streamTypeToBG[streamType.value]}")` }}
+                    />
                     <h2 class="team-nickname">{nickname.value}</h2>
                     <Row class="manager-header">
                         <div class="resource-box moguls">{gold.value}</div>
@@ -1121,7 +1157,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             />
                         ))}
                     </Row>
-                    <Row style="margin-top: 10vh;">
+                    <Row style="margin-top: 2vh" class="no-margin">
                         {selectedCharacter.value != null ? (
                             <Tooltip display="Sell Coots">
                                 <div
@@ -1195,6 +1231,107 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             ))}
                         </Row>
                     </Row>
+                    <Row class="stream-types">
+                        <Tooltip display="Moguls persist (still gain 10 after battle)">
+                            <div
+                                class={{
+                                    "stream-type": true,
+                                    active: streamType.value === "Game Show"
+                                }}
+                                onClick={() => emit("change stream type", "Game Show")}
+                            >
+                                <img src={gameshow} />
+                                <span>Game Show</span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            display={jsx(() => (
+                                <>
+                                    <i>Stream started</i>: All Coots permanently gain 1
+                                    <img src={heart_small} />
+                                    <span style="color: red">Relevancy</span>
+                                </>
+                            ))}
+                        >
+                            <div
+                                class={{
+                                    "stream-type": true,
+                                    active: streamType.value === "Reaction Stream"
+                                }}
+                                onClick={() => emit("change stream type", "Reaction Stream")}
+                            >
+                                <img src={reaction} />
+                                <span>Coots</span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            display={jsx(() => (
+                                <>
+                                    <i>Stream started</i>: All Yard Coots gain 1
+                                    <img src={heart_small} />
+                                    <span style="color: red">Relevancy</span> for every Yard Coots
+                                    owned, for the rest of the battle
+                                </>
+                            ))}
+                        >
+                            <div
+                                class={{
+                                    "stream-type": true,
+                                    active: streamType.value === "Podcast"
+                                }}
+                                onClick={() => emit("change stream type", "Podcast")}
+                            >
+                                <img src={yard} />
+                                <span>Podcast</span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            display={jsx(() => (
+                                <>
+                                    <i>Stream started</i>: Give the rightmost Coots 2
+                                    <img src={heart_small} />
+                                    <span style="color: red">Relevancy</span> and
+                                    <img src={star_small} />
+                                    <span style="color: gold">Presence</span> for the rest of the
+                                    battle
+                                </>
+                            ))}
+                        >
+                            <div
+                                class={{
+                                    "stream-type": true,
+                                    active: streamType.value === "Cooking Stream"
+                                }}
+                                onClick={() => emit("change stream type", "Cooking Stream")}
+                            >
+                                <img src={kitchen} />
+                                <span>Cooking</span>
+                            </div>
+                        </Tooltip>
+                        <Tooltip
+                            display={jsx(() => (
+                                <>
+                                    <i>Stream started</i>: Give 1
+                                    <img src={heart_small} />
+                                    <span style="color: red">Relevancy</span> to the rightmost Coots
+                                    for the rest of the battle and deal 2 <img src={heart_small} />
+                                    <span style="color: red">Relevancy</span> damage to the leftmost
+                                    enemy Coots for the rest of the battle
+                                </>
+                            ))}
+                        >
+                            <div
+                                class={{
+                                    "stream-type": true,
+                                    active: streamType.value === "Bro vs Bro"
+                                }}
+                                onClick={() => emit("change stream type", "Bro vs Bro")}
+                            >
+                                <img src={game} />
+                                <span>Reaction</span>
+                            </div>
+                        </Tooltip>
+                    </Row>
                     {render(particles)}
                 </div>
             );
@@ -1218,7 +1355,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
         particles,
         queue,
         showRefreshAnim,
-        hurt
+        hurt,
+        streamType
     };
 });
 

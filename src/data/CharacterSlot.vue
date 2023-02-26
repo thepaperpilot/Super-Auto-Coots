@@ -179,8 +179,7 @@ watchEffect(() => {
 
 .character-display img {
     image-rendering: pixelated;
-    width: 10vmin;
-    height: 10vmin;
+    max-height: 10vmin;
     filter: drop-shadow(2px 4px 6px black);
 }
 
@@ -280,6 +279,7 @@ watchEffect(() => {
     top: -75%;
     left: 50%;
     animation: bouncingMoveIndicator 1s infinite;
+    text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
 }
 .move-indicator .material-icons {
     font-size: 5vmin;
@@ -289,6 +289,7 @@ watchEffect(() => {
 .character:not(.isDragging):hover .move-indicator .material-icons,
 .character.draggingOver .move-indicator .material-icons {
     color: var(--feature-foreground);
+    text-shadow: -1px 1px 0 var(--foreground), 1px 1px 0 var(--foreground), 1px -1px 0 var(--foreground), -1px -1px 0 var(--foreground);
 }
 
 .frozen {

@@ -9,7 +9,13 @@ import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
 import particle from "./particle.json";
 import { characters, main } from "./projEntry";
-import { BattleOutcome, Character, ClientToServerEvents, ServerToClientEvents } from "./types";
+import {
+    BattleOutcome,
+    Character,
+    ClientToServerEvents,
+    ServerToClientEvents,
+    StreamTypes
+} from "./types";
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -237,14 +243,21 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             main.frozen.value.push(index);
         }
     });
-    socket.on("room", r => {
+    socket.on("room", (r, streamType) => {
         main.reset.reset();
+        main.streamType.value = streamType;
         room.value = r;
         roomConnectionError.value = "";
     });
     socket.on("room failed", err => {
         room.value = "";
         roomConnectionError.value = err;
+    });
+    socket.on("stream type", (type, charged) => {
+        main.streamType.value = type;
+        if (charged) {
+            main.gold.value -= 3;
+        }
     });
 }
 
@@ -255,6 +268,7 @@ function startStream(
         lives: number;
         wins: number;
         turn: number;
+        streamType: StreamTypes;
     },
     outcome: BattleOutcome
 ) {
@@ -268,6 +282,7 @@ function startStream(
         enemyLives: enemy.lives,
         enemyWins: enemy.wins,
         enemyTurn: enemy.turn,
+        enemyStreamType: enemy.streamType,
         ranLivestreamEnded: false
     };
     main.outcome.value = outcome;

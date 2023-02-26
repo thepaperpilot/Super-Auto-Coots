@@ -13,9 +13,10 @@
         </template>
         <template v-slot:body="{ shown }">
             <div v-if="shown">
-                <div v-if="author">By {{ author }}</div>
+                <div>Programming by thepaperpilot (with love and support from his wife)</div>
+                <div>Art by crea</div>
                 <div>
-                    Made in Profectus, by thepaperpilot
+                    Made in Profectus, a game engine by thepaperpilot
                 </div>
                 <br />
                 <div class="link" @click="openChangelog">Changelog</div>

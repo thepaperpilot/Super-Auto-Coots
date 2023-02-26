@@ -10,6 +10,8 @@ type AbilityTypes =
     | "Hurt"
     | "Faint";
 
+type StreamTypes = "Game Show" | "Reaction Stream" | "Podcast" | "Cooking Stream" | "Bro vs Bro";
+
 interface CharacterInfo {
     nickname: string;
     initialRelevancy: number;
@@ -45,13 +47,15 @@ interface ServerToClientEvents {
             lives: number;
             wins: number;
             turn: number;
+            streamType: StreamTypes;
         },
         outcome: BattleOutcome
     ) => void;
     freeze: (index: number) => void;
     sell: (index: number) => void;
-    room: (room: string) => void;
+    room: (room: string, streamType: StreamTypes) => void;
     "room failed": (err: string) => void;
+    "stream type": (type: StreamTypes, charge: boolean) => void;
 }
 
 interface ClientToServerEvents {
@@ -64,4 +68,5 @@ interface ClientToServerEvents {
     stream: () => void;
     newTurn: () => void;
     "change room": (room: string, password: string) => void;
+    "change stream type": (type: StreamTypes) => void;
 }
