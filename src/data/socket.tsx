@@ -135,7 +135,11 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     });
 
     socket.on("newTurn", shop => {
-        main.gold.value = 10;
+        if (main.streamType.value === "Game Show") {
+            main.gold.value += 10;
+        } else {
+            main.gold.value = 10;
+        }
         main.turn.value++;
         main.battle.value = null;
         main.shop.value = shop.map(item => ({
@@ -204,6 +208,15 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     });
     socket.on("stream", (enemy, outcome) => {
         let needsWait = false;
+        if (main.streamType.value === "Reaction Stream") {
+            main.team.value.forEach(m => {
+                if (m == null) {
+                    return;
+                }
+                m.relevancy += 1;
+            });
+            needsWait = true;
+        }
         main.team.value.forEach(m => {
             if (m == null) {
                 return;
@@ -214,7 +227,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             }
         });
         if (needsWait) {
-            setTimeout(() => startStream(enemy, outcome));
+            setTimeout(() => startStream(enemy, outcome), 1250);
         } else {
             startStream(enemy, outcome);
         }
@@ -288,7 +301,90 @@ function startStream(
     main.outcome.value = outcome;
     main.showingOutcome.value = false;
     main.playClicked.value = false;
-    setTimeout(main.prepareMove, 1000);
+    function checkEnemyStreamType() {
+        if (main.battle.value!.enemyStreamType === "Podcast") {
+            setTimeout(() => {
+                const yards = main.battle.value!.enemyTeam.filter(
+                    m =>
+                        m != null &&
+                        (m.type === "ludwig" ||
+                            m.type === "nick" ||
+                            m.type === "aimen" ||
+                            m.type === "slime")
+                );
+                yards.forEach(m => {
+                    m.relevancy += yards.length;
+                });
+                setTimeout(main.prepareMove, 1250);
+            }, 1250);
+        } else if (main.battle.value!.enemyStreamType === "Cooking Stream") {
+            setTimeout(() => {
+                if (main.battle.value!.enemyTeam.length > 0) {
+                    const host =
+                        main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];
+                    host.relevancy += 2;
+                    host.presence += 2;
+                }
+                setTimeout(main.prepareMove, 1250);
+            }, 1250);
+        } else if (main.battle.value!.enemyStreamType === "Bro vs Bro") {
+            setTimeout(() => {
+                if (main.battle.value!.enemyTeam.length > 0) {
+                    const host =
+                        main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];
+                    host.relevancy++;
+                }
+                if (main.battle.value!.team.length > 0) {
+                    const host = main.battle.value!.team[main.battle.value!.team.length - 1];
+                    host.relevancy -= 2;
+                    main.hurt(host);
+                }
+                setTimeout(main.prepareMove, 1250);
+            }, 1250);
+        } else {
+            setTimeout(main.prepareMove, 1250);
+        }
+    }
+    if (main.streamType.value === "Podcast") {
+        setTimeout(() => {
+            const yards = main.battle.value!.team.filter(
+                m =>
+                    m != null &&
+                    (m.type === "ludwig" ||
+                        m.type === "nick" ||
+                        m.type === "aimen" ||
+                        m.type === "slime")
+            );
+            yards.forEach(m => {
+                m.relevancy += yards.length;
+            });
+            checkEnemyStreamType();
+        }, 1250);
+    } else if (main.streamType.value === "Cooking Stream") {
+        setTimeout(() => {
+            if (main.battle.value!.team.length > 0) {
+                const host = main.battle.value!.team[main.battle.value!.team.length - 1];
+                host.relevancy += 2;
+                host.presence += 2;
+            }
+            checkEnemyStreamType();
+        }, 1250);
+    } else if (main.streamType.value === "Bro vs Bro") {
+        setTimeout(() => {
+            if (main.battle.value!.team.length > 0) {
+                const host = main.battle.value!.team[main.battle.value!.team.length - 1];
+                host.relevancy++;
+            }
+            if (main.battle.value!.enemyTeam.length > 0) {
+                const host = main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];
+                host.relevancy -= 2;
+                main.hurt(host);
+            }
+            checkEnemyStreamType();
+        }, 1250);
+    } else {
+        checkEnemyStreamType();
+    }
 }
 
 declare module "game/settings" {
