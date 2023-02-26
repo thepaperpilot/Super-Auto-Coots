@@ -910,6 +910,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
     return {
         name: "Game",
         minimizable: false,
+        minWidth: 100,
         display: jsx(() => {
             if (wins.value >= 5) {
                 return (
@@ -920,7 +921,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 <CharacterSlot character={team.value[i]} />
                             ))}
                         </Row>
-                        <img src={playAgain} class="button" onClick={() => location.reload()} />
+                        <img
+                            src={playAgain}
+                            class="button"
+                            style="height: 20vmin; image-rendering: pixelated;"
+                            onClick={() => location.reload()}
+                        />
                         {render(particles)}
                     </div>
                 );
@@ -1029,6 +1035,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             />
                                         ))}
                                     </TransitionGroup>
+                                    <div style="font-size: 5vmin; margin: 5vmin;">→</div>
                                 </Column>
                             </div>
                             <div class="team-container">
@@ -1088,6 +1095,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             />
                                         ))}
                                     </TransitionGroup>
+                                    <div style="font-size: 5vmin; margin: 5vmin;">←</div>
                                 </Column>
                             </div>
                         </div>

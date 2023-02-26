@@ -167,6 +167,7 @@ watchEffect(() => {
 
 .character.shake {
     animation: shake 0.5s infinite;
+    z-index: 10;
 }
 
 .character * {

@@ -120,17 +120,18 @@ function openDiscord() {
     left: 0;
     right: 0;
     top: 0;
-    height: 46px;
+    height: 4vmin;
     width: 100%;
     border-bottom: 4px solid var(--outline);
 }
 
 .nav > * {
-    height: 46px;
-    width: 46px;
+    height: 4vmin;
+    width: 4vmin;
     display: flex;
     cursor: pointer;
     flex-shrink: 0;
+    font-size: 3.5vmin;
 }
 
 .nav > .banner {
@@ -148,8 +149,8 @@ function openDiscord() {
 }
 
 .overlay-nav > * {
-    height: 50px;
-    width: 50px;
+    height: 4vmin;
+    width: 4vmin;
     display: flex;
     cursor: pointer;
     margin: 0;
@@ -158,7 +159,6 @@ function openDiscord() {
 }
 
 .title {
-    font-size: 36px;
     text-align: left;
     margin-left: 12px;
     cursor: unset;
@@ -217,8 +217,8 @@ function openDiscord() {
     margin-bottom: 4px;
 }
 
-.discord-links li:first-child {
-    font-size: 1.2em;
+.discord-links li {
+    font-size: 2vmin;
 }
 
 *:not(.overlay-nav) .discord:hover .discord-links {
@@ -226,7 +226,7 @@ function openDiscord() {
 }
 
 .material-icons {
-    font-size: 36px;
+    font-size: 4vmin;
 }
 
 .material-icons:hover {
@@ -238,6 +238,7 @@ function openDiscord() {
     height: 25px;
     margin-bottom: 0;
     margin-left: 10px;
+    font-size: 2vmin;
 }
 
 .overlay-nav .version-container {

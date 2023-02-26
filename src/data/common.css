@@ -140,6 +140,7 @@
     padding: 1vmin 0 0.5vmin 0;
     cursor: pointer;
     width: 100%;
+    font-size: 2vmin;
 }
 
 .stream-type.active {
@@ -176,6 +177,7 @@
 .no-margin .row {
     margin: 0;
     flex-flow: row;
+    z-index: 10;
 }
 
 .shop .row::after {
@@ -229,6 +231,8 @@
 .battle-container {
     display: flex;
     flex-direction: column;
+    margin: -25px 0;
+    height: calc(100% + 50px);
 }
 
 .battle-container:not(.fast) * {
@@ -237,7 +241,7 @@
 
 .teams-container {
     display: flex;
-    height: calc(93vh - 154px);
+    height: calc(93vh - 104px);
     width: 93%;
     flex-direction: column;
 }
@@ -261,6 +265,7 @@
     filter: drop-shadow(2px 4px 6px black);
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
     z-index: 1;
+    overflow: hidden;
 }
 
 .stream-details {
@@ -292,7 +297,7 @@
 }
 
 .members-container {
-    width: 18vmin;
+    margin: auto 0;
 }
 
 .members-container .col {
@@ -314,7 +319,6 @@
 
 .battle-controls {
     display: flex;
-    margin-top: -2vmin;
 }
 
 .battle-controls .button {
@@ -336,13 +340,18 @@
     left: 50%;
     transform: translate(-50%, -50%);
     cursor: pointer;
+    z-index: 1;
 }
 
 .character-transition-enter-from {
-    transform: translateX(-100%);
+    transform: translateX(-200%);
 }
 .character-transition-leave-to {
-    transform: translateX(100%);
+    transform: translateX(-200%);
+}
+.team-container:first-child 
+.character-transition-leave-to {
+    transform: translateX(200%);
 }
 .streamer-transition-enter-from {
     transform: translateY(100%);
@@ -384,4 +393,19 @@
   20% {transform:scale(.95);}
   50% { transform: rotate(30deg); }
   80% {transform:scale(.95);}
+}
+
+@media (orientation: landscape) {
+    .members-container .col {
+        flex-direction: row-reverse;
+    }
+
+    .team-container:first-child .members-container .col {
+        flex-direction: row;
+    }
+
+    .stream-container {
+        width: 50%;
+        margin: 0;
+    }
 }
