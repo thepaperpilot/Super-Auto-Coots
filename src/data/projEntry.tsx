@@ -773,6 +773,9 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const isDragging = ref(false);
 
     function prepareMove() {
+        if (showingOutcome.value) {
+            return;
+        }
         if (battle.value == null) {
             throw "Preparing move while not in battle";
         }
