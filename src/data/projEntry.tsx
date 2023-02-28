@@ -1090,7 +1090,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                                 .map((streamer, i) => (
                                                     <CharacterSlot
                                                         id={`battle-streamer-${i}`}
-                                                        key={i}
+                                                        key={streamer.id}
                                                         character={streamer}
                                                         shake={
                                                             previewing.value &&
@@ -1107,7 +1107,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             <CharacterSlot
                                                 id={`battle-member-${i}`}
                                                 character={member}
-                                                key={battle.value!.enemyStreamers.length + i}
+                                                key={member.id}
                                                 shake={
                                                     previewing.value &&
                                                     queue.value[0]?.action === "join" &&
@@ -1119,7 +1119,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             />
                                         ))}
                                     </TransitionGroup>
-                                    <div style="font-size: 5vmin; margin: 5vmin;">→</div>
+                                    <div class="battle-arrow">→</div>
                                 </Column>
                             </div>
                             <div class="team-container">
@@ -1181,7 +1181,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                             />
                                         ))}
                                     </TransitionGroup>
-                                    <div style="font-size: 5vmin; margin: 5vmin;">←</div>
+                                    <div class="battle-arrow">←</div>
                                 </Column>
                             </div>
                         </div>

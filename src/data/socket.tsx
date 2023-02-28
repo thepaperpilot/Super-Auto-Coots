@@ -184,6 +184,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     });
     socket.on("buy", (shopIndex, teamIndex, char) => {
         main.team.value[teamIndex] = char;
+        main.team.value[teamIndex]!.id = getCharID();
         main.shop.value[shopIndex] = null;
         main.gold.value -= 3;
         poof(`shop-char-${shopIndex}`);
@@ -307,7 +308,6 @@ function startStream(
     main.battle.value.enemyTeam.forEach(m => {
         m.id = getCharID();
     });
-    console.log(enemy.team, main.battle.value.enemyTeam);
     main.outcome.value = outcome;
     main.showingOutcome.value = false;
     main.playClicked.value = false;
