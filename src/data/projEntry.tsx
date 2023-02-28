@@ -1224,7 +1224,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <div style="flex-grow: 1" />
                         {findingMatch.value ? (
                             <div class="waiting">Finding opposing team...</div>
-                        ) : (
+                        ) : team.value.some(m => m != null) ? (
                             <img
                                 class="startStream"
                                 draggable="false"
@@ -1234,7 +1234,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 }}
                                 src={startStream}
                             />
-                        )}
+                        ) : null}
                     </Row>
                     <div style="flex-grow: 1" />
                     <Row style="margin-top: 10vh">
