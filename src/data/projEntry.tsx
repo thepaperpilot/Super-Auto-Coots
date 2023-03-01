@@ -63,6 +63,7 @@ import vespa from "../../public/Vespa Coots.png";
 import victoryButton from "../../public/Victory Button.png";
 import victoryFace from "../../public/win face.png";
 import yard_small from "../../public/yard_small.png";
+import yard_member from "../../public/yard_member.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
 import healthParticles from "./health.json";
@@ -130,6 +131,7 @@ export const characters: Record<string, CharacterInfo> = {
         initialPresence: 1,
         display: ludwig,
         abilityType: "LivestreamJoined",
+        isYard: true,
         abilityDescription: char =>
             jsx(() => (
                 <>
@@ -222,6 +224,7 @@ export const characters: Record<string, CharacterInfo> = {
         initialRelevancy: 2,
         display: aimen,
         abilityType: "Sold",
+        isYard: true,
         abilityDescription: char =>
             jsx(() => (
                 <>
@@ -248,6 +251,7 @@ export const characters: Record<string, CharacterInfo> = {
         initialRelevancy: 1,
         display: nick,
         abilityType: "LivestreamEnded",
+        isYard: true,
         abilityDescription: char =>
             jsx(() => (
                 <>
@@ -687,6 +691,7 @@ export const characters: Record<string, CharacterInfo> = {
         initialPresence: 3,
         display: slime,
         abilityType: "LivestreamJoined",
+        isYard: true,
         abilityDescription: char =>
             jsx(() => (
                 <>
@@ -1508,10 +1513,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <Tooltip
                             display={jsx(() => (
                                 <>
-                                    <i>Stream started</i>: All Yard Coots gain 1{" "}
+                                    <i>Stream started</i>: All <img src={yard_member} />
+                                    <span style="color: white">Yard</span> Coots gain 1{" "}
                                     <img src={heart_small} />
-                                    <span style="color: red">Relevancy</span> for every Yard Coots
-                                    owned, for the rest of the battle
+                                    <span style="color: red">Relevancy</span> for every{" "}
+                                    <img src={yard_member} />
+                                    <span style="color: white">Yard</span> Coots owned, for the rest
+                                    of the battle
                                 </>
                             ))}
                         >

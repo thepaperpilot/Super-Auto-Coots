@@ -111,6 +111,7 @@ import level2_2 from "../../public/Lvl 2_2.png";
 import level3 from "../../public/Lvl 3.png";
 import star from "../../public/presence_v2.png";
 import money_small from "../../public/money_small.png";
+import yard_member from "../../public/yard_member.png";
 import { characters } from "./projEntry";
 import { Character } from "./types";
 
@@ -154,7 +155,7 @@ watchEffect(() => {
         return;
     }
     const Ability = coerceComponent(characters[props.character.type].abilityDescription(props.character));
-    comp.value = jsx(() => (<><b>{characters[props.character!.type].nickname}</b><br /><Ability /></>));
+    comp.value = jsx(() => (<><b>{characters[props.character!.type].nickname}</b>{characters[props.character!.type].isYard ? <img src={yard_member} style="margin-left: 0.25em" /> : null}<br /><Ability /></>));
 })
 </script>
 

@@ -18,6 +18,7 @@ interface CharacterInfo {
     initialPresence: number;
     display: string;
     abilityType: AbilityTypes;
+    isYard?: boolean;
     abilityDescription: (char: Character) => CoercableComponent;
     performAbility: (char: Character) => void;
 }
