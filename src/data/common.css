@@ -328,16 +328,30 @@
 }
 
 .members-container .tooltip-container {
-    margin-bottom: 0;
-    margin-top: -4vmin;
+    margin-left: 0;
+    margin-right: -4vmin;
 }
 
 .members-container .tooltip-container:last-child {
-    margin-bottom: -2vmin;
+    margin-left: -2vmin;
+}
+
+.team-container:last-child .members-container .tooltip-container {
+    margin-left: -4vmin;
+    margin-right: 0;
+}
+
+.team-container:last-child .members-container .tooltip-container:last-child {
+    margin-right: -2vmin;
 }
 
 .streamers-container .row {
     flex-flow: row
+}
+
+.battle-arrow {
+    font-size: 5vmin;
+    margin: auto 2vmin;
 }
 
 .battle-controls {
@@ -378,6 +392,7 @@
 }
 .streamer-transition-enter-from {
     transform: translateY(100%);
+    opacity: 0;
 }
 .streamer-transition-leave-to {
     transform: translateY(50%) rotate(45deg);
@@ -431,5 +446,22 @@
     .stream-container {
         width: 50%;
         margin: 0;
+    }
+}
+
+@media (orientation: portrait) {
+    .members-container .tooltip-container {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 0;
+        margin-top: -4vmin;
+    }
+    
+    .members-container .tooltip-container:last-child {
+        margin-bottom: -2vmin;
+    }
+
+    .battle-arrow {
+        margin: -2vmin auto 2vmin auto;
     }
 }
