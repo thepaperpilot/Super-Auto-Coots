@@ -400,9 +400,9 @@
     transform: translateY(50%) rotate(45deg);
     opacity: 0;
 }
-.character-trensition-active,
+.character-transition-active,
 .streamer-transition-active {
-    position: absolute;
+    position: absolute !important;
 }
 
 .total-outcome-container {
