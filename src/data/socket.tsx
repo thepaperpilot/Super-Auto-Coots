@@ -150,7 +150,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             relevancy: characters[item].initialRelevancy,
             presence: characters[item].initialPresence,
             exp: 1,
-            id: getCharID()
+            id: getCharID(),
+            isShop: true
         }));
         main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {
@@ -173,7 +174,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             relevancy: characters[item].initialRelevancy,
             presence: characters[item].initialPresence,
             exp: 1,
-            id: getCharID()
+            id: getCharID(),
+            isShop: true
         }));
         main.frozen.value = main.frozen.value.map((_, i) => i);
         setTimeout(() => {

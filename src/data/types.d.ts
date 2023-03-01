@@ -28,6 +28,7 @@ interface Character {
     relevancy: number;
     presence: number;
     id: number;
+    isShop?: boolean;
 }
 
 type BattleOutcome = "Victory" | "Defeat" | "Tie";

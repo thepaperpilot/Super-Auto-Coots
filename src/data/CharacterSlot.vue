@@ -47,6 +47,7 @@
                     dragging === false
                 "
             >
+                <span v-if="selected.isShop">3<img :src="money_small" /></span>
                 <span class="material-icons">straight</span></span
             >
             <span
@@ -58,8 +59,10 @@
                     character.type === selected.type &&
                     character.exp < 6
                 "
-                ><span class="material-icons">merge</span></span
-            >
+                >
+                <span v-if="selected.isShop">3<img :src="money_small" /></span>
+                <span class="material-icons">merge</span>
+            </span>
             <span class="character-display" v-if="character != null">
                 <img ref="imageElement" :src="characters[character.type].display" />
             </span>
@@ -107,6 +110,7 @@ import level2_1 from "../../public/Lvl 2_1.png";
 import level2_2 from "../../public/Lvl 2_2.png";
 import level3 from "../../public/Lvl 3.png";
 import star from "../../public/presence_v2.png";
+import money_small from "../../public/money_small.png";
 import { characters } from "./projEntry";
 import { Character } from "./types";
 
@@ -280,15 +284,22 @@ watchEffect(() => {
 
 .move-indicator {
     position: absolute;
-    transform: translateX(-50%) rotate(180deg);
-    top: -75%;
+    transform: translateX(-50%);
+    top: -125%;
     left: 50%;
     animation: bouncingMoveIndicator 1s infinite;
     text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
 }
+
+.move-indicator img {
+    height: 1em;
+    margin-left: 0.25em;
+}
+
 .move-indicator .material-icons {
     font-size: 5vmin;
     transition: all 0.5s ease, color 0s;
+    transform: rotate(180deg);
 }
 
 .character:not(.isDragging):hover .move-indicator .material-icons,
@@ -327,13 +338,13 @@ watchEffect(() => {
 
 @keyframes bouncingMoveIndicator {
     0% {
-        transform: translateX(-50%) rotate(180deg) translateY(0%);
+        transform: translateX(-50%) translateY(0%);
     }
     50% {
-        transform: translateX(-50%) rotate(180deg) translateY(50%);
+        transform: translateX(-50%) translateY(50%);
     }
     100% {
-        transform: translateX(-50%) rotate(180deg) translateY(0%);
+        transform: translateX(-50%) translateY(0%);
     }
 }
 
