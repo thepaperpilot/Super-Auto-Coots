@@ -432,8 +432,8 @@ export const characters: Record<string, CharacterInfo> = {
         abilityDescription: char =>
             jsx(() => (
                 <>
-                    <i>Turn started</i>: Gain
-                    {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2} <img src={money_small} />
+                    <i>Turn started</i>: Gain {char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2}{" "}
+                    <img src={money_small} />
                     <span style="color: yellow">Moguls</span>
                 </>
             )),
@@ -1120,7 +1120,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         <img
                             src={playAgain}
                             class="button"
-                            style="height: 20vmin; image-rendering: pixelated;"
+                            style="height: 20vmin; image-rendering: pixelated; cursor: pointer"
                             onClick={() => location.reload()}
                         />
                         {render(particles)}
@@ -1462,7 +1462,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         </Row>
                     </Row>
                     <Row class="stream-types">
-                        <Tooltip display="Moguls persist (still gain 10 after battle)">
+                        <Tooltip
+                            display={jsx(() => (
+                                <>
+                                    <img src={money_small} />
+                                    <span style="color: yellow">Moguls</span> persist (still gain 10
+                                    after battle)
+                                </>
+                            ))}
+                        >
                             <div
                                 class={{
                                     "stream-type": true,
