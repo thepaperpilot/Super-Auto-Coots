@@ -185,6 +185,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         setTimeout(() => (main.showRefreshAnim.value = false), 500);
     });
     socket.on("buy", (shopIndex, teamIndex, char) => {
+        const oldExp = main.team.value[teamIndex]?.exp ?? 0;
+        const oldLevel = oldExp >= 6 ? 3 : oldExp >= 3 ? 2 : 1;
+        const newLevel = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
         main.team.value[teamIndex] = char;
         main.team.value[teamIndex]!.id = getCharID();
         main.shop.value[shopIndex] = null;
@@ -193,6 +196,11 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         poof(`team-char-${teamIndex}`);
         if (main.frozen.value.includes(shopIndex)) {
             main.frozen.value = main.frozen.value.filter(m => m !== shopIndex);
+        }
+        if (oldLevel !== newLevel) {
+            if (characters[char.type].abilityType === "LevelUp") {
+                setTimeout(() => characters[char.type].performAbility(char), 1250);
+            }
         }
     });
     socket.on("move", (index, otherIndex) => {
@@ -210,8 +218,10 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         main.team.value[otherIndex] = char;
         poof(`team-char-${index}`);
         poof(`team-char-${otherIndex}`);
-        if (characters[char.type].abilityType === "LevelUp" && oldLevel !== newLevel) {
-            setTimeout(() => characters[char.type].performAbility(char), 1250);
+        if (oldLevel !== newLevel) {
+            if (characters[char.type].abilityType === "LevelUp") {
+                setTimeout(() => characters[char.type].performAbility(char), 1250);
+            }
         }
     });
     socket.on("stream", (enemy, outcome) => {
