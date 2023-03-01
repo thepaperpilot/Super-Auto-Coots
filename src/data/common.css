@@ -250,6 +250,7 @@
     height: 8vmin;
     display: flex;
     align-items: center;
+    text-shadow: -1px 1px 0 var(--raised-background), 1px 1px 0 var(--raised-background), 1px -1px 0 var(--raised-background), -1px -1px 0 var(--raised-background);
 }
 
 .battle-container {
