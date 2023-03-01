@@ -274,6 +274,7 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
     });
     socket.on("stream type", (type, charged) => {
         main.streamType.value = type;
+        main.selectedStreamType.value = null;
         if (charged) {
             main.gold.value -= 3;
         }

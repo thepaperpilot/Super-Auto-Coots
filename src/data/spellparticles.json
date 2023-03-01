@@ -1,0 +1,131 @@
+{
+    "emit": false,
+    "autoUpdate": true,
+    "lifetime": {
+        "min": 0.5,
+        "max": 2
+    },
+    "frequency": 0.005,
+    "emitterLifetime": -1,
+    "maxParticles": 1000,
+    "addAtBack": true,
+    "pos": {
+        "x": 0,
+        "y": 0
+    },
+    "behaviors": [
+        {
+            "type": "alpha",
+            "config": {
+                "alpha": {
+                    "list": [
+                        {
+                            "time": 0,
+                            "value": 1
+                        },
+                        {
+                            "time": 1,
+                            "value": 0
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "moveSpeed",
+            "config": {
+                "speed": {
+                    "list": [
+                        {
+                            "time": 0,
+                            "value": 2
+                        },
+                        {
+                            "time": 1,
+                            "value": 25
+                        }
+                    ]
+                },
+                "minMult": 2
+            }
+        },
+        {
+            "type": "scale",
+            "config": {
+                "scale": {
+                    "list": [
+                        {
+                            "time": 0,
+                            "value": 0.001
+                        },
+                        {
+                            "time": 1,
+                            "value": 1
+                        }
+                    ]
+                },
+                "minMult": 0.25
+            }
+        },
+        {
+            "type": "color",
+            "config": {
+                "color": {
+                    "list": [
+                        {
+                            "time": 0,
+                            "value": "#EB428F"
+                        },
+                        {
+                            "time": 0.25,
+                            "value": "#F545ED"
+                        },
+                        {
+                            "time": 0.5,
+                            "value": "#B949DE"
+                        },
+                        {
+                            "time": 0.75,
+                            "value": "#9945F5"
+                        },
+                        {
+                            "time": 1,
+                            "value": "#6442EB"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "rotation",
+            "config": {
+                "accel": 0,
+                "minSpeed": 0,
+                "maxSpeed": 20,
+                "minStart": 270,
+                "maxStart": 300
+            }
+        },
+        {
+            "type": "textureRandom",
+            "config": {
+                "textures": [
+                    "/Fire.png"
+                ]
+            }
+        },
+        {
+            "type": "spawnShape",
+            "config": {
+                "type": "torus",
+                "data": {
+                    "x": 0,
+                    "y": 0,
+                    "radius": 75,
+                    "innerRadius": 75,
+                    "affectRotation": true
+                }
+            }
+        }
+    ]
+}

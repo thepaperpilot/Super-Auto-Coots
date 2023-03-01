@@ -12,8 +12,10 @@ import settings from "game/settings";
 import { formatWhole } from "util/bignum";
 import { render } from "util/vue";
 import { computed, ref, TransitionGroup, watch } from "vue";
+import type { WatchStopHandle } from "vue";
 import aimen from "../../public/aimen coots.png";
 import autoplay from "../../public/autoplay.png";
+import game from "../../public/bro vs bro bg.png";
 import connor from "../../public/cdawg va.png";
 import chessboxing from "../../public/chessboxing coots.png";
 import defeatButton from "../../public/Defeat Button.png";
@@ -25,6 +27,7 @@ import hasan from "../../public/hasan coots.png";
 import heart_small from "../../public/heart_small.png";
 import ironmouse from "../../public/ironmouse coots.png";
 import kitchen from "../../public/Kitchen BG.png";
+import kitchen_small from "../../public/kitchen_small.png";
 import reaction from "../../public/lud's room bg.png";
 import luddy from "../../public/luddy Coots.png";
 import ludwig from "../../public/Ludwig Coots.png";
@@ -42,28 +45,34 @@ import playAgain from "../../public/Play Again.png";
 import play from "../../public/play.png";
 import star_small from "../../public/presence_small.png";
 import qt from "../../public/QT Coots.png";
+import react_small from "../../public/react_small.png";
+import room_small from "../../public/room_small.png";
 import shopGif from "../../public/shop.gif";
 import shopStill from "../../public/shop1.png";
 import sellShop from "../../public/shop_Sell1.png";
+import show_small from "../../public/show_small.png";
+import shop_Switch1 from "../../public/shop_Switch1.png";
 import slime from "../../public/SlimeCoots.png";
 import smash from "../../public/smash coots.png";
 import stanz from "../../public/Stanz Coots.png";
 import startStream from "../../public/start stream.png";
 import awards from "../../public/streamer award coots.png";
 import yard from "../../public/the yard bg.png";
-import game from "../../public/bro vs bro bg.png";
 import tieButton from "../../public/Tie Button.png";
 import vespa from "../../public/Vespa Coots.png";
 import victoryButton from "../../public/Victory Button.png";
 import victoryFace from "../../public/win face.png";
+import yard_small from "../../public/yard_small.png";
 import CharacterSlot from "./CharacterSlot.vue";
 import "./common.css";
+import healthParticles from "./health.json";
+import presenceParticles from "./presence.json";
 import "./socket";
 import { emit, nickname, poof } from "./socket";
 import type { AbilityTypes, BattleOutcome, Character, CharacterInfo, StreamTypes } from "./types";
 import victoryParticles from "./victory.json";
-import healthParticles from "./health.json";
-import presenceParticles from "./presence.json";
+import spellParticles from "./spellparticles.json";
+import Node from "components/Node.vue";
 
 const streamTypeToBG: Record<StreamTypes, string> = {
     "Game Show": gameshow,
@@ -780,6 +789,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const shop = ref<(Character | null)[]>([]);
     const selectedCharacter = ref<number | null>(null);
     const selectedShopItem = ref<number | null>(null);
+    const selectedStreamType = ref<StreamTypes | null>(null);
     const findingMatch = ref<boolean>(false);
     const outcome = ref<BattleOutcome | "">("");
     const showingOutcome = ref<boolean>(false);
@@ -841,6 +851,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
             shop.value = [];
             selectedCharacter.value = null;
             selectedShopItem.value = null;
+            selectedStreamType.value = null;
             findingMatch.value = false;
             battle.value = null;
             outcome.value = "";
@@ -977,6 +988,11 @@ export const main = createLayer("main", function (this: BaseLayer) {
         boundingRect: ref<null | DOMRect>(null),
         onContainerResized(boundingRect) {
             this.boundingRect.value = boundingRect;
+        },
+        onHotReload() {
+            shopParticleEmitter.value.then(e => e.destroy());
+            shopParticleEmitter.value = particles.addEmitter(spellParticles);
+            updateShopParticles();
         }
     }));
 
@@ -988,6 +1004,79 @@ export const main = createLayer("main", function (this: BaseLayer) {
             settings.losses++;
         }
     });
+
+    const shopParticleEmitter = ref(particles.addEmitter(spellParticles));
+    const shopTooltip = computed(() => {
+        if (selectedCharacter.value != null) {
+            return "Sell Coots";
+        } else if (selectedShopItem.value != null) {
+            return "Freeze Coots";
+        } else if (selectedStreamType.value != null) {
+            return "Switch Stream Type";
+        }
+        return "Re-Roll Shop";
+    });
+    const shopImage = computed(() => {
+        if (selectedCharacter.value != null) {
+            return sellShop;
+        } else if (selectedShopItem.value != null) {
+            return freezeShop;
+        } else if (selectedStreamType.value != null) {
+            return shop_Switch1;
+        }
+        return showRefreshAnim.value ? shopGif : shopStill;
+    });
+    const handleShop = () => {
+        if (selectedCharacter.value != null) {
+            emit("sell", selectedCharacter.value!);
+        } else if (selectedShopItem.value != null) {
+            emit("freeze", selectedShopItem.value!);
+        } else if (selectedStreamType.value != null) {
+            if (gold.value > 2) {
+                emit("change stream type", selectedStreamType.value);
+            }
+        } else {
+            if (gold.value > 0) {
+                emit("reroll");
+            }
+        }
+    };
+    const shouldShowParticles = computed(
+        () =>
+            selectedCharacter.value != null ||
+            selectedShopItem.value != null ||
+            (selectedStreamType.value != null && selectedStreamType.value != streamType.value)
+    );
+    const particleEffectWatcher = ref<null | WatchStopHandle>(null);
+    const updateShopParticles = async () => {
+        const particle = await shopParticleEmitter.value;
+        particleEffectWatcher.value?.();
+        if (shouldShowParticles.value) {
+            particle.emit = true;
+            particleEffectWatcher.value = watch(
+                [() => main.nodes.value.reroll?.rect, particles.boundingRect],
+                async ([rect, boundingRect]) => {
+                    if (rect != null && boundingRect != null) {
+                        particle.cleanup();
+                        particle.updateOwnerPos(
+                            rect.x + rect.width / 2 - boundingRect.x,
+                            rect.y + rect.height / 2 - boundingRect.y
+                        );
+                        particle.resetPositionTracking();
+                        particle.emit = true;
+                    } else {
+                        particle.emit = false;
+                    }
+                },
+                { immediate: true }
+            );
+        } else {
+            particle.emit = false;
+            particleEffectWatcher.value = null;
+        }
+    };
+
+    watch(shouldShowParticles, updateShopParticles);
 
     return {
         name: "Game",
@@ -1271,47 +1360,17 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         ))}
                     </Row>
                     <Row style="margin-top: 2vh" class="no-margin">
-                        {selectedCharacter.value != null ? (
-                            <Tooltip display="Sell Coots">
-                                <div
-                                    class="reroll"
-                                    onDragover={e => e.preventDefault()}
-                                    onClick={() => emit("sell", selectedCharacter.value!)}
-                                    onDrop={() => emit("sell", selectedCharacter.value!)}
-                                >
-                                    <img src={sellShop} />
-                                </div>
-                            </Tooltip>
-                        ) : selectedShopItem.value != null ? (
-                            <Tooltip display="Freeze Coots">
-                                <div
-                                    class="reroll"
-                                    onDragover={e => e.preventDefault()}
-                                    onClick={() => emit("freeze", selectedShopItem.value!)}
-                                    onDrop={() => emit("freeze", selectedShopItem.value!)}
-                                >
-                                    <img src={freezeShop} />
-                                </div>
-                            </Tooltip>
-                        ) : (
-                            <Tooltip display="Re-roll store">
-                                <div
-                                    class="reroll"
-                                    style={
-                                        gold.value > 0
-                                            ? ""
-                                            : "color: var(--locked); cursor: not-allowed"
-                                    }
-                                    onClick={() => {
-                                        if (gold.value > 0) {
-                                            emit("reroll");
-                                        }
-                                    }}
-                                >
-                                    <img src={showRefreshAnim.value ? shopGif : shopStill} />
-                                </div>
-                            </Tooltip>
-                        )}
+                        <Tooltip display={shopTooltip.value}>
+                            <div
+                                class="reroll"
+                                onDragover={e => e.preventDefault()}
+                                onClick={handleShop}
+                                onDrop={handleShop}
+                            >
+                                <img src={shopImage.value} />
+                                <Node id="reroll" />
+                            </div>
+                        </Tooltip>
                         <Row class="shop">
                             {shop.value.map((item, i) => (
                                 <CharacterSlot
@@ -1349,12 +1408,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div
                                 class={{
                                     "stream-type": true,
-                                    active: streamType.value === "Game Show"
+                                    active: streamType.value === "Game Show",
+                                    selected: selectedStreamType.value === "Game Show"
                                 }}
-                                onClick={() => emit("change stream type", "Game Show")}
+                                onClick={clickStreamType("Game Show")}
                             >
-                                <img src={gameshow} />
-                                <span>Game Show</span>
+                                <img src={show_small} />
+                                <span>Show</span>
                             </div>
                         </Tooltip>
                         <Tooltip
@@ -1369,12 +1429,13 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div
                                 class={{
                                     "stream-type": true,
-                                    active: streamType.value === "Reaction Stream"
+                                    active: streamType.value === "Reaction Stream",
+                                    selected: selectedStreamType.value === "Reaction Stream"
                                 }}
-                                onClick={() => emit("change stream type", "Reaction Stream")}
+                                onClick={clickStreamType("Reaction Stream")}
                             >
-                                <img src={reaction} />
-                                <span>Coots</span>
+                                <img src={room_small} />
+                                <span>Play</span>
                             </div>
                         </Tooltip>
                         <Tooltip
@@ -1390,11 +1451,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div
                                 class={{
                                     "stream-type": true,
-                                    active: streamType.value === "Podcast"
+                                    active: streamType.value === "Podcast",
+                                    selected: selectedStreamType.value === "Podcast"
                                 }}
-                                onClick={() => emit("change stream type", "Podcast")}
+                                onClick={clickStreamType("Podcast")}
                             >
-                                <img src={yard} />
+                                <img src={yard_small} />
                                 <span>Podcast</span>
                             </div>
                         </Tooltip>
@@ -1413,11 +1475,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div
                                 class={{
                                     "stream-type": true,
-                                    active: streamType.value === "Cooking Stream"
+                                    active: streamType.value === "Cooking Stream",
+                                    selected: selectedStreamType.value === "Cooking Stream"
                                 }}
-                                onClick={() => emit("change stream type", "Cooking Stream")}
+                                onClick={clickStreamType("Cooking Stream")}
                             >
-                                <img src={kitchen} />
+                                <img src={kitchen_small} />
                                 <span>Cooking</span>
                             </div>
                         </Tooltip>
@@ -1435,11 +1498,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <div
                                 class={{
                                     "stream-type": true,
-                                    active: streamType.value === "Bro vs Bro"
+                                    active: streamType.value === "Bro vs Bro",
+                                    selected: selectedStreamType.value === "Bro vs Bro"
                                 }}
-                                onClick={() => emit("change stream type", "Bro vs Bro")}
+                                onClick={clickStreamType("Bro vs Bro")}
                             >
-                                <img src={game} />
+                                <img src={react_small} />
                                 <span>Reaction</span>
                             </div>
                         </Tooltip>
@@ -1456,6 +1520,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
         shop,
         selectedCharacter,
         selectedShopItem,
+        selectedStreamType,
         findingMatch,
         showingOutcome,
         outcome,
@@ -1497,6 +1562,7 @@ globalBus.on("update", diff => {
 
 function clickCharacter(index: number) {
     return (e?: MouseEvent) => {
+        main.selectedStreamType.value = null;
         if (main.selectedCharacter.value != null && main.selectedCharacter.value !== index) {
             if (
                 main.team.value[main.selectedCharacter.value]?.type ===
@@ -1525,6 +1591,17 @@ function clickCharacter(index: number) {
             main.selectedShopItem.value = null;
         } else {
             main.selectedCharacter.value = index;
+        }
+        e?.stopPropagation();
+    };
+}
+
+function clickStreamType(type: StreamTypes) {
+    return (e?: MouseEvent) => {
+        if (main.selectedStreamType.value == null || main.selectedStreamType.value !== type) {
+            main.selectedStreamType.value = type;
+        } else {
+            main.selectedStreamType.value = null;
         }
         e?.stopPropagation();
     };
