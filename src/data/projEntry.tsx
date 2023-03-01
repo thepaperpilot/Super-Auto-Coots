@@ -73,6 +73,7 @@ import type { AbilityTypes, BattleOutcome, Character, CharacterInfo, StreamTypes
 import victoryParticles from "./victory.json";
 import spellParticles from "./spellparticles.json";
 import Node from "components/Node.vue";
+import { Direction } from "util/common";
 
 const streamTypeToBG: Record<StreamTypes, string> = {
     "Game Show": gameshow,
@@ -1196,8 +1197,12 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     <div class="stream-details" style="left: 1vmin">
                                         <span>{nickname.value} (YOU)</span>
                                         <div class="stats">
-                                            <div class="resource-box lives">{lives.value}</div>
-                                            <div class="resource-box wins">{wins.value}/5</div>
+                                            <Tooltip display="Lives" direction={Direction.Down}>
+                                                <div class="resource-box lives">{lives.value}</div>
+                                            </Tooltip>
+                                            <Tooltip display="Wins" direction={Direction.Down}>
+                                                <div class="resource-box wins">{wins.value}/5</div>
+                                            </Tooltip>
                                             <div class="view-counter">
                                                 {formatWhole(views.value)} Views
                                             </div>
@@ -1256,12 +1261,16 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                     <div class="stream-details" style="right: 1vmin">
                                         <span>{battle.value.enemyNickname}</span>
                                         <div class="stats" style="margin-right: 0">
-                                            <div class="resource-box lives">
-                                                {battle.value.enemyLives}
-                                            </div>
-                                            <div class="resource-box wins">
-                                                {battle.value.enemyWins}/5
-                                            </div>
+                                            <Tooltip display="Lives" direction={Direction.Down}>
+                                                <div class="resource-box lives">
+                                                    {battle.value.enemyLives}
+                                                </div>
+                                            </Tooltip>
+                                            <Tooltip display="Wins" direction={Direction.Down}>
+                                                <div class="resource-box wins">
+                                                    {battle.value.enemyWins}/5
+                                                </div>
+                                            </Tooltip>
                                             <div class="view-counter">
                                                 {formatWhole(enemyViews.value)} Views
                                             </div>
@@ -1346,9 +1355,15 @@ export const main = createLayer("main", function (this: BaseLayer) {
                     />
                     <h2 class="team-nickname">{nickname.value}</h2>
                     <Row class="manager-header">
-                        <div class="resource-box moguls">{gold.value}</div>
-                        <div class="resource-box lives">{lives.value}</div>
-                        <div class="resource-box wins">{wins.value}/5</div>
+                        <Tooltip display="Moguls" direction={Direction.Down}>
+                            <div class="resource-box moguls">{gold.value}</div>
+                        </Tooltip>
+                        <Tooltip display="Lives" direction={Direction.Down}>
+                            <div class="resource-box lives">{lives.value}</div>
+                        </Tooltip>
+                        <Tooltip display="Wins" direction={Direction.Down}>
+                            <div class="resource-box wins">{wins.value}/5</div>
+                        </Tooltip>
                         <div style="flex-grow: 1" />
                         {findingMatch.value ? (
                             <div class="waiting">Finding opposing team...</div>

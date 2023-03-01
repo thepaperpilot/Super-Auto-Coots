@@ -21,13 +21,6 @@
                 </li>
             </ul>
         </div>
-        <div>
-            <a href="https://forums.moddingtree.com/" target="_blank">
-                <Tooltip display="Forums" :direction="Direction.Down" yoffset="5px">
-                    <span class="material-icons">forum</span>
-                </Tooltip>
-            </a>
-        </div>
         <div @click="info?.open()">
             <Tooltip display="Info" :direction="Direction.Down" class="info">
                 <span class="material-icons">info</span>

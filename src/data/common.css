@@ -115,7 +115,7 @@
     border-width: 0.5vmin 0.5vmin 0.75vmin 3.5vmin;
 }
 
-.resource-box:not(:last-child) {
+.tooltip-container:not(:last-child) > .resource-box {
     margin-right: 1vmin !important;
 }
 
