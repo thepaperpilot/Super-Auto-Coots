@@ -87,6 +87,13 @@ export function getCharID() {
     return nextCharID++;
 }
 
+const buttonClick = new Audio("button click.wav");
+const cootFaints = new Audio("coot faints.wav");
+const damage = new Audio("damage.wav");
+const droppingCoots = new Audio("dropping coots in field.wav");
+const lose = new Audio("lose.wav");
+const reroll = new Audio("reroll.wav");
+
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
     coots: {
@@ -883,6 +890,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
             battle.value.enemyStreamers = battle.value.enemyStreamers.filter(
                 m => m.relevancy > 0 && m.presence > 0
             );
+            cootFaints.currentTime = 0;
+            cootFaints.play();
             playClicked.value = false;
             setTimeout(prepareMove, settings.fast ? 750 : 1250);
             return;
@@ -911,6 +920,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                 wins.value++;
             } else if (outcome.value === "Defeat") {
                 lives.value--;
+                lose.currentTime = 0;
+                lose.play();
             }
             showingOutcome.value = true;
             return;
@@ -969,6 +980,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
     }
 
     function hurt(char: Character) {
+        damage.currentTime = 0;
+        damage.play();
         if (main.battle.value == null) {
             return;
         }
@@ -1029,15 +1042,23 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const handleShop = () => {
         if (selectedCharacter.value != null) {
             emit("sell", selectedCharacter.value!);
+            buttonClick.currentTime = 0;
+            buttonClick.play();
         } else if (selectedShopItem.value != null) {
             emit("freeze", selectedShopItem.value!);
+            buttonClick.currentTime = 0;
+            buttonClick.play();
         } else if (selectedStreamType.value != null) {
             if (gold.value > 2) {
                 emit("change stream type", selectedStreamType.value);
+                buttonClick.currentTime = 0;
+                buttonClick.play();
             }
         } else {
             if (gold.value > 0) {
                 emit("reroll");
+                reroll.currentTime = 0;
+                reroll.play();
             }
         }
     };
@@ -1126,6 +1147,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <button
                                 class="button"
                                 onClick={() => {
+                                    buttonClick.currentTime = 0;
+                                    buttonClick.play();
                                     playClicked.value = true;
                                     prepareMove();
                                 }}
@@ -1135,6 +1158,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             <button
                                 class={{ button: true, active: settings.autoplay }}
                                 onClick={() => {
+                                    buttonClick.currentTime = 0;
+                                    buttonClick.play();
                                     settings.autoplay = !settings.autoplay;
                                     if (previewing.value) {
                                         prepareMove();
@@ -1145,7 +1170,11 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             </button>
                             <button
                                 class={{ button: true, active: settings.fast }}
-                                onClick={() => (settings.fast = !settings.fast)}
+                                onClick={() => {
+                                    buttonClick.currentTime = 0;
+                                    buttonClick.play();
+                                    settings.fast = !settings.fast;
+                                }}
                             >
                                 <img src={fast} />
                             </button>
@@ -1275,7 +1304,14 @@ export const main = createLayer("main", function (this: BaseLayer) {
                             </div>
                         </div>
                         {showingOutcome.value ? (
-                            <div class="outcome" onClick={() => emit("newTurn")}>
+                            <div
+                                class="outcome"
+                                onClick={() => {
+                                    buttonClick.currentTime = 0;
+                                    buttonClick.play();
+                                    emit("newTurn");
+                                }}
+                            >
                                 <img
                                     src={
                                         outcome.value === "Victory"
@@ -1318,6 +1354,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 class="startStream"
                                 draggable="false"
                                 onClick={() => {
+                                    buttonClick.currentTime = 0;
+                                    buttonClick.play();
                                     emit("stream");
                                     findingMatch.value = true;
                                 }}
@@ -1387,6 +1425,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                         selectedShopItem.value =
                                             selectedShopItem.value === i ? null : i;
                                         selectedCharacter.value = null;
+                                        buttonClick.currentTime = 0;
+                                        buttonClick.play();
                                         e.stopPropagation();
                                     }}
                                     onDragstart={() => {
@@ -1572,9 +1612,13 @@ function clickCharacter(index: number) {
             ) {
                 emit("merge", main.selectedCharacter.value, index);
                 main.selectedCharacter.value = null;
+                droppingCoots.currentTime = 0;
+                droppingCoots.play();
             } else {
                 emit("move", main.selectedCharacter.value, index);
                 main.selectedCharacter.value = null;
+                droppingCoots.currentTime = 0;
+                droppingCoots.play();
             }
         } else if (main.selectedCharacter.value === index) {
             main.selectedCharacter.value = null;
@@ -1587,10 +1631,14 @@ function clickCharacter(index: number) {
                 main.gold.value >= 3
             ) {
                 emit("buy", main.selectedShopItem.value, index);
+                droppingCoots.currentTime = 0;
+                droppingCoots.play();
             }
             main.selectedShopItem.value = null;
         } else {
             main.selectedCharacter.value = index;
+            buttonClick.currentTime = 0;
+            buttonClick.play();
         }
         e?.stopPropagation();
     };
@@ -1598,6 +1646,8 @@ function clickCharacter(index: number) {
 
 function clickStreamType(type: StreamTypes) {
     return (e?: MouseEvent) => {
+        buttonClick.currentTime = 0;
+        buttonClick.play();
         if (main.selectedStreamType.value == null || main.selectedStreamType.value !== type) {
             main.selectedStreamType.value = type;
         } else {
