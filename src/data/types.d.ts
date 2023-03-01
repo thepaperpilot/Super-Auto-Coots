@@ -57,6 +57,7 @@ interface ServerToClientEvents {
     room: (room: string, streamType: StreamTypes) => void;
     "room failed": (err: string) => void;
     "stream type": (type: StreamTypes, charge: boolean) => void;
+    win: () => void;
 }
 
 interface ClientToServerEvents {

@@ -280,6 +280,9 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             main.gold.value -= 3;
         }
     });
+    socket.on("win", () => {
+        main.wins.value++;
+    });
 }
 
 function startStream(
