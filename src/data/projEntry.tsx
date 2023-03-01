@@ -666,7 +666,7 @@ export const characters: Record<string, CharacterInfo> = {
                         return a;
                     }
                     return b;
-                });
+                }, main.battle.value.enemyStreamers[0]);
                 if (m != null) {
                     m.presence -= 3;
                     main.hurt(m);
@@ -677,7 +677,7 @@ export const characters: Record<string, CharacterInfo> = {
                         return a;
                     }
                     return b;
-                });
+                }, main.battle.value.streamers[0]);
                 if (m != null) {
                     m.presence -= 3;
                     main.hurt(m);
