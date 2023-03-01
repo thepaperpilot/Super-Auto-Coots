@@ -110,7 +110,7 @@
             "type": "textureRandom",
             "config": {
                 "textures": [
-                    "/Fire.png"
+                    "Fire.png"
                 ]
             }
         },
