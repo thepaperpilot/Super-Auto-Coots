@@ -968,7 +968,10 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         console.error("Invalid action", action);
                         break;
                     }
-                    if (action.target.presence <= 0 || action.target.relevancy <= 0) {
+                    if (
+                        characters[action.target.type].abilityType !== "Faint" &&
+                        (action.target.presence <= 0 || action.target.relevancy <= 0)
+                    ) {
                         break;
                     }
                     characters[action.target.type].performAbility(action.target);

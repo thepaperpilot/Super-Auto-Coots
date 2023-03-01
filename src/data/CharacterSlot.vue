@@ -82,6 +82,9 @@
                 <img :src="level2_2" v-if="character.exp === 5" />
                 <img :src="level3" v-if="character.exp === 6" />
             </span>
+            <span class="fainted" v-if="character != null && (character.presence <= 0 || character.relevancy <= 0)">
+                <img :src="bandaid" />
+            </span>
             <Node v-if="id" :id="id" />
         </div>
     </Tooltip>
@@ -93,16 +96,17 @@ import { jsx, JSXFunction } from "features/feature";
 import Tooltip from "features/tooltips/Tooltip.vue";
 import { Direction } from "util/common";
 import { coerceComponent } from "util/vue";
-import { Component, ref, shallowRef, watch, watchEffect } from "vue";
-import heart from "../../public/heart.png";
-import star from "../../public/presence_v2.png";
+import { ref, shallowRef, watch, watchEffect } from "vue";
+import bandaid from "../../public/bandaid.png";
 import lock from "../../public/Freeze icon.png";
+import heart from "../../public/heart.png";
 import level1_0 from "../../public/Lvl 1_0.png";
 import level1_1 from "../../public/Lvl 1_1.png";
 import level2_0 from "../../public/Lvl 2_0.png";
 import level2_1 from "../../public/Lvl 2_1.png";
 import level2_2 from "../../public/Lvl 2_2.png";
 import level3 from "../../public/Lvl 3.png";
+import star from "../../public/presence_v2.png";
 import { characters } from "./projEntry";
 import { Character } from "./types";
 
@@ -307,6 +311,17 @@ watchEffect(() => {
     width: 10vmin;
     height: 10vmin;
     image-rendering: pixelated;
+    transform: translate(-50%, -50%);
+}
+
+.fainted img {
+    image-rendering: pixelated;
+    max-height: 10vmin;
+    filter: drop-shadow(2px 4px 6px black);
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }
 
