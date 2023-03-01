@@ -94,6 +94,7 @@ const damage = new Audio("damage.wav");
 const droppingCoots = new Audio("dropping coots in field.wav");
 const lose = new Audio("lose.wav");
 const reroll = new Audio("reroll.wav");
+const freeze = new Audio("freeze.wav");
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -1050,8 +1051,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
             buttonClick.play();
         } else if (selectedShopItem.value != null) {
             emit("freeze", selectedShopItem.value!);
-            buttonClick.currentTime = 0;
-            buttonClick.play();
+            freeze.currentTime = 0;
+            freeze.play();
         } else if (selectedStreamType.value != null) {
             if (gold.value > 2) {
                 emit("change stream type", selectedStreamType.value);

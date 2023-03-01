@@ -20,6 +20,8 @@ import healthParticles from "./health.json";
 import presenceParticles from "./presence.json";
 import { EmitterConfigV3 } from "@pixi/particle-emitter";
 
+const levelUp = new Audio("level up coot v2.wav");
+
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
 export const room = ref<string>("");
@@ -201,6 +203,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             if (characters[char.type].abilityType === "LevelUp") {
                 setTimeout(() => characters[char.type].performAbility(char), 1250);
             }
+            levelUp.currentTime = 0;
+            levelUp.play();
         }
     });
     socket.on("move", (index, otherIndex) => {
@@ -222,6 +226,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
             if (characters[char.type].abilityType === "LevelUp") {
                 setTimeout(() => characters[char.type].performAbility(char), 1250);
             }
+            levelUp.currentTime = 0;
+            levelUp.play();
         }
     });
     socket.on("stream", (enemy, outcome) => {
