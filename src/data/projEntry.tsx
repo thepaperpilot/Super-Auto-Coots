@@ -1388,7 +1388,7 @@ export const main = createLayer("main", function (this: BaseLayer) {
                         ) : null}
                     </Row>
                     <div style="flex-grow: 1" />
-                    <Row style="margin-top: 10vh">
+                    <Row>
                         {new Array(3).fill(0).map((_, i) => (
                             <CharacterSlot
                                 id={`team-char-${i}`}
