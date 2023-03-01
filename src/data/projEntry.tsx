@@ -408,8 +408,8 @@ export const characters: Record<string, CharacterInfo> = {
             main.team.value.forEach(m => {
                 if (m != null) {
                     m.relevancy += gain;
-                    for (let i = 0; i < gain * main.wins.value; i++) {
-                        poof(`team-char-${main.team.value.indexOf(char)}`, healthParticles);
+                    for (let i = 0; i < gain; i++) {
+                        poof(`team-char-${main.team.value.indexOf(m)}`, healthParticles);
                     }
                 }
             });
