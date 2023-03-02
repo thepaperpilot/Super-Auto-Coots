@@ -2,7 +2,7 @@
     <div class="field">
         <span class="field-title" v-if="title">{{ title }}</span>
         <Tooltip :display="`${value}`" :class="{ fullWidth: !title }" :direction="Direction.Down">
-            <input type="range" v-model="value" :min="min" :max="max" />
+            <input type="range" v-model="value" :min="min" :max="max" step=".01" />
         </Tooltip>
     </div>
 </template>
@@ -35,7 +35,12 @@ const value = computed({
 </script>
 
 <style scoped>
-.fullWidth {
+.fullWidth,
+input {
     width: 100%;
+}
+
+.tooltip-container {
+    width: 50%;
 }
 </style>

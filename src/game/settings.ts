@@ -27,6 +27,8 @@ export interface Settings {
     privateRoomPassword: string;
     victories: number;
     losses: number;
+    sfxVolume: number;
+    bgmVolume: number;
 }
 
 const state = reactive<Partial<Settings>>({
@@ -42,7 +44,9 @@ const state = reactive<Partial<Settings>>({
     privateRoomName: "",
     privateRoomPassword: "",
     victories: 0,
-    losses: 0
+    losses: 0,
+    sfxVolume: 1,
+    bgmVolume: 1
 });
 
 watch(

@@ -21,6 +21,18 @@ import presenceParticles from "./presence.json";
 import { EmitterConfigV3 } from "@pixi/particle-emitter";
 
 const levelUp = new Audio("level up coot v2.wav");
+const error = new Audio("error.wav");
+const statIncrease = new Audio("Increase Stats.wav");
+
+watch(
+    () => settings.sfxVolume,
+    volume => {
+        levelUp.volume = volume;
+        error.volume = volume;
+        statIncrease.volume = volume;
+    },
+    { immediate: true }
+);
 
 export const connected = ref<boolean>(false);
 export const nickname = ref<string>("");
@@ -134,6 +146,10 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
         if (message === "Failed to start streaming") {
             main.findingMatch.value = false;
         }
+        if (message.includes("Failed")) {
+            error.currentTime = 0;
+            error.play();
+        }
     });
     socket.on("nickname", nick => {
         nickname.value = nick;
@@ -241,6 +257,8 @@ function setupSocket(socket: Socket<ServerToClientEvents, ClientToServerEvents>)
                 poof(`team-char-${index}`, healthParticles);
             });
             needsWait = true;
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
         main.team.value.forEach(m => {
             if (m == null) {
@@ -352,6 +370,8 @@ function startStream(
                             healthParticles
                         );
                     }
+                    statIncrease.currentTime = 0;
+                    statIncrease.play();
                 });
                 setTimeout(main.prepareMove, 1250);
             }, 1250);
@@ -378,6 +398,8 @@ function startStream(
                         `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
                         presenceParticles
                     );
+                    statIncrease.currentTime = 0;
+                    statIncrease.play();
                 }
                 setTimeout(main.prepareMove, 1250);
             }, 1250);
@@ -391,6 +413,8 @@ function startStream(
                         `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
                         healthParticles
                     );
+                    statIncrease.currentTime = 0;
+                    statIncrease.play();
                 }
                 if (main.battle.value!.team.length > 0) {
                     const host = main.battle.value!.team[main.battle.value!.team.length - 1];
@@ -421,6 +445,8 @@ function startStream(
                         healthParticles
                     );
                 }
+                statIncrease.currentTime = 0;
+                statIncrease.play();
             });
             checkEnemyStreamType();
         }, 1250);
@@ -446,6 +472,8 @@ function startStream(
                     `battle-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
                     presenceParticles
                 );
+                statIncrease.currentTime = 0;
+                statIncrease.play();
             }
             checkEnemyStreamType();
         }, 1250);
@@ -458,6 +486,8 @@ function startStream(
                     `battle-enemy-member-${main.battle.value!.enemyTeam.indexOf(host)}`,
                     healthParticles
                 );
+                statIncrease.currentTime = 0;
+                statIncrease.play();
             }
             if (main.battle.value!.enemyTeam.length > 0) {
                 const host = main.battle.value!.enemyTeam[main.battle.value!.enemyTeam.length - 1];

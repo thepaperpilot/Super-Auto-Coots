@@ -96,6 +96,40 @@ const droppingCoots = new Audio("dropping coots in field.wav");
 const lose = new Audio("lose.wav");
 const reroll = new Audio("reroll.wav");
 const freeze = new Audio("freeze.wav");
+const statIncrease = new Audio("Increase Stats.wav");
+const sell = new Audio("sell.wav");
+const startStreamAudio = new Audio("start stream.wav");
+const win = new Audio("win.wav");
+
+const bgm = new Audio("bgm.mp3");
+
+watch(
+    () => settings.bgmVolume,
+    volume => {
+        bgm.volume = volume;
+    },
+    { immediate: true }
+);
+watch(
+    () => settings.sfxVolume,
+    volume => {
+        buttonClick.volume = volume;
+        cootFaints.volume = volume;
+        damage.volume = volume;
+        droppingCoots.volume = volume;
+        lose.volume = volume;
+        reroll.volume = volume;
+        freeze.volume = volume;
+        statIncrease.volume = volume;
+        sell.volume = volume;
+        startStreamAudio.volume = volume;
+        win.volume = volume;
+    },
+    { immediate: true }
+);
+
+bgm.loop = true;
+bgm.play();
 
 export const characters: Record<string, CharacterInfo> = {
     // Tier 1
@@ -162,6 +196,8 @@ export const characters: Record<string, CharacterInfo> = {
                     );
                 }
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     qt: {
@@ -184,6 +220,8 @@ export const characters: Record<string, CharacterInfo> = {
         performAbility(char) {
             const goldGain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             main.gold.value += goldGain;
+            sell.currentTime = 0;
+            sell.play();
         }
     },
     mario: {
@@ -243,6 +281,8 @@ export const characters: Record<string, CharacterInfo> = {
             for (let i = 0; i < relevancyGain; i++) {
                 poof(`team-char-${team.length - 1}`, healthParticles);
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     nick: {
@@ -280,6 +320,8 @@ export const characters: Record<string, CharacterInfo> = {
                     }
                 });
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     // Tier 2
@@ -308,6 +350,8 @@ export const characters: Record<string, CharacterInfo> = {
                         poof(`team-char-${main.team.value.indexOf(char)}`, healthParticles);
                         poof(`team-char-${main.team.value.indexOf(char)}`, presenceParticles);
                     }
+                    statIncrease.currentTime = 0;
+                    statIncrease.play();
                 }
             });
         }
@@ -424,6 +468,8 @@ export const characters: Record<string, CharacterInfo> = {
                     for (let i = 0; i < gain; i++) {
                         poof(`team-char-${main.team.value.indexOf(m)}`, healthParticles);
                     }
+                    statIncrease.currentTime = 0;
+                    statIncrease.play();
                 }
             });
         }
@@ -445,6 +491,8 @@ export const characters: Record<string, CharacterInfo> = {
         performAbility(char) {
             const gain = char.exp >= 6 ? 6 : char.exp >= 3 ? 4 : 2;
             main.gold.value += gain;
+            sell.currentTime = 0;
+            sell.play();
         }
     },
     frog: {
@@ -519,6 +567,8 @@ export const characters: Record<string, CharacterInfo> = {
                     );
                 }
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     // Tier 3
@@ -545,6 +595,8 @@ export const characters: Record<string, CharacterInfo> = {
                 for (let i = 0; i < presenceGain; i++) {
                     poof(`team-char-${i}`, presenceParticles);
                 }
+                statIncrease.currentTime = 0;
+                statIncrease.play();
             }
         }
     },
@@ -605,6 +657,8 @@ export const characters: Record<string, CharacterInfo> = {
             for (let i = 0; i < gain; i++) {
                 poof(`battle-streamer-${main.team.value.indexOf(char)}`, healthParticles);
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     connor: {
@@ -726,6 +780,8 @@ export const characters: Record<string, CharacterInfo> = {
                     }
                 }
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     },
     awards: {
@@ -748,6 +804,8 @@ export const characters: Record<string, CharacterInfo> = {
             }
             const gain = char.exp >= 6 ? 3 : char.exp >= 3 ? 2 : 1;
             main.gold.value += gain * main.wins.value;
+            sell.currentTime = 0;
+            sell.play();
         }
     },
     // Other
@@ -787,6 +845,8 @@ export const characters: Record<string, CharacterInfo> = {
                     presenceParticles
                 );
             }
+            statIncrease.currentTime = 0;
+            statIncrease.play();
         }
     }
 };
@@ -925,6 +985,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
             }
             if (outcome.value === "Victory") {
                 wins.value++;
+                win.currentTime = 0;
+                win.play();
             } else if (outcome.value === "Defeat") {
                 lives.value--;
                 lose.currentTime = 0;
@@ -1052,8 +1114,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
     const handleShop = () => {
         if (selectedCharacter.value != null) {
             emit("sell", selectedCharacter.value!);
-            buttonClick.currentTime = 0;
-            buttonClick.play();
+            sell.currentTime = 0;
+            sell.play();
         } else if (selectedShopItem.value != null) {
             emit("freeze", selectedShopItem.value!);
             freeze.currentTime = 0;
@@ -1378,8 +1440,8 @@ export const main = createLayer("main", function (this: BaseLayer) {
                                 class="startStream"
                                 draggable="false"
                                 onClick={() => {
-                                    buttonClick.currentTime = 0;
-                                    buttonClick.play();
+                                    startStreamAudio.currentTime = 0;
+                                    startStreamAudio.play();
                                     emit("stream");
                                     findingMatch.value = true;
                                 }}

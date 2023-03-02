@@ -4,6 +4,8 @@
             <h2>Settings</h2>
         </template>
         <template v-slot:body>
+            <Slider title="BGM Volume" :min="0" :max="1" v-model="bgmVolume" />
+            <Slider title="SFX Volume" :min="0" :max="1" v-model="sfxVolume" />
             <component :is="settingFieldsComponent" />
             <Text title="Private room name" v-model="privateRoomName" />
             <Text title="Private room PW" :password="true" v-model="privateRoomPassword" />
@@ -22,6 +24,7 @@ import settings, { settingFields } from "game/settings";
 import { save } from "util/save";
 import { coerceComponent, render } from "util/vue";
 import { computed, ref, toRefs } from "vue";
+import Slider from "./fields/Slider.vue";
 import Text from "./fields/Text.vue";
 
 const isOpen = ref(false);
@@ -48,7 +51,7 @@ const settingFieldsComponent = computed(() => {
     return coerceComponent(jsx(() => (<>{settingFields.map(render)}</>)));
 });
 
-const { privateRoomName, privateRoomPassword } = toRefs(settings);
+const { privateRoomName, privateRoomPassword, bgmVolume, sfxVolume } = toRefs(settings);
 
 function joinRoom() {
     roomConnectionError.value = "";
